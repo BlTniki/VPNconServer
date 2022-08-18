@@ -14,10 +14,11 @@ public class HostController {
     @Autowired
     private HostService hostService;
 
+    @SuppressWarnings("rawtypes")
     @GetMapping
-    public ResponseEntity<String> getHost() {
+    public ResponseEntity getHost() {
         try {
-            return ResponseEntity.ok().body("all good");
+            return ResponseEntity.ok(hostService.getAll());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("error");
         }
