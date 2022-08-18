@@ -1,5 +1,7 @@
 package com.bitniki.VPNconServer.entity;
 
+import com.bitniki.VPNconServer.exception.HostAlreadyExistException;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,6 +12,16 @@ public class HostEntity {
     private Long id;
     private String ipadress;
     private String serverPublicKey;
+
+    /*
+     this static method update existing host fields if some of new host field is not null
+    */
+    public static HostEntity updateHost(HostEntity oldHost, HostEntity newHost) {
+        oldHost.setIpadress((newHost.getIpadress() != null) ? newHost.getIpadress() : oldHost.getIpadress());
+        oldHost.setServerPublicKey((newHost.getServerPublicKey() != null) ? newHost.getServerPublicKey() : oldHost.getServerPublicKey());
+
+        return oldHost;
+    }
 
     public HostEntity() {
     }

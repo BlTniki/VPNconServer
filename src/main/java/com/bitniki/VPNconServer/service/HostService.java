@@ -39,4 +39,21 @@ public class HostService {
         }
         return Host.toModel(hostRepo.save(host));
     }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public Host update (Long id, HostEntity newHost) throws HostNotFoundException, HostAlreadyExistException {
+        //if we have new ipadress check its unique
+        if (newHost.getIpadress() != null && hostRepo.findByIpadress(newHost.getIpadress()) != null) {
+            throw new HostAlreadyExistException("Host with that ip already exist!");
+        }
+
+        HostEntity oldHost;
+        try {
+            oldHost = hostRepo.findById(id).get();
+        } catch (NoSuchElementException e) {
+            throw new HostNotFoundException("User not found");
+        }
+
+        return Host.toModel(hostRepo.save(HostEntity.updateHost(oldHost, newHost)));
+    }
 }

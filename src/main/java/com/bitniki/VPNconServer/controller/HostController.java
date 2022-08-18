@@ -47,4 +47,16 @@ public class HostController {
             return ResponseEntity.badRequest().body("error");
         }
     }
+
+    @SuppressWarnings("rawtypes")
+    @PutMapping("/{id}")
+    public ResponseEntity updateHost (@PathVariable Long id, @RequestBody HostEntity host) {
+        try {
+            return ResponseEntity.ok(hostService.update(id, host));
+        } catch (HostNotFoundException | HostAlreadyExistException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("error");
+        }
+    }
 }
