@@ -52,4 +52,15 @@ public class UserService {
 
         return User.toModel(userRepo.save(UserEntity.updateEntity(oldUser,newUser)));
     }
+
+    public User delete(Long id) throws UserNotFoundException {
+        Optional<UserEntity> userEntityOptional;
+        UserEntity user;
+        userEntityOptional = userRepo.findById(id);
+        if(userEntityOptional.isPresent()) user = userEntityOptional.get();
+        else throw new UserNotFoundException("User not found");
+
+        userRepo.delete(user);
+        return User.toModel(user);
+    }
 }
