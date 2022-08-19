@@ -5,7 +5,7 @@ import com.bitniki.VPNconServer.exception.HostAlreadyExistException;
 import javax.persistence.*;
 
 @Entity
-@Table (name = "Host")
+@Table (name = "host")
 public class HostEntity {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
