@@ -44,10 +44,10 @@ public class UserService {
             throw new UserAlreadyExistException("User with that login already exist!");
         }
 
-        Optional<UserEntity> oldEntity;
+        Optional<UserEntity> oldUserEntityOptional;
         UserEntity oldUser;
-        oldEntity = userRepo.findById(id);
-        if(oldEntity.isPresent()) oldUser = oldEntity.get();
+        oldUserEntityOptional = userRepo.findById(id);
+        if(oldUserEntityOptional.isPresent()) oldUser = oldUserEntityOptional.get();
         else throw new UserNotFoundException("User not found");
 
         return User.toModel(userRepo.save(UserEntity.updateEntity(oldUser,newUser)));
