@@ -25,13 +25,10 @@ public class UserService {
         return users.stream().map(User::toModel).collect(Collectors.toList());
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public User getOne (Long id) throws UserNotFoundException {
-        try {
-            return User.toModel(userRepo.findById(id).get());
-        } catch (NoSuchElementException e) {
-            throw new UserNotFoundException("User not found");
-        }
+        Optional<UserEntity> userEntity = userRepo.findById(id);
+        if(userEntity.isPresent()) return User.toModel(userEntity.get());
+        else throw new UserNotFoundException("User not found");
     }
 
     public User create (UserEntity user) throws UserAlreadyExistException {
