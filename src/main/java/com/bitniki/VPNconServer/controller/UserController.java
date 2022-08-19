@@ -24,6 +24,16 @@ public class UserController {
     }
 
     @SuppressWarnings("rawtypes")
+    @GetMapping("/{id}")
+    public ResponseEntity getUser(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(userService.getOne(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("error");
+        }
+    }
+
+    @SuppressWarnings("rawtypes")
     @PostMapping
     public ResponseEntity createUser (@RequestBody UserEntity user) {
         try {
