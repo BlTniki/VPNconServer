@@ -47,4 +47,16 @@ public class UserController {
             return ResponseEntity.badRequest().body("error");
         }
     }
+
+    @SuppressWarnings("rawtypes")
+    @PutMapping("/{id}")
+    public ResponseEntity updateUser(@PathVariable Long id, @RequestBody UserEntity user) {
+        try {
+            return ResponseEntity.ok(userService.update(id, user));
+        } catch (UserNotFoundException | UserAlreadyExistException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }  catch (Exception e) {
+            return ResponseEntity.badRequest().body("error");
+        }
+    }
 }
