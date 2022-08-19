@@ -19,7 +19,7 @@ CREATE TABLE host (
     PRIMARY KEY (id)
 ) engine=MyISAM;
 
-CREATE TABLE userHost (
+CREATE TABLE peer (
     id BIGINT NOT NULL AUTO_INCREMENT,
     peerIp varchar(15) not null,
     peerPrivateKey varchar(255) not null,
