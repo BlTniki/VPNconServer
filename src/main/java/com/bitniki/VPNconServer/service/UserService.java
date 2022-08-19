@@ -50,7 +50,6 @@ public class UserService {
         if(oldEntity.isPresent()) oldUser = oldEntity.get();
         else throw new UserNotFoundException("User not found");
 
-        UserEntity.updateEntity(oldUser,newUser);
-        return User.toModel(userRepo.save(oldUser));
+        return User.toModel(userRepo.save(UserEntity.updateEntity(oldUser,newUser)));
     }
 }
