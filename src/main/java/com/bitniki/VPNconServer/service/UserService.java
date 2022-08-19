@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,5 +39,21 @@ public class UserService {
             throw new UserAlreadyExistException("That login already taken!");
         }
         return User.toModel(userRepo.save(user));
+    }
+
+    public User update (Long id, UserEntity newUser) throws UserAlreadyExistException, UserNotFoundException {
+        //if we have new login check its unique
+        if (newUser.getLogin() != null && userRepo.findByLogin(newUser.getLogin()) != null) {
+            throw new UserAlreadyExistException("User with that login already exist!");
+        }
+
+        Optional<UserEntity> oldEntity;
+        UserEntity oldUser;
+        oldEntity = userRepo.findById(id);
+        if(oldEntity.isPresent()) oldUser = oldEntity.get();
+        else throw new UserNotFoundException("User not found");
+
+        UserEntity.updateEntity(oldUser,newUser);
+        return User.toModel(userRepo.save(oldUser));
     }
 }
