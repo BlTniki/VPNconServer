@@ -11,6 +11,12 @@ public class UserEntity {
     private String login;
     private String password;
 
+
+    public static void updateEntity(UserEntity oldUser, UserEntity newUser) {
+        oldUser.setLogin((newUser.getLogin() != null) ? newUser.getLogin() : oldUser.getLogin());
+        oldUser.setPassword((newUser.getPassword() != null) ? newUser.getPassword() : oldUser.getPassword());
+    }
+
     public UserEntity() {
     }
 
