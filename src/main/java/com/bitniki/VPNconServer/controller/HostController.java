@@ -3,7 +3,6 @@ package com.bitniki.VPNconServer.controller;
 import com.bitniki.VPNconServer.entity.HostEntity;
 import com.bitniki.VPNconServer.exception.HostAlreadyExistException;
 import com.bitniki.VPNconServer.exception.HostNotFoundException;
-import com.bitniki.VPNconServer.model.Host;
 import com.bitniki.VPNconServer.service.HostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +53,18 @@ public class HostController {
         try {
             return ResponseEntity.ok(hostService.update(id, host));
         } catch (HostNotFoundException | HostAlreadyExistException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("error");
+        }
+    }
+
+    @SuppressWarnings("rawtypes")
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteHost (@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(hostService.delete(id));
+        } catch (HostNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("error");

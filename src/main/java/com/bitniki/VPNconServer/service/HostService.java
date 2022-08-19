@@ -51,9 +51,21 @@ public class HostService {
         try {
             oldHost = hostRepo.findById(id).get();
         } catch (NoSuchElementException e) {
-            throw new HostNotFoundException("User not found");
+            throw new HostNotFoundException("Host not found");
         }
 
         return Host.toModel(hostRepo.save(HostEntity.updateHost(oldHost, newHost)));
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public Host delete (Long id) throws HostNotFoundException {
+        HostEntity host;
+        try {
+            host = hostRepo.findById(id).get();
+        } catch (NoSuchElementException e) {
+            throw new HostNotFoundException("Host not found");
+        }
+        hostRepo.delete(host);
+        return Host.toModel(host);
     }
 }
