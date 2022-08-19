@@ -26,8 +26,8 @@ public class UserService {
     }
 
     public User getOne (Long id) throws UserNotFoundException {
-        Optional<UserEntity> userEntity = userRepo.findById(id);
-        if(userEntity.isPresent()) return User.toModel(userEntity.get());
+        Optional<UserEntity> userEntityOptional = userRepo.findById(id);
+        if(userEntityOptional.isPresent()) return User.toModel(userEntityOptional.get());
         else throw new UserNotFoundException("User not found");
     }
 
