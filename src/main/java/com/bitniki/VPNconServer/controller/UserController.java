@@ -2,6 +2,7 @@ package com.bitniki.VPNconServer.controller;
 
 import com.bitniki.VPNconServer.entity.UserEntity;
 import com.bitniki.VPNconServer.exception.UserAlreadyExistException;
+import com.bitniki.VPNconServer.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,8 @@ public class UserController {
     public ResponseEntity getUser(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(userService.getOne(id));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("error");
         }
