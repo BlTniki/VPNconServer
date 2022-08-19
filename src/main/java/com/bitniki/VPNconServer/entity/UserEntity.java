@@ -3,7 +3,7 @@ package com.bitniki.VPNconServer.entity;
 import javax.persistence.*;
 
 @Entity
-@Table (name = "User")
+@Table (name = "user")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
