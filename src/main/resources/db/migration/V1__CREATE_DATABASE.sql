@@ -5,21 +5,21 @@ create table hibernate_sequence (
 insert into hibernate_sequence values ( 1 );
 insert into hibernate_sequence values ( 1 );
 
-CREATE TABLE User (
+CREATE TABLE user (
     id BIGINT NOT NULL AUTO_INCREMENT,
     login varchar(64) not null unique,
     password varchar(255) not null,
     PRIMARY KEY (id)
 ) engine=MyISAM;
 
-CREATE TABLE Host (
+CREATE TABLE host (
     id BIGINT NOT NULL AUTO_INCREMENT,
     ipadress varchar(15) not null unique,
     serverPublicKey varchar(255) not null,
     PRIMARY KEY (id)
 ) engine=MyISAM;
 
-CREATE TABLE UserHost (
+CREATE TABLE userHost (
     id BIGINT NOT NULL AUTO_INCREMENT,
     peerIp varchar(15) not null,
     peerPrivateKey varchar(255) not null,
