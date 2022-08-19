@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,13 +24,10 @@ public class HostService {
         return hosts.stream().map(Host::toModel).collect(Collectors.toList());
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public Host getOne (Long id) throws HostNotFoundException {
-        try {
-            return Host.toModel(hostRepo.findById(id).get());
-        } catch (NoSuchElementException e) {
-            throw new HostNotFoundException("User not found");
-        }
+        Optional<HostEntity> hostEntityOptional = hostRepo.findById(id);
+        if(hostEntityOptional.isPresent()) return Host.toModel(hostEntityOptional.get());
+        else throw new HostNotFoundException("Host not found");
     }
 
     public Host create (HostEntity host) throws HostAlreadyExistException {
