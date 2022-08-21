@@ -14,16 +14,16 @@ CREATE TABLE user (
 
 CREATE TABLE host (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    ipadress varchar(15) not null unique,
-    serverPublicKey varchar(255) not null,
+    ipadress varchar(21) not null unique,
+    server_public_key varchar(255) not null,
     PRIMARY KEY (id)
 ) engine=MyISAM;
 
 CREATE TABLE peer (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    peerIp varchar(15) not null,
-    peerPrivateKey varchar(255) not null,
-    peerPublicKey varchar(255) not null,
-    peerConfName varchar(255) not null,
+    peer_ip varchar(21) not null,
+    peer_private_key varchar(255) not null,
+    peer_public_key varchar(255) not null,
+    peer_conf_name varchar(255) not null,
     PRIMARY KEY (id)
 ) engine=MyISAM;
