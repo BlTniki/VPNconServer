@@ -1,6 +1,7 @@
 package com.bitniki.VPNconServer.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table (name = "user")
@@ -10,6 +11,9 @@ public class UserEntity {
     private Long id;
     private String login;
     private String password;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<PeerEntity> peerEntities;
+
 
 
     public static UserEntity updateEntity(UserEntity oldUser, UserEntity newUser) {
@@ -44,5 +48,13 @@ public class UserEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<PeerEntity> getPeers() {
+        return peerEntities;
+    }
+
+    public void setPeers(List<PeerEntity> peerEntities) {
+        this.peerEntities = peerEntities;
     }
 }

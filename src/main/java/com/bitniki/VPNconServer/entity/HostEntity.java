@@ -1,8 +1,7 @@
 package com.bitniki.VPNconServer.entity;
 
-import com.bitniki.VPNconServer.exception.HostAlreadyExistException;
-
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table (name = "host")
@@ -12,6 +11,9 @@ public class HostEntity {
     private Long id;
     private String ipadress;
     private String serverPublicKey;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "host")
+    private List<PeerEntity> peerEntities;
 
     /*
      this static method update existing host fields if some of new host field is not null
@@ -48,5 +50,13 @@ public class HostEntity {
 
     public void setServerPublicKey(String serverPublicKey) {
         this.serverPublicKey = serverPublicKey;
+    }
+
+    public List<PeerEntity> getPeers() {
+        return peerEntities;
+    }
+
+    public void setPeers(List<PeerEntity> peerEntities) {
+        this.peerEntities = peerEntities;
     }
 }
