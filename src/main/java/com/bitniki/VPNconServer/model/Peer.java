@@ -8,8 +8,6 @@ public class Peer {
     private String peerPrivateKey;
     private String peerPublicKey;
     private String peerConfName;
-    private UserPeer userPeer;
-    private HostPeer hostPeer;
 
     public static Peer toModel(PeerEntity entity) {
         Peer model = new Peer();
@@ -18,8 +16,6 @@ public class Peer {
         model.setPeerPrivateKey(entity.getPeerPrivateKey());
         model.setPeerPublicKey(entity.getPeerPublicKey());
         model.setPeerConfName(entity.getPeerConfName());
-        model.setUserPeer(UserPeer.toModel(entity.getUser()));
-        model.setHostPeer(HostPeer.toModel(entity.getHost()));
 
         return model;
     }
@@ -67,19 +63,4 @@ public class Peer {
         this.peerConfName = peerConfName;
     }
 
-    public UserPeer getUserPeer() {
-        return userPeer;
-    }
-
-    public void setUserPeer(UserPeer userPeer) {
-        this.userPeer = userPeer;
-    }
-
-    public HostPeer getHostPeer() {
-        return hostPeer;
-    }
-
-    public void setHostPeer(HostPeer hostPeer) {
-        this.hostPeer = hostPeer;
-    }
 }

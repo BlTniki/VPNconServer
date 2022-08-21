@@ -6,6 +6,7 @@ import com.bitniki.VPNconServer.entity.UserEntity;
 import com.bitniki.VPNconServer.exception.HostNotFoundException;
 import com.bitniki.VPNconServer.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.model.Peer;
+import com.bitniki.VPNconServer.model.PeerWithAllRelations;
 import com.bitniki.VPNconServer.repository.HostRepo;
 import com.bitniki.VPNconServer.repository.PeerRepo;
 import com.bitniki.VPNconServer.repository.UserRepo;
@@ -26,13 +27,13 @@ public class PeerService {
     @Autowired
     private HostRepo hostRepo;
 
-    public List<Peer> getAll() {
+    public List<PeerWithAllRelations> getAll() {
         List<PeerEntity> peerEntities = new ArrayList<>();
         peerRepo.findAll().forEach(peerEntities::add);
-        return peerEntities.stream().map(Peer::toModel).collect(Collectors.toList());
+        return peerEntities.stream().map(PeerWithAllRelations::toModel).collect(Collectors.toList());
     }
 
-    public Peer create(Long user_id, Long host_id, PeerEntity peerEntity) throws UserNotFoundException, HostNotFoundException {
+    public PeerWithAllRelations create(Long user_id, Long host_id, PeerEntity peerEntity) throws UserNotFoundException, HostNotFoundException {
         Optional<UserEntity> userEntityOptional;
         UserEntity user;
         userEntityOptional = userRepo.findById(user_id);
@@ -47,6 +48,6 @@ public class PeerService {
 
         peerEntity.setUser(user);
         peerEntity.setHost(host);
-        return Peer.toModel(peerRepo.save(peerEntity));
+        return PeerWithAllRelations.toModel(peerRepo.save(peerEntity));
     }
 }

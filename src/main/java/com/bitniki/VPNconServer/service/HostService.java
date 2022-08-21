@@ -4,6 +4,7 @@ import com.bitniki.VPNconServer.entity.HostEntity;
 import com.bitniki.VPNconServer.exception.HostAlreadyExistException;
 import com.bitniki.VPNconServer.exception.HostNotFoundException;
 import com.bitniki.VPNconServer.model.Host;
+import com.bitniki.VPNconServer.model.HostWithRelations;
 import com.bitniki.VPNconServer.repository.HostRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,15 +19,15 @@ public class HostService {
     @Autowired
     private HostRepo hostRepo;
 
-    public List<Host> getAll () {
+    public List<HostWithRelations> getAll () {
         List<HostEntity> hosts = new ArrayList<>();
         hostRepo.findAll().forEach(hosts::add);
-        return hosts.stream().map(Host::toModel).collect(Collectors.toList());
+        return hosts.stream().map(HostWithRelations::toModel).collect(Collectors.toList());
     }
 
-    public Host getOne (Long id) throws HostNotFoundException {
+    public HostWithRelations getOne (Long id) throws HostNotFoundException {
         Optional<HostEntity> hostEntityOptional = hostRepo.findById(id);
-        if(hostEntityOptional.isPresent()) return Host.toModel(hostEntityOptional.get());
+        if(hostEntityOptional.isPresent()) return HostWithRelations.toModel(hostEntityOptional.get());
         else throw new HostNotFoundException("Host not found");
     }
 

@@ -1,23 +1,17 @@
 package com.bitniki.VPNconServer.model;
 
 import com.bitniki.VPNconServer.entity.HostEntity;
-import com.bitniki.VPNconServer.entity.PeerEntity;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Host {
     private Long id;
     private String ipadress;
     private String serverPublicKey;
-    private List<Peer> peers;
 
     public static Host toModel (HostEntity entity) {
         Host model = new Host();
         model.setId(entity.getId());
         model.setIpadress(entity.getIpadress());
         model.setServerPublicKey(entity.getServerPublicKey());
-        model.setPeers(entity.getPeers());
 
         return model;
     }
@@ -47,13 +41,5 @@ public class Host {
 
     public void setServerPublicKey(String serverPublicKey) {
         this.serverPublicKey = serverPublicKey;
-    }
-
-    public List<Peer> getPeers() {
-        return peers;
-    }
-
-    public void setPeers(List<PeerEntity> peers) {
-        this.peers = peers.stream().map(Peer::toModel).collect(Collectors.toList());
     }
 }
