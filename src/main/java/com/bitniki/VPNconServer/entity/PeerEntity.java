@@ -8,6 +8,7 @@ public class PeerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String peerIp;
     private String peerPrivateKey;
     private String peerPublicKey;
     private String peerConfName;
@@ -27,6 +28,14 @@ public class PeerEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getPeerIp() {
+        return peerIp;
+    }
+
+    public void setPeerIp(String peerIp) {
+        this.peerIp = peerIp;
     }
 
     public String getPeerPrivateKey() {
