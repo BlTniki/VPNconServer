@@ -35,7 +35,7 @@ public class UserService {
         if(userRepo.findByLogin(user.getLogin()) != null) {
             throw new UserAlreadyExistException("That login already taken!");
         }
-        return UserWithRelations.toModel(userRepo.save(user));
+        return User.toModel(userRepo.save(user));
     }
 
     public User update (Long id, UserEntity newUser) throws UserAlreadyExistException, UserNotFoundException {
