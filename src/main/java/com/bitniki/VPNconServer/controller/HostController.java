@@ -1,8 +1,8 @@
 package com.bitniki.VPNconServer.controller;
 
 import com.bitniki.VPNconServer.entity.HostEntity;
-import com.bitniki.VPNconServer.exception.HostAlreadyExistException;
-import com.bitniki.VPNconServer.exception.HostNotFoundException;
+import com.bitniki.VPNconServer.exception.alreadyExistException.HostAlreadyExistException;
+import com.bitniki.VPNconServer.exception.notFoundException.HostNotFoundException;
 import com.bitniki.VPNconServer.service.HostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

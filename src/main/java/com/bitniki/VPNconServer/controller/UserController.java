@@ -1,8 +1,8 @@
 package com.bitniki.VPNconServer.controller;
 
 import com.bitniki.VPNconServer.entity.UserEntity;
-import com.bitniki.VPNconServer.exception.UserAlreadyExistException;
-import com.bitniki.VPNconServer.exception.UserNotFoundException;
+import com.bitniki.VPNconServer.exception.alreadyExistException.UserAlreadyExistException;
+import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
 import com.bitniki.VPNconServer.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

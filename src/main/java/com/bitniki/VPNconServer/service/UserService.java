@@ -1,8 +1,8 @@
 package com.bitniki.VPNconServer.service;
 
 import com.bitniki.VPNconServer.entity.UserEntity;
-import com.bitniki.VPNconServer.exception.UserAlreadyExistException;
-import com.bitniki.VPNconServer.exception.UserNotFoundException;
+import com.bitniki.VPNconServer.exception.alreadyExistException.UserAlreadyExistException;
+import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
 import com.bitniki.VPNconServer.model.User;
 import com.bitniki.VPNconServer.model.UserWithRelations;
 import com.bitniki.VPNconServer.repository.UserRepo;

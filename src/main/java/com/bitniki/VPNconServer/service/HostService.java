@@ -1,8 +1,8 @@
 package com.bitniki.VPNconServer.service;
 
 import com.bitniki.VPNconServer.entity.HostEntity;
-import com.bitniki.VPNconServer.exception.HostAlreadyExistException;
-import com.bitniki.VPNconServer.exception.HostNotFoundException;
+import com.bitniki.VPNconServer.exception.alreadyExistException.HostAlreadyExistException;
+import com.bitniki.VPNconServer.exception.notFoundException.HostNotFoundException;
 import com.bitniki.VPNconServer.model.Host;
 import com.bitniki.VPNconServer.model.HostWithRelations;
 import com.bitniki.VPNconServer.repository.HostRepo;
