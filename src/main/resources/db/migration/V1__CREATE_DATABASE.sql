@@ -15,6 +15,7 @@ CREATE TABLE user (
 CREATE TABLE host (
     id BIGINT NOT NULL AUTO_INCREMENT,
     ipadress varchar(21) not null unique,
+    server_password varchar(255) not null,
     server_public_key varchar(255) not null,
     PRIMARY KEY (id)
 ) engine=MyISAM;

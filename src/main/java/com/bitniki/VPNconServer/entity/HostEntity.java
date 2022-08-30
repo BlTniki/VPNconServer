@@ -10,6 +10,7 @@ public class HostEntity {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
     private String ipadress;
+    private String serverPassword;
     private String serverPublicKey;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "host")
@@ -42,6 +43,14 @@ public class HostEntity {
 
     public void setIpadress(String ipadress) {
         this.ipadress = ipadress;
+    }
+
+    public String getServerPassword() {
+        return serverPassword;
+    }
+
+    public void setServerPassword(String serverPassword) {
+        this.serverPassword = serverPassword;
     }
 
     public String getServerPublicKey() {
