@@ -46,4 +46,9 @@ public class PeerController {
             throws PeerNotFoundException, PeerAlreadyExistException {
         return ResponseEntity.ok(peerService.update(id, peer));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<PeerWithAllRelations> deletePeer(@PathVariable Long id) throws PeerNotFoundException {
+        return ResponseEntity.ok(peerService.delete(id));
+    }
 }

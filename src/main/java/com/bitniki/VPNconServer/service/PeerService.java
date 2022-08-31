@@ -97,4 +97,19 @@ public class PeerService {
 
         return PeerWithAllRelations.toModel(peerRepo.save(oldPeer));
     }
+
+    public PeerWithAllRelations delete(Long id) throws PeerNotFoundException {
+        Optional<PeerEntity> peerEntityOptional;
+        peerEntityOptional = peerRepo.findById(id);
+        PeerEntity peer;
+        if(peerEntityOptional.isPresent()) peer = peerEntityOptional.get();
+        else throw new PeerNotFoundException("Peer not found");
+
+        //deleting peer on host
+        PeerConnectHandler peerConnectHandler = new PeerConnectHandler(peer);
+        peerConnectHandler.deletePeerOnHost();
+        peerRepo.delete(peer);
+        return PeerWithAllRelations.toModel(peer);
+
+    }
 }
