@@ -13,6 +13,7 @@ import com.bitniki.VPNconServer.repository.HostRepo;
 import com.bitniki.VPNconServer.repository.PeerRepo;
 import com.bitniki.VPNconServer.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -68,5 +69,32 @@ public class PeerService {
         peerConnectHandler.createPeerOnHostAndFillEntity();
 
         return PeerWithAllRelations.toModel(peerRepo.save(peerEntity));
+    }
+
+    public PeerWithAllRelations update(Long id, PeerEntity newPeer)
+            throws PeerNotFoundException, PeerAlreadyExistException {
+        //find old peer
+        Optional<PeerEntity> peerEntityOptional;
+        peerEntityOptional = peerRepo.findById(id);
+        PeerEntity oldPeer;
+        if(peerEntityOptional.isPresent()) oldPeer = peerEntityOptional.get();
+        else throw new PeerNotFoundException("Peer not found");
+
+        //check the uniqueness of the confName for a specific host and user
+        //this is placeholder because we cant properly update confName on host
+        if(newPeer.getPeerConfName() != null && peerRepo.findByUserAndHostAndPeerConfName(
+                oldPeer.getUser(), oldPeer.getHost(), newPeer.getPeerConfName()) != null) {
+            throw new PeerAlreadyExistException("Peer already exist");
+        }
+        //if we have new peer ip – update
+        if(newPeer.getPeerIp() != null) {
+            oldPeer.setPeerIp(newPeer.getPeerIp());
+        }
+
+        //update peer on host
+        PeerConnectHandler peerConnectHandler = new PeerConnectHandler(oldPeer);
+        peerConnectHandler.updatePeerOnHost();
+
+        return PeerWithAllRelations.toModel(peerRepo.save(oldPeer));
     }
 }

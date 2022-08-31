@@ -35,6 +35,19 @@ public class PeerConnectHandler {
         Objects.requireNonNull(response.getBody()).fillEntityFromModel(peer);
     }
 
+    public void updatePeerOnHost() {
+        final String uri = this.hostIpAdress + "/peers";
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<PeerForRequest> response;
+        try {
+            response = restTemplate.exchange(uri, HttpMethod.PUT, this.httpEntity, PeerForRequest.class);
+        } catch (Exception e) {
+            // somewhere there should be logging
+            System.out.println(e.getMessage());//400 BAD REQUEST: "Service answers like: This peerId has already taken"
+            throw e;
+        }
+        Objects.requireNonNull(response.getBody()).fillEntityFromModel(peer);
+    }
 
 
 //    public void getAllTest() {

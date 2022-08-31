@@ -28,13 +28,22 @@ public class PeerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PeerWithAllRelations> getOnePeer(@PathVariable Long id) throws PeerNotFoundException {
+    public ResponseEntity<PeerWithAllRelations> getOnePeer(@PathVariable Long id)
+            throws PeerNotFoundException {
         return ResponseEntity.ok(peerService.getOne(id));
     }
 
     @PostMapping
-    public ResponseEntity<PeerWithAllRelations> createPeer(@RequestParam Long user_id, @RequestParam Long host_id, @RequestBody PeerEntity peerEntity)
+    public ResponseEntity<PeerWithAllRelations> createPeer(@RequestParam Long user_id,
+                                                           @RequestParam Long host_id,
+                                                           @RequestBody PeerEntity peerEntity)
             throws UserNotFoundException, HostNotFoundException, PeerAlreadyExistException {
         return ResponseEntity.ok(peerService.create(user_id, host_id, peerEntity));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PeerWithAllRelations> updatePeer(@PathVariable Long id, @RequestBody PeerEntity peer)
+            throws PeerNotFoundException, PeerAlreadyExistException {
+        return ResponseEntity.ok(peerService.update(id, peer));
     }
 }
