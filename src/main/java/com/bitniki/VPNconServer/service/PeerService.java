@@ -47,7 +47,8 @@ public class PeerService {
         if(hostEntityOptional.isPresent()) host = hostEntityOptional.get();
         else throw new HostNotFoundException("Host not found");
 
-        if(peerRepo.findByUserAndPeerConfName(user, peerEntity.getPeerConfName()) != null) {
+        //check the uniqueness of the confName for a specific host and user
+        if(peerRepo.findByUserAndHostAndPeerConfName(user, host, peerEntity.getPeerConfName()) != null) {
             throw new PeerAlreadyExistException("Peer already exist");
         }
         peerEntity.setUser(user);
