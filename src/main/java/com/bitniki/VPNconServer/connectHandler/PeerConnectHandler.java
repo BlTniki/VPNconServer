@@ -14,7 +14,7 @@ import java.util.Objects;
 
 // this class serve for hand communication with host
 public class PeerConnectHandler {
-    final String apiVersion = "1.0";
+    final String apiVersion = "1.0"; // sets api version on host
     private HostEntity host;
     private UserEntity user;
     private PeerEntity peer;
@@ -104,6 +104,7 @@ public class PeerConnectHandler {
 
     private HttpEntity<PeerForRequest> makeHttpEntity() {
         //making HttpEntity for requests
+        //set auth header and body for request
         HttpHeaders headers = new HttpHeaders();
         headers.set("Auth", host.getServerPassword());
         return new HttpEntity<>(PeerForRequest.toModel(this.getPeer()), headers);

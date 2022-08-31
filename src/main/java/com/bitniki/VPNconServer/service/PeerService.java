@@ -35,12 +35,14 @@ public class PeerService {
     }
 
     public PeerWithAllRelations create(Long user_id, Long host_id, PeerEntity peerEntity) throws UserNotFoundException, HostNotFoundException, PeerAlreadyExistException {
+        //find user entity
         Optional<UserEntity> userEntityOptional;
         UserEntity user;
         userEntityOptional = userRepo.findById(user_id);
         if(userEntityOptional.isPresent()) user = userEntityOptional.get();
         else throw new UserNotFoundException("User not found");
 
+        //find host entity
         Optional<HostEntity> hostEntityOptional;
         HostEntity host;
         hostEntityOptional = hostRepo.findById(host_id);
@@ -53,6 +55,7 @@ public class PeerService {
         }
         peerEntity.setUser(user);
         peerEntity.setHost(host);
+        //create peer on host and complete peer entity
         PeerConnectHandler peerConnectHandler = new PeerConnectHandler(peerEntity);
         peerConnectHandler.createPeerOnHostAndFillEntity();
 
