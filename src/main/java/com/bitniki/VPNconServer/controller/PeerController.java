@@ -2,11 +2,18 @@ package com.bitniki.VPNconServer.controller;
 
 import com.bitniki.VPNconServer.entity.PeerEntity;
 import com.bitniki.VPNconServer.exception.alreadyExistException.EntityAlreadyExistException;
+import com.bitniki.VPNconServer.exception.alreadyExistException.PeerAlreadyExistException;
 import com.bitniki.VPNconServer.exception.notFoundException.EntityNotFoundException;
+import com.bitniki.VPNconServer.exception.notFoundException.HostNotFoundException;
+import com.bitniki.VPNconServer.exception.notFoundException.PeerNotFoundException;
+import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
+import com.bitniki.VPNconServer.model.PeerWithAllRelations;
 import com.bitniki.VPNconServer.service.PeerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/peers")
@@ -14,25 +21,20 @@ public class PeerController {
     @Autowired
     private PeerService peerService;
 
-    @SuppressWarnings("rawtypes")
+
     @GetMapping
-    public ResponseEntity getAllPeers() {
-        try {
-            return ResponseEntity.ok(peerService.getAll());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("error");
-        }
+    public ResponseEntity<List<PeerWithAllRelations>> getAllPeers() {
+        return ResponseEntity.ok(peerService.getAll());
     }
 
-    @SuppressWarnings("rawtypes")
+    @GetMapping("/{id}")
+    public ResponseEntity<PeerWithAllRelations> getOnePeer(@PathVariable Long id) throws PeerNotFoundException {
+        return ResponseEntity.ok(peerService.getOne(id));
+    }
+
     @PostMapping
-    public ResponseEntity createPeer(@RequestParam Long user_id, @RequestParam Long host_id, @RequestBody PeerEntity peerEntity) {
-        try {
-            return ResponseEntity.ok(peerService.create(user_id, host_id, peerEntity));
-        } catch (EntityNotFoundException | EntityAlreadyExistException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("error");
-        }
+    public ResponseEntity<PeerWithAllRelations> createPeer(@RequestParam Long user_id, @RequestParam Long host_id, @RequestBody PeerEntity peerEntity)
+            throws UserNotFoundException, HostNotFoundException, PeerAlreadyExistException {
+        return ResponseEntity.ok(peerService.create(user_id, host_id, peerEntity));
     }
 }

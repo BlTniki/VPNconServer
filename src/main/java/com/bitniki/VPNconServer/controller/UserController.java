@@ -3,10 +3,14 @@ package com.bitniki.VPNconServer.controller;
 import com.bitniki.VPNconServer.entity.UserEntity;
 import com.bitniki.VPNconServer.exception.alreadyExistException.UserAlreadyExistException;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
+import com.bitniki.VPNconServer.model.User;
+import com.bitniki.VPNconServer.model.UserWithRelations;
 import com.bitniki.VPNconServer.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -14,61 +18,32 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @SuppressWarnings("rawtypes")
     @GetMapping
-    public ResponseEntity getAllUsers() {
-        try {
+    public ResponseEntity<List<UserWithRelations>> getAllUsers() {
             return ResponseEntity.ok(userService.getAll());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("error");
-        }
     }
 
-    @SuppressWarnings("rawtypes")
     @GetMapping("/{id}")
-    public ResponseEntity getUser(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(userService.getOne(id));
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("error");
-        }
+    public ResponseEntity<UserWithRelations> getUser(@PathVariable Long id)
+            throws UserNotFoundException {
+        return ResponseEntity.ok(userService.getOne(id));
     }
 
-    @SuppressWarnings("rawtypes")
     @PostMapping
-    public ResponseEntity createUser (@RequestBody UserEntity user) {
-        try {
-            return ResponseEntity.ok(userService.create(user));
-        } catch (UserAlreadyExistException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("error");
-        }
+    public ResponseEntity<User> createUser (@RequestBody UserEntity user)
+            throws UserAlreadyExistException {
+        return ResponseEntity.ok(userService.create(user));
     }
 
-    @SuppressWarnings("rawtypes")
     @PutMapping("/{id}")
-    public ResponseEntity updateUser(@PathVariable Long id, @RequestBody UserEntity user) {
-        try {
-            return ResponseEntity.ok(userService.update(id, user));
-        } catch (UserNotFoundException | UserAlreadyExistException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }  catch (Exception e) {
-            return ResponseEntity.badRequest().body("error");
-        }
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserEntity user)
+            throws UserNotFoundException, UserAlreadyExistException {
+        return ResponseEntity.ok(userService.update(id, user));
     }
 
-    @SuppressWarnings("rawtypes")
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteUser(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(userService.delete(id));
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("error");
-        }
+    public ResponseEntity<User> deleteUser(@PathVariable Long id)
+            throws UserNotFoundException {
+        return ResponseEntity.ok(userService.delete(id));
     }
 }
