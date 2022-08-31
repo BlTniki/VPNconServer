@@ -6,6 +6,7 @@ import com.bitniki.VPNconServer.entity.PeerEntity;
 import com.bitniki.VPNconServer.entity.UserEntity;
 import com.bitniki.VPNconServer.exception.notFoundException.HostNotFoundException;
 import com.bitniki.VPNconServer.exception.alreadyExistException.PeerAlreadyExistException;
+import com.bitniki.VPNconServer.exception.notFoundException.PeerNotFoundException;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
 import com.bitniki.VPNconServer.model.PeerWithAllRelations;
 import com.bitniki.VPNconServer.repository.HostRepo;
@@ -32,6 +33,13 @@ public class PeerService {
         List<PeerEntity> peerEntities = new ArrayList<>();
         peerRepo.findAll().forEach(peerEntities::add);
         return peerEntities.stream().map(PeerWithAllRelations::toModel).collect(Collectors.toList());
+    }
+
+    public PeerWithAllRelations getOne(Long id) throws PeerNotFoundException {
+        Optional<PeerEntity> peerEntityOptional;
+        peerEntityOptional = peerRepo.findById(id);
+        if(peerEntityOptional.isPresent()) return PeerWithAllRelations.toModel(peerEntityOptional.get());
+        else throw new PeerNotFoundException("Peer not found");
     }
 
     public PeerWithAllRelations create(Long user_id, Long host_id, PeerEntity peerEntity) throws UserNotFoundException, HostNotFoundException, PeerAlreadyExistException {
