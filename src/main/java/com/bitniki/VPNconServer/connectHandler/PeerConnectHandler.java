@@ -62,31 +62,6 @@ public class PeerConnectHandler {
         }
     }
 
-
-//    public void getAllTest() {
-//        final String uri = this.hostIpAdress + "/peers";
-//        try {
-//            RestTemplate restTemplate = new RestTemplate();
-//            ResponseEntity<PeerForRequest[]> result = restTemplate.exchange(uri, HttpMethod.GET, this.httpEntity, PeerForRequest[].class);
-//            System.out.println(result);
-//        } catch (Exception e) {
-//
-//            System.out.println(e.getMessage());
-//        }
-//    }
-//
-//    public void getOneTest() {
-//        final String uri = this.hostIpAdress + "/peers/goodtest_21";
-//        try {
-//            RestTemplate restTemplate = new RestTemplate();
-//            ResponseEntity<PeerForRequest> result = restTemplate.exchange(uri, HttpMethod.GET, this.httpEntity, PeerForRequest.class);
-//            System.out.println(result);
-//        } catch (Exception e) {
-//
-//            System.out.println(e.getMessage());
-//        }
-//    }
-
     public PeerConnectHandler(PeerEntity peer) {
         this.setPeer(peer);
         this.setHost(this.peer.getHost());
