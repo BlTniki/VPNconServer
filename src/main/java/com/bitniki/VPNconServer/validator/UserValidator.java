@@ -18,11 +18,13 @@ public class UserValidator extends Validator{
         return userValidator;
     }
 
-    public static void validateNonNullFields(UserEntity user) {
+    public static UserValidator validateNonNullFields(UserEntity user) {
         UserValidator userValidator = new UserValidator();
 
         //if field not null – do match, else – do none
-        if(user.getLogin() == null && !userValidator.loginPattern.matcher(user.getLogin()).matches()) userValidator.addFail("Wrong login");
-        if(user.getPassword() == null && !userValidator.passwordPattern.matcher(user.getPassword()).matches()) userValidator.addFail("Wrong password");
+        if(user.getLogin() != null && !userValidator.loginPattern.matcher(user.getLogin()).matches()) userValidator.addFail("Wrong login");
+        if(user.getPassword() != null && !userValidator.passwordPattern.matcher(user.getPassword()).matches()) userValidator.addFail("Wrong password");
+
+        return userValidator;
     }
 }
