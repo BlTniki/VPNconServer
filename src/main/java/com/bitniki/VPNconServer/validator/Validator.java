@@ -2,6 +2,12 @@ package com.bitniki.VPNconServer.validator;
 
 import java.util.List;
 
+/*
+* uses for validations
+* the succeeding class should create validate method
+* which fill fails list and calling code should check hasFails()
+* */
+
 public class Validator {
     private List<String> fails;
 
