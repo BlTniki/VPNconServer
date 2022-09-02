@@ -4,7 +4,7 @@ import java.util.List;
 
 /*
 * uses for validations
-* the succeeding class should create validate method
+* the succeeding class should create static validate method
 * which fill fails list and calling code should check hasFails()
 * */
 
