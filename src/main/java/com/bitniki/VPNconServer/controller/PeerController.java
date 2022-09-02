@@ -7,6 +7,7 @@ import com.bitniki.VPNconServer.exception.notFoundException.EntityNotFoundExcept
 import com.bitniki.VPNconServer.exception.notFoundException.HostNotFoundException;
 import com.bitniki.VPNconServer.exception.notFoundException.PeerNotFoundException;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
+import com.bitniki.VPNconServer.exception.validationFailedException.PeerValidationFailedException;
 import com.bitniki.VPNconServer.model.PeerWithAllRelations;
 import com.bitniki.VPNconServer.service.PeerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +38,13 @@ public class PeerController {
     public ResponseEntity<PeerWithAllRelations> createPeer(@RequestParam Long user_id,
                                                            @RequestParam Long host_id,
                                                            @RequestBody PeerEntity peerEntity)
-            throws UserNotFoundException, HostNotFoundException, PeerAlreadyExistException {
+            throws UserNotFoundException, HostNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
         return ResponseEntity.ok(peerService.create(user_id, host_id, peerEntity));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PeerWithAllRelations> updatePeer(@PathVariable Long id, @RequestBody PeerEntity peer)
-            throws PeerNotFoundException, PeerAlreadyExistException {
+            throws PeerNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
         return ResponseEntity.ok(peerService.update(id, peer));
     }
 

@@ -8,10 +8,12 @@ import com.bitniki.VPNconServer.exception.notFoundException.HostNotFoundExceptio
 import com.bitniki.VPNconServer.exception.alreadyExistException.PeerAlreadyExistException;
 import com.bitniki.VPNconServer.exception.notFoundException.PeerNotFoundException;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
+import com.bitniki.VPNconServer.exception.validationFailedException.PeerValidationFailedException;
 import com.bitniki.VPNconServer.model.PeerWithAllRelations;
 import com.bitniki.VPNconServer.repository.HostRepo;
 import com.bitniki.VPNconServer.repository.PeerRepo;
 import com.bitniki.VPNconServer.repository.UserRepo;
+import com.bitniki.VPNconServer.validator.PeerValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -43,7 +45,12 @@ public class PeerService {
         else throw new PeerNotFoundException("Peer not found");
     }
 
-    public PeerWithAllRelations create(Long user_id, Long host_id, PeerEntity peerEntity) throws UserNotFoundException, HostNotFoundException, PeerAlreadyExistException {
+    public PeerWithAllRelations create(Long user_id, Long host_id, PeerEntity peerEntity) throws UserNotFoundException, HostNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
+        PeerValidator peerValidator = PeerValidator.validateAllFields(peerEntity);
+        if(peerValidator.hasFails()) {
+            throw new PeerValidationFailedException(peerValidator.toString());
+        }
+
         //find user entity
         Optional<UserEntity> userEntityOptional;
         UserEntity user;
@@ -72,7 +79,12 @@ public class PeerService {
     }
 
     public PeerWithAllRelations update(Long id, PeerEntity newPeer)
-            throws PeerNotFoundException, PeerAlreadyExistException {
+            throws PeerNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
+        PeerValidator peerValidator = PeerValidator.validateNonNullFields(newPeer);
+        if(peerValidator.hasFails()) {
+            throw new PeerValidationFailedException(peerValidator.toString());
+        }
+
         //find old peer
         Optional<PeerEntity> peerEntityOptional;
         peerEntityOptional = peerRepo.findById(id);
