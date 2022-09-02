@@ -3,6 +3,7 @@ package com.bitniki.VPNconServer.controller;
 import com.bitniki.VPNconServer.entity.UserEntity;
 import com.bitniki.VPNconServer.exception.alreadyExistException.UserAlreadyExistException;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
+import com.bitniki.VPNconServer.exception.validationFailedException.UserValidationFailedException;
 import com.bitniki.VPNconServer.model.User;
 import com.bitniki.VPNconServer.model.UserWithRelations;
 import com.bitniki.VPNconServer.service.UserService;
@@ -31,13 +32,13 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> createUser (@RequestBody UserEntity user)
-            throws UserAlreadyExistException {
+            throws UserAlreadyExistException, UserValidationFailedException {
         return ResponseEntity.ok(userService.create(user));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserEntity user)
-            throws UserNotFoundException, UserAlreadyExistException {
+            throws UserNotFoundException, UserAlreadyExistException, UserValidationFailedException {
         return ResponseEntity.ok(userService.update(id, user));
     }
 

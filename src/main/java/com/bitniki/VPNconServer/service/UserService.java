@@ -3,9 +3,11 @@ package com.bitniki.VPNconServer.service;
 import com.bitniki.VPNconServer.entity.UserEntity;
 import com.bitniki.VPNconServer.exception.alreadyExistException.UserAlreadyExistException;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
+import com.bitniki.VPNconServer.exception.validationFailedException.UserValidationFailedException;
 import com.bitniki.VPNconServer.model.User;
 import com.bitniki.VPNconServer.model.UserWithRelations;
 import com.bitniki.VPNconServer.repository.UserRepo;
+import com.bitniki.VPNconServer.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,14 +33,24 @@ public class UserService {
         else throw new UserNotFoundException("User not found");
     }
 
-    public User create (UserEntity user) throws UserAlreadyExistException {
+    public User create (UserEntity user) throws UserAlreadyExistException, UserValidationFailedException {
+        UserValidator userValidator = UserValidator.validateAllFields(user);
+        if(userValidator.hasFails()){
+            throw new UserValidationFailedException(userValidator.toString());
+        }
+
         if(userRepo.findByLogin(user.getLogin()) != null) {
             throw new UserAlreadyExistException("That login already taken!");
         }
         return User.toModel(userRepo.save(user));
     }
 
-    public User update (Long id, UserEntity newUser) throws UserAlreadyExistException, UserNotFoundException {
+    public User update (Long id, UserEntity newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
+        UserValidator userValidator = UserValidator.validateNonNullFields(newUser);
+        if(userValidator.hasFails()){
+            throw new UserValidationFailedException(userValidator.toString());
+        }
+
         //if we have new login check its unique
         if (newUser.getLogin() != null && userRepo.findByLogin(newUser.getLogin()) != null) {
             throw new UserAlreadyExistException("User with that login already exist!");

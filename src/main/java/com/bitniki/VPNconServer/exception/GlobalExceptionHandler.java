@@ -2,6 +2,7 @@ package com.bitniki.VPNconServer.exception;
 
 import com.bitniki.VPNconServer.exception.alreadyExistException.EntityAlreadyExistException;
 import com.bitniki.VPNconServer.exception.notFoundException.EntityNotFoundException;
+import com.bitniki.VPNconServer.exception.validationFailedException.EntityValidationFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,6 +25,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> catchEntityNotFoundException (EntityNotFoundException e) {
         //somewhere there should be logging
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        //return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> catchEntityValidationFailedException (EntityValidationFailedException e) {
+        //somewhere there should be logging
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }
