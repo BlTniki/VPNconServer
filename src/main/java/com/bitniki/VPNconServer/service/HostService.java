@@ -3,9 +3,11 @@ package com.bitniki.VPNconServer.service;
 import com.bitniki.VPNconServer.entity.HostEntity;
 import com.bitniki.VPNconServer.exception.alreadyExistException.HostAlreadyExistException;
 import com.bitniki.VPNconServer.exception.notFoundException.HostNotFoundException;
+import com.bitniki.VPNconServer.exception.validationFailedException.HostValidationFailedException;
 import com.bitniki.VPNconServer.model.Host;
 import com.bitniki.VPNconServer.model.HostWithRelations;
 import com.bitniki.VPNconServer.repository.HostRepo;
+import com.bitniki.VPNconServer.validator.HostValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,14 +33,24 @@ public class HostService {
         else throw new HostNotFoundException("Host not found");
     }
 
-    public Host create (HostEntity host) throws HostAlreadyExistException {
+    public Host create (HostEntity host) throws HostAlreadyExistException, HostValidationFailedException {
+        HostValidator hostValidator = HostValidator.validateAllFields(host);
+        if(hostValidator.hasFails()) {
+            throw new HostValidationFailedException(hostValidator.toString());
+        }
+
         if(hostRepo.findByIpadress(host.getIpadress()) != null) {
             throw new HostAlreadyExistException("Host with that ip already exist!");
         }
         return Host.toModel(hostRepo.save(host));
     }
 
-    public Host update (Long id, HostEntity newHost) throws HostNotFoundException, HostAlreadyExistException {
+    public Host update (Long id, HostEntity newHost) throws HostNotFoundException, HostAlreadyExistException, HostValidationFailedException {
+        HostValidator hostValidator = HostValidator.validateNonNullFields(newHost);
+        if(hostValidator.hasFails()) {
+            throw new HostValidationFailedException(hostValidator.toString());
+        }
+
         //if we have new ipadress check its unique
         if (newHost.getIpadress() != null && hostRepo.findByIpadress(newHost.getIpadress()) != null) {
             throw new HostAlreadyExistException("Host with that ip already exist!");

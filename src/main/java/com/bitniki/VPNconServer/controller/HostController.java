@@ -3,6 +3,7 @@ package com.bitniki.VPNconServer.controller;
 import com.bitniki.VPNconServer.entity.HostEntity;
 import com.bitniki.VPNconServer.exception.alreadyExistException.HostAlreadyExistException;
 import com.bitniki.VPNconServer.exception.notFoundException.HostNotFoundException;
+import com.bitniki.VPNconServer.exception.validationFailedException.HostValidationFailedException;
 import com.bitniki.VPNconServer.model.Host;
 import com.bitniki.VPNconServer.model.HostWithRelations;
 import com.bitniki.VPNconServer.service.HostService;
@@ -30,13 +31,13 @@ public class HostController {
     }
     @PostMapping
     public ResponseEntity<Host> createHost(@RequestBody HostEntity host)
-            throws HostAlreadyExistException {
+            throws HostAlreadyExistException, HostValidationFailedException {
         return ResponseEntity.ok(hostService.create(host));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Host> updateHost (@PathVariable Long id, @RequestBody HostEntity host)
-            throws HostNotFoundException, HostAlreadyExistException {
+            throws HostNotFoundException, HostAlreadyExistException, HostValidationFailedException {
         return ResponseEntity.ok(hostService.update(id, host));
     }
 
