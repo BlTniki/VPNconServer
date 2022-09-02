@@ -5,7 +5,7 @@ import java.util.List;
 public class Validator {
     private List<String> fails;
 
-    private void addFail(String message) {
+    protected void addFail(String message) {
         fails.add(message);
     }
 
