@@ -12,8 +12,8 @@ public class UserValidator extends Validator{
         UserValidator userValidator = new UserValidator();
 
         //if field null – addFail, else do match
-        if(user.getLogin() == null || !userValidator.loginPattern.matcher(user.getLogin()).matches()) userValidator.addFail("wrong login");
-        if(user.getPassword() == null || !userValidator.passwordPattern.matcher(user.getPassword()).matches()) userValidator.addFail("wrong password");
+        if(user.getLogin() == null || !userValidator.loginPattern.matcher(user.getLogin()).matches()) userValidator.addFail("Wrong login");
+        if(user.getPassword() == null || !userValidator.passwordPattern.matcher(user.getPassword()).matches()) userValidator.addFail("Wrong password");
 
         return userValidator;
     }
