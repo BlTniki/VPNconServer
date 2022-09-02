@@ -1,5 +1,6 @@
 package com.bitniki.VPNconServer.validator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -9,7 +10,7 @@ import java.util.List;
 * */
 
 public class Validator {
-    private List<String> fails;
+    private final List<String> fails;
 
     protected void addFail(String message) {
         fails.add(message);
@@ -22,5 +23,9 @@ public class Validator {
     @Override
     public String toString() {
         return String.join("\n", fails);
+    }
+
+    public Validator() {
+        this.fails = new ArrayList<>();
     }
 }
