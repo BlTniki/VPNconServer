@@ -81,4 +81,6 @@ public class UserController {
             throws UserNotFoundException {
         return ResponseEntity.ok(userService.delete(principal));
     }
+
+
 }

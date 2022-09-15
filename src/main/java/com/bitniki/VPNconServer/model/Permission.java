@@ -1,6 +1,7 @@
 package com.bitniki.VPNconServer.model;
 
 public enum Permission {
+    GenToken("gen_token"),
     Personal("personal"),
     Any("any"),
     User_READ("user:read"),
