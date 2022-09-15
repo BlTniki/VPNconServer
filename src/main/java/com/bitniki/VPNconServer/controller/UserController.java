@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -35,6 +36,14 @@ public class UserController {
         return ResponseEntity.ok(userService.getOne(id));
     }
 
+    @GetMapping("/mine")
+    @PreAuthorize("hasAuthority('personal')" +
+            "&& hasAuthority('user:read')")
+    public ResponseEntity<UserWithRelations> getMineUser(Principal principal)
+            throws UserNotFoundException {
+        return ResponseEntity.ok(userService.getOne(principal));
+    }
+
     @PostMapping
     public ResponseEntity<User> createUser (@RequestBody UserEntity user)
             throws UserAlreadyExistException, UserValidationFailedException {
@@ -49,11 +58,27 @@ public class UserController {
         return ResponseEntity.ok(userService.update(id, user));
     }
 
+    @PutMapping("/mine")
+    @PreAuthorize("hasAuthority('personal')" +
+            "&& hasAuthority('user:write')")
+    public ResponseEntity<User> updateMineUser(Principal principal, @RequestBody UserEntity user)
+            throws UserNotFoundException, UserAlreadyExistException, UserValidationFailedException {
+        return ResponseEntity.ok(userService.update(principal, user));
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('user:write')")
     public ResponseEntity<User> deleteUser(@PathVariable Long id)
             throws UserNotFoundException {
         return ResponseEntity.ok(userService.delete(id));
+    }
+
+    @DeleteMapping("/mine")
+    @PreAuthorize("hasAuthority('personal')" +
+            "&& hasAuthority('user:write')")
+    public ResponseEntity<User> deleteMineUser(Principal principal)
+            throws UserNotFoundException {
+        return ResponseEntity.ok(userService.delete(principal));
     }
 }
