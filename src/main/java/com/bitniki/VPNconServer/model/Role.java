@@ -9,7 +9,8 @@ public enum Role {
     ADMIN(Set.of(Permission.values())),
     ACTIVATED_USER(Set.of(  Permission.Personal,
                             Permission.User_READ, Permission.User_WRITE,
-                            Permission.Peer_READ, Permission.Peer_WRITE)),
+                            Permission.Peer_READ, Permission.Peer_WRITE,
+                            Permission.Host_READ)),
     DISABLED_USER(Set.of(   Permission.Personal,
                             Permission.User_READ, Permission.User_WRITE));
     private final Set<Permission> permissionSet;
