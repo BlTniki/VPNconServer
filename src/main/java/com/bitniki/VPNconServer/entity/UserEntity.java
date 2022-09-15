@@ -1,5 +1,7 @@
 package com.bitniki.VPNconServer.entity;
 
+import com.bitniki.VPNconServer.model.Role;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -11,6 +13,8 @@ public class UserEntity {
     private Long id;
     private String login;
     private String password;
+    @Enumerated(value = EnumType.STRING)
+    private Role role = Role.DISABLED_USER;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<PeerEntity> peerEntities;
 
@@ -56,5 +60,13 @@ public class UserEntity {
 
     public void setPeers(List<PeerEntity> peerEntities) {
         this.peerEntities = peerEntities;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
