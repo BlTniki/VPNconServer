@@ -4,6 +4,7 @@ import com.bitniki.VPNconServer.connectHandler.PeerConnectHandler;
 import com.bitniki.VPNconServer.entity.HostEntity;
 import com.bitniki.VPNconServer.entity.PeerEntity;
 import com.bitniki.VPNconServer.entity.UserEntity;
+import com.bitniki.VPNconServer.exception.notFoundException.EntityNotFoundException;
 import com.bitniki.VPNconServer.exception.notFoundException.HostNotFoundException;
 import com.bitniki.VPNconServer.exception.alreadyExistException.PeerAlreadyExistException;
 import com.bitniki.VPNconServer.exception.notFoundException.PeerNotFoundException;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,65 +34,34 @@ public class PeerService {
     @Autowired
     private HostRepo hostRepo;
 
-    public List<PeerWithAllRelations> getAll() {
-        List<PeerEntity> peerEntities = new ArrayList<>();
-        peerRepo.findAll().forEach(peerEntities::add);
-        return peerEntities.stream().map(PeerWithAllRelations::toModel).collect(Collectors.toList());
-    }
-
-    public PeerWithAllRelations getOne(Long id) throws PeerNotFoundException {
-        Optional<PeerEntity> peerEntityOptional;
-        peerEntityOptional = peerRepo.findById(id);
-        if(peerEntityOptional.isPresent()) return PeerWithAllRelations.toModel(peerEntityOptional.get());
-        else throw new PeerNotFoundException("Peer not found");
-    }
-
-    public PeerWithAllRelations create(Long user_id, Long host_id, PeerEntity peerEntity) throws UserNotFoundException, HostNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
-        PeerValidator peerValidator = PeerValidator.validateAllFields(peerEntity);
+    private PeerEntity createPeer(UserEntity user, HostEntity host, PeerEntity peer) throws EntityNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
+        // validate peer
+        PeerValidator peerValidator = PeerValidator.validateAllFields(peer);
         if(peerValidator.hasFails()) {
             throw new PeerValidationFailedException(peerValidator.toString());
         }
 
-        //find user entity
-        Optional<UserEntity> userEntityOptional;
-        UserEntity user;
-        userEntityOptional = userRepo.findById(user_id);
-        if(userEntityOptional.isPresent()) user = userEntityOptional.get();
-        else throw new UserNotFoundException("User not found");
-
-        //find host entity
-        Optional<HostEntity> hostEntityOptional;
-        HostEntity host;
-        hostEntityOptional = hostRepo.findById(host_id);
-        if(hostEntityOptional.isPresent()) host = hostEntityOptional.get();
-        else throw new HostNotFoundException("Host not found");
-
         //check the uniqueness of the confName for a specific host and user
-        if(peerRepo.findByUserAndHostAndPeerConfName(user, host, peerEntity.getPeerConfName()) != null) {
+        if(peerRepo.findByUserAndHostAndPeerConfName(user, host, peer.getPeerConfName()) != null) {
             throw new PeerAlreadyExistException("Peer already exist");
         }
-        peerEntity.setUser(user);
-        peerEntity.setHost(host);
+
+        peer.setUser(user);
+        peer.setHost(host);
         //create peer on host and complete peer entity
-        PeerConnectHandler peerConnectHandler = new PeerConnectHandler(peerEntity);
+        PeerConnectHandler peerConnectHandler = new PeerConnectHandler(peer);
         peerConnectHandler.createPeerOnHostAndFillEntity();
 
-        return PeerWithAllRelations.toModel(peerRepo.save(peerEntity));
+        return peerRepo.save(peer);
     }
 
-    public PeerWithAllRelations update(Long id, PeerEntity newPeer)
+    private PeerEntity updatePeer(PeerEntity oldPeer, PeerEntity newPeer)
             throws PeerNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
+        // validate new peer
         PeerValidator peerValidator = PeerValidator.validateNonNullFields(newPeer);
         if(peerValidator.hasFails()) {
             throw new PeerValidationFailedException(peerValidator.toString());
         }
-
-        //find old peer
-        Optional<PeerEntity> peerEntityOptional;
-        peerEntityOptional = peerRepo.findById(id);
-        PeerEntity oldPeer;
-        if(peerEntityOptional.isPresent()) oldPeer = peerEntityOptional.get();
-        else throw new PeerNotFoundException("Peer not found");
 
         //check the uniqueness of the confName for a specific host and user
         //this is placeholder because we cant properly update confName on host
@@ -98,6 +69,7 @@ public class PeerService {
                 oldPeer.getUser(), oldPeer.getHost(), newPeer.getPeerConfName()) != null) {
             throw new PeerAlreadyExistException("Peer already exist");
         }
+
         //if we have new peer ip – update
         if(newPeer.getPeerIp() != null) {
             oldPeer.setPeerIp(newPeer.getPeerIp());
@@ -107,21 +79,120 @@ public class PeerService {
         PeerConnectHandler peerConnectHandler = new PeerConnectHandler(oldPeer);
         peerConnectHandler.updatePeerOnHost();
 
-        return PeerWithAllRelations.toModel(peerRepo.save(oldPeer));
+        return peerRepo.save(oldPeer);
+    }
+
+    private PeerEntity deletePeer(PeerEntity peer) {
+        //deleting peer on host
+        PeerConnectHandler peerConnectHandler = new PeerConnectHandler(peer);
+        peerConnectHandler.deletePeerOnHost();
+        //deleting in db
+        peerRepo.delete(peer);
+        return peer;
+    }
+
+    public List<PeerWithAllRelations> getAll() {
+        List<PeerEntity> peerEntities = new ArrayList<>();
+        peerRepo.findAll().forEach(peerEntities::add);
+        return peerEntities.stream().map(PeerWithAllRelations::toModel).collect(Collectors.toList());
+    }
+
+    public List<PeerWithAllRelations> getAll(Principal principal) throws UserNotFoundException {
+        // load user
+        UserEntity user = userRepo.findByLogin(principal.getName());
+        if(user == null) throw new UserNotFoundException("User not found");
+
+        return user.getPeers().stream().map(PeerWithAllRelations::toModel).collect(Collectors.toList());
+    }
+
+    public PeerWithAllRelations getOne(Long id) throws PeerNotFoundException {
+        Optional<PeerEntity> peerEntityOptional;
+        peerEntityOptional = peerRepo.findById(id);
+        if(peerEntityOptional.isPresent()) return PeerWithAllRelations.toModel(peerEntityOptional.get());
+        else throw new PeerNotFoundException("Peer not found");
+    }
+
+    public PeerWithAllRelations getOne(Long id, Principal principal) throws EntityNotFoundException {
+        // load user
+        UserEntity user = userRepo.findByLogin(principal.getName());
+        if(user == null) throw new UserNotFoundException("User not found");
+
+        return PeerWithAllRelations.toModel(user.getPeers().stream()
+                .filter(peerEntity -> peerEntity.getId().equals(id))
+                .findAny()
+                .orElseThrow(() -> new PeerNotFoundException("Peer does not exist or you have no permission for this peer")));
+    }
+
+    public PeerWithAllRelations create(Long user_id, Long host_id, PeerEntity peerEntity) throws EntityNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
+        //find user entity
+        UserEntity user = userRepo.findById(user_id).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        //find host entity
+        HostEntity host = hostRepo.findById(host_id).orElseThrow(() -> new HostNotFoundException("User not found"));
+
+        return PeerWithAllRelations.toModel(createPeer(user, host, peerEntity));
+    }
+
+    public PeerWithAllRelations create(Principal principal, Long host_id, PeerEntity peerEntity) throws EntityNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
+        // load user
+        UserEntity user = userRepo.findByLogin(principal.getName());
+        if(user == null) throw new UserNotFoundException("User not found");
+
+        //find host entity
+        HostEntity host = hostRepo.findById(host_id).orElseThrow(() -> new HostNotFoundException("User not found"));
+
+        return PeerWithAllRelations.toModel(createPeer(user, host, peerEntity));
+    }
+
+    public PeerWithAllRelations update(Long id, PeerEntity newPeer)
+            throws PeerNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
+        //find old peer
+        Optional<PeerEntity> peerEntityOptional;
+        peerEntityOptional = peerRepo.findById(id);
+        PeerEntity oldPeer;
+        if(peerEntityOptional.isPresent()) oldPeer = peerEntityOptional.get();
+        else throw new PeerNotFoundException("Peer not found");
+
+        return PeerWithAllRelations.toModel(updatePeer(oldPeer, newPeer));
+    }
+
+    public PeerWithAllRelations update(Principal principal, Long id, PeerEntity newPeer)
+            throws EntityNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
+        // load user
+        UserEntity user = userRepo.findByLogin(principal.getName());
+        if(user == null) throw new UserNotFoundException("User not found");
+
+        //find old peer
+        PeerEntity oldPeer = user.getPeers().stream()
+                .filter(peerEntity -> peerEntity.getId().equals(id))
+                .findAny()
+                .orElseThrow(() -> new PeerNotFoundException("Peer does not exist or you have no permission for this peer"));
+
+        return PeerWithAllRelations.toModel(updatePeer(oldPeer, newPeer));
     }
 
     public PeerWithAllRelations delete(Long id) throws PeerNotFoundException {
+        // find peer
         Optional<PeerEntity> peerEntityOptional;
         peerEntityOptional = peerRepo.findById(id);
         PeerEntity peer;
         if(peerEntityOptional.isPresent()) peer = peerEntityOptional.get();
         else throw new PeerNotFoundException("Peer not found");
 
-        //deleting peer on host
-        PeerConnectHandler peerConnectHandler = new PeerConnectHandler(peer);
-        peerConnectHandler.deletePeerOnHost();
-        peerRepo.delete(peer);
-        return PeerWithAllRelations.toModel(peer);
+        return PeerWithAllRelations.toModel(deletePeer(peer));
+    }
 
+    public PeerWithAllRelations delete(Principal principal, Long id) throws EntityNotFoundException {
+        // load user
+        UserEntity user = userRepo.findByLogin(principal.getName());
+        if(user == null) throw new UserNotFoundException("User not found");
+
+        //find peer
+        PeerEntity peer = user.getPeers().stream()
+                .filter(peerEntity -> peerEntity.getId().equals(id))
+                .findAny()
+                .orElseThrow(() -> new PeerNotFoundException("Peer does not exist or you have no permission for this peer"));
+
+        return PeerWithAllRelations.toModel(deletePeer(peer));
     }
 }
