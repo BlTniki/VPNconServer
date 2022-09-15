@@ -5,6 +5,7 @@ import com.bitniki.VPNconServer.exception.notFoundException.EntityNotFoundExcept
 import com.bitniki.VPNconServer.exception.validationFailedException.EntityValidationFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -31,5 +32,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> catchEntityValidationFailedException (EntityValidationFailedException e) {
         //somewhere there should be logging
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> catchAccessDeniedException(AccessDeniedException e) {
+        //somewhere there should be logging
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 }
