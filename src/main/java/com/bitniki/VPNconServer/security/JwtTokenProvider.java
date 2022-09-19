@@ -6,10 +6,9 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -21,7 +20,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @Component
-public class JwtTokenProvider implements AuthenticationProvider {
+public class JwtTokenProvider{
     private final UserDetailsService userDetailsService;
     @Value("${jwt.header}")
     private String authHeader;
@@ -68,26 +67,22 @@ public class JwtTokenProvider implements AuthenticationProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(getLogin(token));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails,"", userDetails.getAuthorities());
     }
 
-    public String getLogin(String token) {
+    public String getUsername(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKeyInBytes).build().parseClaimsJws(token)
                 .getBody().getSubject();
     }
 
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader(authHeader);
-    }
-
-    @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        return null;
-    }
-
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return false;
+        String requestAuthHeader = request.getHeader(authHeader);
+        //Check for Bearer
+        if (requestAuthHeader.substring(0, "Bearer ".length()).equals("Bearer ")) {
+            return requestAuthHeader.replaceFirst("^Bearer ", "");
+        } else {
+            throw new AuthenticationCredentialsNotFoundException("Bad authentication type");
+        }
     }
 }
