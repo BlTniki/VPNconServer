@@ -2,6 +2,7 @@ package com.bitniki.VPNconServer.security;
 
 import com.bitniki.VPNconServer.exception.JwtAuthException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -24,16 +25,27 @@ public class JwtTokenFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
         try {
-            if(token != null && jwtTokenProvider.validateToken(token)) {
+            if(token != null) {
+                if(!jwtTokenProvider.validateToken(token)){
+                    throw new JwtAuthException("Token expired", HttpStatus.UNAUTHORIZED);
+                }
+                // get auth
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
-                if (authentication != null) {
+
+                if(authentication != null) {
+                    // check is user change token
+                    // or is user have token and is equal with given
+                    if(((SecurityUser)authentication.getPrincipal()).getToken() == null ||
+                            !((SecurityUser)authentication.getPrincipal()).getToken().equals(token)) {
+                        throw new JwtAuthException("Token expired", HttpStatus.UNAUTHORIZED);
+                    }
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
+
             }
         } catch (JwtAuthException e) {
             SecurityContextHolder.clearContext();
             ((HttpServletResponse) response).sendError(e.getHttpStatus().value());
-            throw e;
         }
         chain.doFilter(request, response);
     }

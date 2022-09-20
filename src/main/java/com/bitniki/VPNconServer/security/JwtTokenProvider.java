@@ -58,7 +58,8 @@ public class JwtTokenProvider{
 
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(secretKeyInBytes).build().parseClaimsJws(token);
+            Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(secretKeyInBytes).build()
+                    .parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
                 throw new JwtAuthException("JWT token is expired or invalid", HttpStatus.UNAUTHORIZED);
@@ -68,7 +69,8 @@ public class JwtTokenProvider{
 
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
-        return new UsernamePasswordAuthenticationToken(userDetails,"", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails,
+                "", userDetails.getAuthorities());
     }
 
     public String getUsername(String token) {
@@ -78,8 +80,13 @@ public class JwtTokenProvider{
 
     public String resolveToken(HttpServletRequest request) {
         String requestAuthHeader = request.getHeader(authHeader);
+        //check for null, if it null -- return;
+        if(requestAuthHeader == null) {
+            return null;
+        }
+        //else
         //Check for Bearer
-        if (requestAuthHeader.substring(0, "Bearer ".length()).equals("Bearer ")) {
+        if (requestAuthHeader.startsWith("Bearer ")) {
             return requestAuthHeader.replaceFirst("^Bearer ", "");
         } else {
             throw new AuthenticationCredentialsNotFoundException("Bad authentication type");

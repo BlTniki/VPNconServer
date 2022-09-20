@@ -10,6 +10,7 @@ CREATE TABLE user (
     login varchar(64) NOT NULL UNIQUE,
     password varchar(255) NOT NULL,
     role varchar(255) NOT NULL DEFAULT "DISABLED_USER",
+    token varchar(255),
     PRIMARY KEY (id)
 ) engine=MyISAM;
 

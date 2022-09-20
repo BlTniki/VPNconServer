@@ -5,7 +5,6 @@ import com.bitniki.VPNconServer.model.AuthRequest;
 import com.bitniki.VPNconServer.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +27,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
-        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
-        securityContextLogoutHandler.logout(request, response, null);
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) throws UserNotFoundException {
+        authenticationService.logout(request, response);
         return ResponseEntity.ok("Success");
     }
 }
