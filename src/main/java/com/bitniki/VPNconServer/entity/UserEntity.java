@@ -13,6 +13,7 @@ public class UserEntity {
     private Long id;
     private String login;
     private String password;
+    private String token;
     @Enumerated(value = EnumType.STRING)
     private Role role = Role.DISABLED_USER;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
@@ -68,5 +69,13 @@ public class UserEntity {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
