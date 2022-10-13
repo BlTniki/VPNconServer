@@ -10,17 +10,18 @@ public class Peer {
     private String peerConfName;
 
     public static Peer toModel(PeerEntity entity) {
-        Peer model = new Peer();
-        model.setId(entity.getId());
-        model.setPeerIp(entity.getPeerIp());
-        model.setPeerPrivateKey(entity.getPeerPrivateKey());
-        model.setPeerPublicKey(entity.getPeerPublicKey());
-        model.setPeerConfName(entity.getPeerConfName());
-
-        return model;
+        return new Peer(entity);
     }
 
     public Peer() {
+    }
+
+    public Peer(PeerEntity entity) {
+        this.setId(entity.getId());
+        this.setPeerIp(entity.getPeerIp());
+        this.setPeerPrivateKey(entity.getPeerPrivateKey());
+        this.setPeerPublicKey(entity.getPeerPublicKey());
+        this.setPeerConfName(entity.getPeerConfName());
     }
 
     public Long getId() {
