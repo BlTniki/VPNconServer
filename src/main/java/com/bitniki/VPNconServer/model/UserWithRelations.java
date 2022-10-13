@@ -13,12 +13,15 @@ public class UserWithRelations extends User{
     private List<Peer> peers;
 
     public static UserWithRelations toModel (UserEntity entity) {
-        UserWithRelations model = new UserWithRelations();
-        model.setId(entity.getId());
-        model.setLogin(entity.getLogin());
-        model.setPeers(entity.getPeers());
+        return new UserWithRelations(entity);
+    }
 
-        return model;
+    public UserWithRelations() {
+    }
+
+    public UserWithRelations(UserEntity entity) {
+        super(entity);
+        this.setPeers(entity.getPeers());
     }
 
     public List<Peer> getPeers() {

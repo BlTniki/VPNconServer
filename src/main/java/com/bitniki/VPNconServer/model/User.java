@@ -8,15 +8,16 @@ public class User {
 
 
     public static User toModel (UserEntity entity) {
-        User model = new User();
-        model.setId(entity.getId());
-        model.setLogin(entity.getLogin());
-
-
-        return model;
+        return new User(entity);
     }
 
     public User() {
+    }
+
+    public User(UserEntity entity) {
+        this.setId(entity.getId());
+        this.setLogin(entity.getLogin());
+        this.setRole(entity.getRole());
     }
 
     public Long getId() {
