@@ -4,6 +4,7 @@ import com.bitniki.VPNconServer.entity.UserEntity;
 public class User {
     private Long id;
     private String login;
+    private Role role;
 
 
     public static User toModel (UserEntity entity) {
@@ -32,5 +33,13 @@ public class User {
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
