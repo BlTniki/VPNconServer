@@ -22,9 +22,10 @@ public class UserEntity {
 
 
     public static UserEntity updateEntity(UserEntity oldUser, UserEntity newUser) {
+        // update field if not null
         oldUser.setLogin((newUser.getLogin() != null) ? newUser.getLogin() : oldUser.getLogin());
         oldUser.setPassword((newUser.getPassword() != null) ? newUser.getPassword() : oldUser.getPassword());
-
+        oldUser.setToken((newUser.getToken() != null) ? newUser.getToken() : oldUser.getToken());
         return oldUser;
     }
 
