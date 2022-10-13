@@ -8,15 +8,16 @@ public class Host {
     private String serverPublicKey;
 
     public static Host toModel (HostEntity entity) {
-        Host model = new Host();
-        model.setId(entity.getId());
-        model.setIpadress(entity.getIpadress());
-        model.setServerPublicKey(entity.getServerPublicKey());
-
-        return model;
+        return new Host(entity);
     }
 
     public Host() {
+    }
+
+    public Host(HostEntity entity) {
+        this.setId(entity.getId());
+        this.setIpadress(entity.getIpadress());
+        this.setServerPublicKey(entity.getServerPublicKey());
     }
 
     public Long getId() {
