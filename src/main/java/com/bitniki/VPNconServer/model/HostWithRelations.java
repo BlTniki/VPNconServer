@@ -13,13 +13,15 @@ public class HostWithRelations extends Host{
     private List<Peer> peers;
 
     public static HostWithRelations toModel (HostEntity entity) {
-        HostWithRelations model = new HostWithRelations();
-        model.setId(entity.getId());
-        model.setIpadress(entity.getIpadress());
-        model.setServerPublicKey(entity.getServerPublicKey());
-        model.setPeers(entity.getPeers());
+        return new HostWithRelations(entity);
+    }
 
-        return model;
+    public HostWithRelations() {
+    }
+
+    public HostWithRelations(HostEntity entity) {
+        super(entity);
+        this.setPeers(entity.getPeers());
     }
 
     public List<Peer> getPeers() {

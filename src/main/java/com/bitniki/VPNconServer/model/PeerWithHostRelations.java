@@ -1,5 +1,6 @@
 package com.bitniki.VPNconServer.model;
 
+import com.bitniki.VPNconServer.entity.HostEntity;
 import com.bitniki.VPNconServer.entity.PeerEntity;
 
 /*
@@ -9,22 +10,23 @@ public class PeerWithHostRelations extends Peer{
     private Host host;
 
     public static PeerWithHostRelations toModel(PeerEntity entity) {
-        PeerWithHostRelations model = new PeerWithHostRelations();
-        model.setId(entity.getId());
-        model.setPeerIp(entity.getPeerIp());
-        model.setPeerPrivateKey(entity.getPeerPrivateKey());
-        model.setPeerPublicKey(entity.getPeerPublicKey());
-        model.setPeerConfName(entity.getPeerConfName());
-        model.setHost(Host.toModel(entity.getHost()));
-
-        return model;
+        return new PeerWithHostRelations(entity);
     }
+
+    public PeerWithHostRelations() {
+    }
+
+    public PeerWithHostRelations(PeerEntity entity) {
+        super(entity);
+        this.setHost(entity.getHost());
+    }
+
 
     public Host getHost() {
         return host;
     }
 
-    public void setHost(Host host) {
-        this.host = host;
+    public void setHost(HostEntity host) {
+        this.host = Host.toModel(host);
     }
 }
