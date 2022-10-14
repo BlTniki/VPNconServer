@@ -13,7 +13,6 @@ public class HostEntity {
     private String serverPassword;
     private String serverPublicKey;
     private String dns;
-    private String publicKey;
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "host", orphanRemoval = true)
     private List<PeerEntity> peerEntities;
@@ -77,14 +76,6 @@ public class HostEntity {
 
     public void setDns(String dns) {
         this.dns = dns;
-    }
-
-    public String getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
     }
 
     public List<PeerEntity> getPeerEntities() {

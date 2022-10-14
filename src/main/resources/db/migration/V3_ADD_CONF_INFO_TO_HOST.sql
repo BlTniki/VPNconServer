@@ -1,1 +1,1 @@
-ALTER TABLE `host` ADD `dns` varchar(255), `public_key` varchar(255);
+ALTER TABLE `host` ADD `dns` varchar(255);
