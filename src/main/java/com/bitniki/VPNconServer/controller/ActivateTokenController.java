@@ -7,10 +7,7 @@ import com.bitniki.VPNconServer.service.ActivateTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -20,7 +17,7 @@ public class ActivateTokenController {
     @Autowired
     private ActivateTokenService activateTokenService;
 
-    @GetMapping("/gen/{newRole}")
+    @PostMapping("/gen/{newRole}")
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('gen_token')")
     public ResponseEntity<ActivateTokenEntity> generateToken(@PathVariable String newRole) throws RoleNotFoundException {
