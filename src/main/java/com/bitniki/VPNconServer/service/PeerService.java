@@ -78,6 +78,11 @@ public class PeerService {
             throw new PeerAlreadyExistException("Peer already exist");
         }
 
+        //check the uniqueness of the peerIp
+        if(peerRepo.findByPeerIp(peer.getPeerIp()) != null) {
+            throw new PeerAlreadyExistException("This peer ip already exist");
+        }
+
         peer.setUser(user);
         peer.setHost(host);
         //create peer on host and complete peer entity
