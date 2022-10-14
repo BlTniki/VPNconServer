@@ -105,4 +105,18 @@ public class PeerController {
             throws EntityNotFoundException {
         return ResponseEntity.ok(peerService.delete(principal, id));
     }
+
+    @GetMapping("/conf/{id}")
+    @PreAuthorize("hasAuthority('any')" +
+            "&& hasAuthority('peer:read')")
+    public ResponseEntity<String> getDownloadToken(@PathVariable Long id) throws PeerNotFoundException {
+        return ResponseEntity.ok(peerService.getDownloadTokenForPeer(id));
+    }
+
+    @GetMapping("/conf/mine/{id}")
+    @PreAuthorize("hasAuthority('personal')" +
+            "&& hasAuthority('peer:read')")
+    public ResponseEntity<String> getMineDownloadToken(Principal principal,@PathVariable Long id) throws EntityNotFoundException {
+        return ResponseEntity.ok(peerService.getDownloadTokenForPeer(principal, id));
+    }
 }

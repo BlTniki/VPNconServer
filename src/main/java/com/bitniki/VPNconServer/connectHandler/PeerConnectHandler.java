@@ -18,6 +18,7 @@ public class PeerConnectHandler {
     private HostEntity host;
     private UserEntity user;
     private PeerEntity peer;
+    private PeerForRequest peerForRequest;
     private String hostIpAdress;
     private HttpEntity<PeerForRequest> httpEntity;
 
@@ -51,7 +52,7 @@ public class PeerConnectHandler {
 
     public void deletePeerOnHost() {
         //build uri avoiding nullable warning
-        final String uri = this.hostIpAdress + "/peers/"+ Objects.requireNonNull(this.httpEntity.getBody()).getPeerId();
+        final String uri = this.hostIpAdress + "/peers/"+ getPeerForRequest().getPeerId();
         RestTemplate restTemplate = new RestTemplate();
         try {
             restTemplate.exchange(uri, HttpMethod.DELETE, this.httpEntity, String.class);
@@ -62,8 +63,21 @@ public class PeerConnectHandler {
         }
     }
 
+    public String getDownloadConfToken() {
+        final String uri = this.hostIpAdress + "/conf/" + getPeerForRequest().getPeerId();
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            return restTemplate.exchange(uri, HttpMethod.POST, this.httpEntity, String.class).getBody();
+        } catch (Exception e) {
+            // somewhere there should be logging
+            System.out.println(e.getMessage());//400 BAD REQUEST: "Service answers like: This peerId has already taken"
+            throw e;
+        }
+    }
+
     public PeerConnectHandler(PeerEntity peer) {
         this.setPeer(peer);
+        this.setPeerForRequest(PeerForRequest.toModel(peer));
         this.setHost(this.peer.getHost());
         this.setUser(this.peer.getUser());
         this.setHostIpAdress(this.host.getIpadress());
@@ -94,6 +108,14 @@ public class PeerConnectHandler {
         this.peer = peer;
     }
 
+    public PeerForRequest getPeerForRequest() {
+        return peerForRequest;
+    }
+
+    public void setPeerForRequest(PeerForRequest peerForRequest) {
+        this.peerForRequest = peerForRequest;
+    }
+
     public void setHostIpAdress(String hostIpAdress) {
         //build host url with chosen api version
         this.hostIpAdress = "http://"+ hostIpAdress +"/api/"+this.apiVersion;
@@ -108,6 +130,6 @@ public class PeerConnectHandler {
         //set auth header and body for request
         HttpHeaders headers = new HttpHeaders();
         headers.set("Auth", host.getServerPassword());
-        return new HttpEntity<>(PeerForRequest.toModel(this.getPeer()), headers);
+        return new HttpEntity<>(peerForRequest, headers);
     }
 }
