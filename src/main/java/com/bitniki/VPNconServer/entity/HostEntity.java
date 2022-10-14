@@ -13,7 +13,7 @@ public class HostEntity {
     private String serverPassword;
     private String serverPublicKey;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "host")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "host", orphanRemoval = true)
     private List<PeerEntity> peerEntities;
 
     /*

@@ -16,7 +16,7 @@ public class UserEntity {
     private String token;
     @Enumerated(value = EnumType.STRING)
     private Role role = Role.DISABLED_USER;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user", orphanRemoval = true)
     private List<PeerEntity> peerEntities;
 
 
