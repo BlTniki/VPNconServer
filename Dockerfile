@@ -1,0 +1,10 @@
+FROM gradle:jdk17-alpine
+COPY . vpnconserver/
+WORKDIR /home/gradle/vpnconserver
+ENV SERVER_PORT ${SERVER_PORT}
+ENV DB_PORT ${DB_PORT}
+ENV ROOT_NAME ${ROOT_NAME}
+ENV ROOT_PASSWORD ${ROOT_PASSWORD}
+ENV TOKEN_SECRET_KEY ${TOKEN_SECRET_KEY}
+RUN chmod 777 -R .
+ENTRYPOINT ["./init.sh"]
