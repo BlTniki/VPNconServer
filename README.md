@@ -99,7 +99,7 @@ jwt.secret="secretThatLongEnough"
 jwt.expiration=
 ```
 __mysql__, __java__ and __gradle__ must be installed.
-In __mysql__ it is required to create a database with the name `VPNconServer`
+In __mysql__ it is required to create a database with the name `VPNconServer`.
 Run the script `gradlew` (`./gradlew` in Linux).
 
 ### Building a Docker container
