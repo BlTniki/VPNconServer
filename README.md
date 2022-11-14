@@ -1,4 +1,3 @@
-# vpnconserver
 ## About RU
 Это Spring boot REST приложение служит обслуживанию и координации клиентов и [VPN сервисов]. Оно ==Бла бла бла==
 ## About EN
@@ -8,7 +7,7 @@ This Spring boot REST application serves to service and coordinate clients and [
 Все команды выполняются в корне проекта.
 ### Базовая инициализация
 Клонируете проект.
-Создаёте `application.properties` в `src\main\resources`
+Создаёте `application.properties` в `src\main\resources`.
 Пример `application.properties`:
 ```properties
 server.port =  
@@ -79,13 +78,12 @@ networks:
   springmysql-net:
 ```
 
-Вы можете не компилировать образ самостоятельно, а взять его [отсюда](https://hub.docker.com/r/bitniki/vpnconserver) 
-
+Вы можете не компилировать образ самостоятельно, а взять его [отсюда](https://hub.docker.com/r/bitniki/vpnconserver)
 ## Initialization EN
 All commands are executed at the root of the project.
 ### Basic initialization
 Clone the project.
-Create `application.properties` in `src\main\resources`
+Create `application.properties` in `src\main\resources`.
 Example of `application.properties`:
 ```properties
 server.port =  
@@ -156,4 +154,5 @@ networks:
   springmysql-net:
 ```
 
-You can not compile the image yourself, but take it [from here](https://hub.docker.com/r/bitniki/vpnconserver )
+If you don't want compile the image by yourself, you can take it [from here](https://hub.docker.com/r/bitniki/vpnconserver )
+
