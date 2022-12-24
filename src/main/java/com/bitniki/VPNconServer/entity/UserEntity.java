@@ -14,6 +14,7 @@ public class UserEntity {
     private String login;
     private String password;
     private String token;
+    private String telegramId;
     @Enumerated(value = EnumType.STRING)
     private Role role = Role.DISABLED_USER;
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user", orphanRemoval = true)
@@ -78,5 +79,13 @@ public class UserEntity {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getTelegramId() {
+        return telegramId;
+    }
+
+    public void setTelegramId(String telegramId) {
+        this.telegramId = telegramId;
     }
 }
