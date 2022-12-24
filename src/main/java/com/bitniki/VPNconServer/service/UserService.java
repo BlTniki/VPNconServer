@@ -67,6 +67,12 @@ public class UserService {
         return UserWithRelations.toModel(user);
     }
 
+    public UserWithRelations getOneByTelegramId (Long telegramId) throws UserNotFoundException {
+        return UserWithRelations.toModel(userRepo.findByTelegramId(telegramId).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        ));
+    }
+
     public User create (UserEntity user) throws UserAlreadyExistException, UserValidationFailedException {
         // valid entity
         UserValidator userValidator = UserValidator.validateAllFields(user);

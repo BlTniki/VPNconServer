@@ -36,6 +36,14 @@ public class UserController {
         return ResponseEntity.ok(userService.getOne(id));
     }
 
+    @GetMapping("/tg/{telegramId}")
+    @PreAuthorize("hasAuthority('any')" +
+            "&& hasAuthority('user:read')")
+    public ResponseEntity<UserWithRelations> getUserByTelegramId(@PathVariable Long telegramId)
+            throws UserNotFoundException {
+        return ResponseEntity.ok(userService.getOneByTelegramId(telegramId));
+    }
+
     @GetMapping("/mine")
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('user:read')")
