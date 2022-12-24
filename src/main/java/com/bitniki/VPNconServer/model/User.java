@@ -5,7 +5,8 @@ public class User {
     private Long id;
     private String login;
     private Role role;
-    private String telegramId;
+    private Long telegramId;
+    private String telegramUsername;
 
     public static User toModel (UserEntity entity) {
         return new User(entity);
@@ -19,6 +20,7 @@ public class User {
         this.setLogin(entity.getLogin());
         this.setRole(entity.getRole());
         this.setTelegramId(entity.getTelegramId());
+        this.setTelegramUsername(entity.getTelegramUsername());
     }
 
     public Long getId() {
@@ -45,11 +47,19 @@ public class User {
         this.role = role;
     }
 
-    public String getTelegramId() {
+    public Long getTelegramId() {
         return telegramId;
     }
 
-    public void setTelegramId(String telegramId) {
+    public void setTelegramId(Long telegramId) {
         this.telegramId = telegramId;
+    }
+
+    public String getTelegramUsername() {
+        return telegramUsername;
+    }
+
+    public void setTelegramUsername(String telegramUsername) {
+        this.telegramUsername = telegramUsername;
     }
 }

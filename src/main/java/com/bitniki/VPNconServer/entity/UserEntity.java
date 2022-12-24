@@ -14,7 +14,8 @@ public class UserEntity {
     private String login;
     private String password;
     private String token;
-    private String telegramId;
+    private Long telegramId;
+    private String telegramUsername;
     @Enumerated(value = EnumType.STRING)
     private Role role = Role.DISABLED_USER;
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user", orphanRemoval = true)
@@ -27,6 +28,10 @@ public class UserEntity {
         oldUser.setLogin((newUser.getLogin() != null) ? newUser.getLogin() : oldUser.getLogin());
         oldUser.setPassword((newUser.getPassword() != null) ? newUser.getPassword() : oldUser.getPassword());
         oldUser.setToken((newUser.getToken() != null) ? newUser.getToken() : oldUser.getToken());
+        oldUser.setTelegramId((newUser.getTelegramId() != null)
+                ? newUser.getTelegramId() : oldUser.getTelegramId());
+        oldUser.setTelegramUsername((newUser.getTelegramUsername() != null)
+                ? newUser.getTelegramUsername() : oldUser.getTelegramUsername());
         return oldUser;
     }
 
@@ -81,11 +86,19 @@ public class UserEntity {
         this.token = token;
     }
 
-    public String getTelegramId() {
+    public Long getTelegramId() {
         return telegramId;
     }
 
-    public void setTelegramId(String telegramId) {
+    public void setTelegramId(Long telegramId) {
         this.telegramId = telegramId;
+    }
+
+    public String getTelegramUsername() {
+        return telegramUsername;
+    }
+
+    public void setTelegramUsername(String telegramUsername) {
+        this.telegramUsername = telegramUsername;
     }
 }
