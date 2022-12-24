@@ -1,6 +1,8 @@
 package com.bitniki.VPNconServer.controller;
 
+import com.bitniki.VPNconServer.entity.UserEntity;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
+import com.bitniki.VPNconServer.exception.validationFailedException.UserValidationFailedException;
 import com.bitniki.VPNconServer.model.AuthRequest;
 import com.bitniki.VPNconServer.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -29,6 +32,13 @@ public class AuthenticationController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) throws UserNotFoundException {
         authenticationService.logout(request, response);
+        return ResponseEntity.ok("Success");
+    }
+
+    @PostMapping("/tg")
+    public ResponseEntity<String> associateTelegramIdWithUser(@RequestBody UserEntity user)
+            throws UserNotFoundException, UserValidationFailedException {
+        authenticationService.associateTelegramId(user);
         return ResponseEntity.ok("Success");
     }
 }
