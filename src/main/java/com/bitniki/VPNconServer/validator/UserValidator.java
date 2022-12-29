@@ -5,7 +5,9 @@ import com.bitniki.VPNconServer.entity.UserEntity;
 import java.util.regex.Pattern;
 
 public class UserValidator extends Validator{
+    // accepted login: 1-20 length, alphabet and number chars and -_. chars
     private final Pattern loginPattern = Pattern.compile("^[a-zA-Z][a-zA-Z0-9-_.]{1,20}$");
+    // accepted password: contains lower and capital letters and numbers
     private final Pattern passwordPattern = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\\s).*$");
 
     public static UserValidator validateAllFields(UserEntity user) {
