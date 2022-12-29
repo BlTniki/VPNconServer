@@ -4,6 +4,7 @@ import com.bitniki.VPNconServer.entity.UserEntity;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
 import com.bitniki.VPNconServer.exception.validationFailedException.UserValidationFailedException;
 import com.bitniki.VPNconServer.model.AuthRequest;
+import com.bitniki.VPNconServer.model.UserWithRelations;
 import com.bitniki.VPNconServer.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +37,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/tg")
-    public ResponseEntity<String> associateTelegramIdWithUser(@RequestBody UserEntity user)
+    public ResponseEntity<UserWithRelations> associateTelegramIdWithUser(@RequestBody UserEntity user)
             throws UserNotFoundException, UserValidationFailedException {
-        authenticationService.associateTelegramId(user);
-        return ResponseEntity.ok("Success");
+
+        return ResponseEntity.ok(authenticationService.associateTelegramId(user));
     }
 }

@@ -4,6 +4,7 @@ import com.bitniki.VPNconServer.entity.UserEntity;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
 import com.bitniki.VPNconServer.exception.validationFailedException.UserValidationFailedException;
 import com.bitniki.VPNconServer.model.AuthRequest;
+import com.bitniki.VPNconServer.model.UserWithRelations;
 import com.bitniki.VPNconServer.repository.UserRepo;
 import com.bitniki.VPNconServer.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,7 @@ public class AuthenticationService {
         userRepo.save(user);
     }
 
-    public void associateTelegramId(UserEntity user) throws UserNotFoundException, UserValidationFailedException {
+    public UserWithRelations associateTelegramId(UserEntity user) throws UserNotFoundException, UserValidationFailedException {
         //load user
         UserEntity userEntity = userRepo.findByLogin(user.getLogin());
         if(userEntity == null) throw new UserNotFoundException("User not found");
@@ -64,6 +65,6 @@ public class AuthenticationService {
             throw new UserValidationFailedException("No telegramId or telegramUsername of is given");
         userEntity.setTelegramId(user.getTelegramId());
         userEntity.setTelegramUsername(user.getTelegramUsername());
-        userRepo.save(userEntity);
+        return UserWithRelations.toModel(userRepo.save(userEntity));
     }
 }
