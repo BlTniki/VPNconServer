@@ -4,6 +4,7 @@ import com.bitniki.VPNconServer.entity.HostEntity;
 
 public class Host {
     private Long id;
+    private String name;
     private String ipadress;
     private String serverPublicKey;
     private String dns;
@@ -18,6 +19,7 @@ public class Host {
 
     public Host(HostEntity entity) {
         this.setId(entity.getId());
+        this.setName(entity.getName());
         this.setIpadress(entity.getIpadress());
         this.setServerPublicKey(entity.getServerPublicKey());
         this.setDns(entity.getDns());
@@ -29,6 +31,14 @@ public class Host {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getIpadress() {
