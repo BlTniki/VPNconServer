@@ -23,6 +23,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,6 +81,16 @@ public class PeerService {
         //if peerIp not null — check the uniqueness of the peerIp
         if(peer.getPeerIp() != null && peerRepo.findByHostAndPeerIp(host, peer.getPeerIp()) != null) {
             throw new PeerAlreadyExistException("This peer ip already exist");
+        }
+        //else — generate one
+        while(peer.getPeerIp() == null) {
+            Random rn = new Random();
+            int max = 254; int min = 2;
+            //Get number between min and max inclusive both
+            int lastOctet = rn.nextInt(max - min + 1) + min;
+            if(peerRepo.findByHostAndPeerIp(host, "10.8.0." + lastOctet) == null) {
+                peer.setPeerIp("10.8.0." + lastOctet);
+            }
         }
 
         peer.setUser(user);
