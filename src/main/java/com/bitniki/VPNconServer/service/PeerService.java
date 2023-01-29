@@ -77,9 +77,8 @@ public class PeerService {
         if(peerRepo.findByUserAndHostAndPeerConfName(user, host, peer.getPeerConfName()) != null) {
             throw new PeerAlreadyExistException("Peer already exist");
         }
-
-        //check the uniqueness of the peerIp
-        if(peerRepo.findByPeerIp(peer.getPeerIp()) != null) {
+        //if peerIp not null — check the uniqueness of the peerIp
+        if(peer.getPeerIp() != null && peerRepo.findByHostAndPeerIp(host, peer.getPeerIp()) != null) {
             throw new PeerAlreadyExistException("This peer ip already exist");
         }
 
