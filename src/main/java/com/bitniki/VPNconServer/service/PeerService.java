@@ -83,15 +83,14 @@ public class PeerService {
             throw new PeerAlreadyExistException("This peer ip already exist");
         }
         //else — generate one
-        while(peer.getPeerIp() == null) {
-            Random rn = new Random();
-            int max = 254; int min = 2;
-            //Get number between min and max inclusive both
-            int lastOctet = rn.nextInt(max - min + 1) + min;
+        int lastOctet = 2;
+        while(peer.getPeerIp() == null && lastOctet<=254) {
             if(peerRepo.findByHostAndPeerIp(host, "10.8.0." + lastOctet) == null) {
                 peer.setPeerIp("10.8.0." + lastOctet);
             }
+            lastOctet++;
         }
+        if(lastOctet == 255) throw new PeerValidationFailedException("Host is full!");
 
         peer.setUser(user);
         peer.setHost(host);
