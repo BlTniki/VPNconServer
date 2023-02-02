@@ -4,6 +4,7 @@ import com.bitniki.VPNconServer.entity.PeerEntity;
 
 
 public class PeerForRequest {
+    private Long id;
     private String peerId;
     private String peerIp;
     private String peerPublicKey;
@@ -11,6 +12,7 @@ public class PeerForRequest {
 
     public static PeerForRequest toModel(PeerEntity entity) {
         PeerForRequest model = new PeerForRequest();
+        model.setId(entity.getId());
         model.setPeerId(entity.getUser().getId(), entity.getPeerConfName());
         model.setPeerIp(entity.getPeerIp());
         model.setPeerPrivateKey(null);
@@ -25,6 +27,14 @@ public class PeerForRequest {
     }
 
     public PeerForRequest() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getPeerId() {
