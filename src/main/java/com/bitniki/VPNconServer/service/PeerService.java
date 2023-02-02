@@ -16,16 +16,15 @@ import com.bitniki.VPNconServer.repository.PeerRepo;
 import com.bitniki.VPNconServer.repository.UserRepo;
 import com.bitniki.VPNconServer.validator.PeerValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 @Service
 public class PeerService {
     @Autowired
@@ -67,7 +66,19 @@ public class PeerService {
                 .orElseThrow(() -> new PeerNotFoundException("Peer does not exist or you have no permission for this peer")));
     }
 
-    private PeerEntity createPeer(UserEntity user, HostEntity host, PeerEntity peer) throws EntityNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
+    private void setGeneratedPeerIpTo(PeerEntity peer, HostEntity host) throws PeerValidationFailedException {
+        int lastOctet = 2;
+        while(peer.getPeerIp() == null && lastOctet<=254) {
+            if(peerRepo.findByHostAndPeerIp(host, "10.8.0." + lastOctet) == null) {
+                peer.setPeerIp("10.8.0." + lastOctet);
+            }
+            lastOctet++;
+        }
+        if(lastOctet == 255) throw new PeerValidationFailedException("Host is full!");
+    }
+
+    private PeerEntity createPeer(UserEntity user, HostEntity host, PeerEntity peer)
+            throws PeerAlreadyExistException, PeerValidationFailedException {
         // validate peer
         PeerValidator peerValidator = PeerValidator.validateAllFields(peer);
         if(peerValidator.hasFails()) {
@@ -83,14 +94,9 @@ public class PeerService {
             throw new PeerAlreadyExistException("This peer ip already exist");
         }
         //else — generate one
-        int lastOctet = 2;
-        while(peer.getPeerIp() == null && lastOctet<=254) {
-            if(peerRepo.findByHostAndPeerIp(host, "10.8.0." + lastOctet) == null) {
-                peer.setPeerIp("10.8.0." + lastOctet);
-            }
-            lastOctet++;
+        if (peer.getPeerIp() == null) {
+            setGeneratedPeerIpTo(peer, host);
         }
-        if(lastOctet == 255) throw new PeerValidationFailedException("Host is full!");
 
         peer.setUser(user);
         peer.setHost(host);
@@ -123,7 +129,7 @@ public class PeerService {
     }
 
     private PeerEntity updatePeer(PeerEntity oldPeer, PeerEntity newPeer)
-            throws PeerNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
+            throws PeerAlreadyExistException, PeerValidationFailedException {
         // validate new peer
         PeerValidator peerValidator = PeerValidator.validateNonNullFields(newPeer);
         if(peerValidator.hasFails()) {
