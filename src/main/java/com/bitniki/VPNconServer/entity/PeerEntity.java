@@ -12,7 +12,8 @@ public class PeerEntity {
     private String peerPrivateKey;
     private String peerPublicKey;
     private String peerConfName;
-    private Boolean isActivated;
+    @Column(nullable = false)
+    private Boolean isActivated = true;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
