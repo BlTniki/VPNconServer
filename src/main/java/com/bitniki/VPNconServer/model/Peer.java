@@ -8,6 +8,7 @@ public class Peer {
     private String peerPrivateKey;
     private String peerPublicKey;
     private String peerConfName;
+    private Boolean isActivated;
 
     public static Peer toModel(PeerEntity entity) {
         return new Peer(entity);
@@ -64,4 +65,11 @@ public class Peer {
         this.peerConfName = peerConfName;
     }
 
+    public Boolean getActivated() {
+        return isActivated;
+    }
+
+    public void setActivated(Boolean activated) {
+        isActivated = activated;
+    }
 }

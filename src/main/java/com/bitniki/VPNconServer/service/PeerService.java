@@ -100,6 +100,7 @@ public class PeerService {
 
         peer.setUser(user);
         peer.setHost(host);
+        peer.setActivated(true);
         //create peer on host and complete peer entity
         PeerConnectHandler peerConnectHandler = new PeerConnectHandler(peer);
         peerConnectHandler.createPeerOnHostAndFillEntity();

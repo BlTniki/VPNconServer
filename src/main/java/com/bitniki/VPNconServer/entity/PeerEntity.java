@@ -12,6 +12,7 @@ public class PeerEntity {
     private String peerPrivateKey;
     private String peerPublicKey;
     private String peerConfName;
+    private Boolean isActivated;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
@@ -60,6 +61,14 @@ public class PeerEntity {
 
     public void setPeerConfName(String peerConfName) {
         this.peerConfName = peerConfName;
+    }
+
+    public Boolean getActivated() {
+        return isActivated;
+    }
+
+    public void setActivated(Boolean activated) {
+        isActivated = activated;
     }
 
     public UserEntity getUser() {
