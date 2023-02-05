@@ -9,7 +9,9 @@ public enum Permission {
     Peer_READ("peer:read"),
     Peer_WRITE("peer:write"),
     Host_READ("host:read"),
-    Host_WRITE("host:write");
+    Host_WRITE("host:write"),
+    Subscription_READ("subscription:read"),
+    Subscription_WRITE("subscription:write");
 
     private final String permission;
 
