@@ -126,7 +126,7 @@ public class PeerService {
         UserEntity user = userRepo.findById(user_id).orElseThrow(() -> new UserNotFoundException("User not found"));
 
         //find host entity
-        HostEntity host = hostRepo.findById(host_id).orElseThrow(() -> new HostNotFoundException("User not found"));
+        HostEntity host = hostRepo.findById(host_id).orElseThrow(() -> new HostNotFoundException("Host not found"));
 
         return PeerWithAllRelations.toModel(createPeer(user, host, peerEntity));
     }
