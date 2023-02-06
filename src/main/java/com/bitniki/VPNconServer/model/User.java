@@ -1,12 +1,18 @@
 package com.bitniki.VPNconServer.model;
+import com.bitniki.VPNconServer.entity.SubscriptionEntity;
 import com.bitniki.VPNconServer.entity.UserEntity;
 
+import java.time.LocalDate;
+
+@SuppressWarnings("unused")
 public class User {
     private Long id;
     private String login;
     private Role role;
     private Long telegramId;
     private String telegramUsername;
+    private LocalDate subscriptionExpirationDay;
+    private SubscriptionEntity subscription;
 
     public static User toModel (UserEntity entity) {
         return new User(entity);
@@ -21,6 +27,8 @@ public class User {
         this.setRole(entity.getRole());
         this.setTelegramId(entity.getTelegramId());
         this.setTelegramUsername(entity.getTelegramUsername());
+        this.setSubscriptionExpirationDay(entity.getSubscriptionExpirationDay());
+        this.setSubscription(entity.getSubscription());
     }
 
     public Long getId() {
@@ -61,5 +69,21 @@ public class User {
 
     public void setTelegramUsername(String telegramUsername) {
         this.telegramUsername = telegramUsername;
+    }
+
+    public LocalDate getSubscriptionExpirationDay() {
+        return subscriptionExpirationDay;
+    }
+
+    public void setSubscriptionExpirationDay(LocalDate subscriptionExpirationDay) {
+        this.subscriptionExpirationDay = subscriptionExpirationDay;
+    }
+
+    public SubscriptionEntity getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(SubscriptionEntity subscription) {
+        this.subscription = subscription;
     }
 }

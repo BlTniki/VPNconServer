@@ -3,8 +3,10 @@ package com.bitniki.VPNconServer.entity;
 import com.bitniki.VPNconServer.model.Role;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @Entity
 @Table (name = "user")
 public class UserEntity {
@@ -20,6 +22,9 @@ public class UserEntity {
     private Role role = Role.DISABLED_USER;
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user", orphanRemoval = true)
     private List<PeerEntity> peerEntities;
+    private LocalDate subscriptionExpirationDay;
+    @ManyToOne
+    private SubscriptionEntity subscription;
 
 
 
@@ -100,5 +105,21 @@ public class UserEntity {
 
     public void setTelegramUsername(String telegramUsername) {
         this.telegramUsername = telegramUsername;
+    }
+
+    public LocalDate getSubscriptionExpirationDay() {
+        return subscriptionExpirationDay;
+    }
+
+    public void setSubscriptionExpirationDay(LocalDate subscriptionExpirationDay) {
+        this.subscriptionExpirationDay = subscriptionExpirationDay;
+    }
+
+    public SubscriptionEntity getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(SubscriptionEntity subscription) {
+        this.subscription = subscription;
     }
 }
