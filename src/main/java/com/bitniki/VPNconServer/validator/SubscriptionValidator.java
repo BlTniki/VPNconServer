@@ -12,7 +12,7 @@ public class SubscriptionValidator extends Validator {
 
         //validate
         if(entity.getRole() == null
-            || Arrays.asList(Role.values()).contains(entity.getRole())) {
+            || !Arrays.asList(Role.values()).contains(entity.getRole())) {
             validator.addFail("Wrong role");
         }
         if(entity.getPriceInRub() == null) {
