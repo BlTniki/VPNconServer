@@ -65,7 +65,10 @@ public class PeerService {
         return PeerWithAllRelations.toModel(user.getPeers().stream()
                 .filter(peerEntity -> peerEntity.getId().equals(id))
                 .findAny()
-                .orElseThrow(() -> new PeerNotFoundException("Peer does not exist or you have no permission for this peer")));
+                .orElseThrow(
+                        () -> new PeerNotFoundException("Peer does not exist or you have no permission for this peer")
+                )
+        );
     }
 
     private void setGeneratedPeerIpTo(PeerEntity peer, HostEntity host) throws PeerValidationFailedException {
@@ -83,9 +86,9 @@ public class PeerService {
             throws PeerAlreadyExistException, EntityValidationFailedException {
         //validate user subscription
         if(user.getSubscription() == null
-                || user.getPeers().size() < user.getSubscription().getPeersAvailable()) {
+                || user.getPeers().size() >= user.getSubscription().getPeersAvailable()) {
             throw new SubscriptionValidationFailedException(
-                    "Your subscription does not allow the creation of a new pear"
+                    "Your subscription does not allow the creation of a new peer"
             );
         }
         // validate peer

@@ -2,6 +2,7 @@ package com.bitniki.VPNconServer.model;
 
 import com.bitniki.VPNconServer.entity.PeerEntity;
 
+@SuppressWarnings("unused")
 public class Peer {
     private Long id;
     private String peerIp;
@@ -23,6 +24,7 @@ public class Peer {
         this.setPeerPrivateKey(entity.getPeerPrivateKey());
         this.setPeerPublicKey(entity.getPeerPublicKey());
         this.setPeerConfName(entity.getPeerConfName());
+        this.setActivated(entity.getActivated());
     }
 
     public Long getId() {
