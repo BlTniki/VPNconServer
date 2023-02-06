@@ -19,7 +19,7 @@ public class UserEntity {
     private Long telegramId;
     private String telegramUsername;
     @Enumerated(value = EnumType.STRING)
-    private Role role = Role.DISABLED_USER;
+    private Role role = Role.ACTIVATED_USER;
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user", orphanRemoval = true)
     private List<PeerEntity> peerEntities;
     private LocalDate subscriptionExpirationDay;

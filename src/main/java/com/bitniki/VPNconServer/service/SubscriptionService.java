@@ -94,8 +94,6 @@ public class SubscriptionService {
                         () -> new SubscriptionNotFoundException("Subscription not found!")
                 );
 
-        //Add subs to user
-        user.setSubscription(subscription);
         //Set expiration day
         LocalDate dateToday = LocalDate.now();
         LocalDate newExpirationDay;
@@ -103,12 +101,14 @@ public class SubscriptionService {
         //else, add to exist user's expiration date
         if(user.getSubscriptionExpirationDay() == null
                 || user.getSubscriptionExpirationDay().isBefore(dateToday)
-                || user.getSubscription().equals(subscription)) {
+                || !user.getSubscription().equals(subscription)) {
             newExpirationDay = dateToday.plusDays(subscription.getDays());
         } else {
             newExpirationDay = user.getSubscriptionExpirationDay().plusDays(subscription.getDays());
         }
         user.setSubscriptionExpirationDay(newExpirationDay);
+        //Add subs to user
+        user.setSubscription(subscription);
 
         //Activate peers.
         // Activate only so many peers that does not exceed the number of available

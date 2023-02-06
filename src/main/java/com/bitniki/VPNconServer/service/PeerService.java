@@ -9,7 +9,9 @@ import com.bitniki.VPNconServer.exception.notFoundException.HostNotFoundExceptio
 import com.bitniki.VPNconServer.exception.alreadyExistException.PeerAlreadyExistException;
 import com.bitniki.VPNconServer.exception.notFoundException.PeerNotFoundException;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
+import com.bitniki.VPNconServer.exception.validationFailedException.EntityValidationFailedException;
 import com.bitniki.VPNconServer.exception.validationFailedException.PeerValidationFailedException;
+import com.bitniki.VPNconServer.exception.validationFailedException.SubscriptionValidationFailedException;
 import com.bitniki.VPNconServer.model.PeerWithAllRelations;
 import com.bitniki.VPNconServer.repository.HostRepo;
 import com.bitniki.VPNconServer.repository.PeerRepo;
@@ -78,7 +80,14 @@ public class PeerService {
     }
 
     private PeerEntity createPeer(UserEntity user, HostEntity host, PeerEntity peer)
-            throws PeerAlreadyExistException, PeerValidationFailedException {
+            throws PeerAlreadyExistException, EntityValidationFailedException {
+        //validate user subscription
+        if(user.getSubscription() == null
+                || user.getPeers().size() < user.getSubscription().getPeersAvailable()) {
+            throw new SubscriptionValidationFailedException(
+                    "Your subscription does not allow the creation of a new pear"
+            );
+        }
         // validate peer
         PeerValidator peerValidator = PeerValidator.validateAllFields(peer);
         if(peerValidator.hasFails()) {
@@ -108,7 +117,8 @@ public class PeerService {
         return peerRepo.save(peer);
     }
 
-    public PeerWithAllRelations create(Long user_id, Long host_id, PeerEntity peerEntity) throws EntityNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
+    public PeerWithAllRelations create(Long user_id, Long host_id, PeerEntity peerEntity)
+            throws EntityValidationFailedException, PeerAlreadyExistException, EntityNotFoundException {
         //find user entity
         UserEntity user = userRepo.findById(user_id).orElseThrow(() -> new UserNotFoundException("User not found"));
 
@@ -118,7 +128,8 @@ public class PeerService {
         return PeerWithAllRelations.toModel(createPeer(user, host, peerEntity));
     }
 
-    public PeerWithAllRelations create(Principal principal, Long host_id, PeerEntity peerEntity) throws EntityNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
+    public PeerWithAllRelations create(Principal principal, Long host_id, PeerEntity peerEntity)
+            throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException {
         // load user
         UserEntity user = userRepo.findByLogin(principal.getName());
         if(user == null) throw new UserNotFoundException("User not found");
@@ -239,7 +250,9 @@ public class PeerService {
         PeerEntity peer = user.getPeers().stream()
                 .filter(peerEntity -> peerEntity.getId().equals(id))
                 .findAny()
-                .orElseThrow(() -> new PeerNotFoundException("Peer does not exist or you have no permission for this peer"));
+                .orElseThrow(
+                        () -> new PeerNotFoundException("Peer does not exist or you have no permission for this peer")
+                );
 
         return makeRequestToHostForDownloadToken(peer);
     }
