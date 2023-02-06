@@ -13,13 +13,15 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, unique = true)
     private String login;
+    @Column(nullable = false)
     private String password;
+    @Enumerated(value = EnumType.STRING)
+    private Role role = Role.ACTIVATED_USER;
     private String token;
     private Long telegramId;
     private String telegramUsername;
-    @Enumerated(value = EnumType.STRING)
-    private Role role = Role.ACTIVATED_USER;
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user", orphanRemoval = true)
     private List<PeerEntity> peerEntities;
     private LocalDate subscriptionExpirationDay;

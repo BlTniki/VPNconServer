@@ -2,15 +2,20 @@ package com.bitniki.VPNconServer.entity;
 
 import javax.persistence.*;
 
+@SuppressWarnings("unused")
 @Entity
 @Table(name = "peer")
 public class PeerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String peerIp;
+    @Column(nullable = false)
     private String peerPrivateKey;
+    @Column(nullable = false)
     private String peerPublicKey;
+    @Column(nullable = false)
     private String peerConfName;
     @Column(nullable = false)
     private Boolean isActivated = true;

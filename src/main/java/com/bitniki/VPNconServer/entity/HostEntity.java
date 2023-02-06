@@ -3,15 +3,20 @@ package com.bitniki.VPNconServer.entity;
 import javax.persistence.*;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @Entity
 @Table (name = "host")
 public class HostEntity {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, unique = true)
     private String name;
+    @Column(nullable = false, unique = true)
     private String ipadress;
+    @Column(nullable = false)
     private String serverPassword;
+    @Column(nullable = false)
     private String serverPublicKey;
     private String dns;
 

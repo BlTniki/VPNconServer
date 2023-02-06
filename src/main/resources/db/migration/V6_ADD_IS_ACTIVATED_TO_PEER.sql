@@ -1,1 +1,0 @@
-ALTER TABLE `peer` ADD `is_activated` BOOLEAN NOT NULL DEFAULT FALSE;

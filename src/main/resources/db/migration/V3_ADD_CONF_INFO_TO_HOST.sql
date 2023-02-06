@@ -1,1 +1,0 @@
-ALTER TABLE `host` ADD `dns` varchar(255);

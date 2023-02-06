@@ -4,6 +4,7 @@ import com.bitniki.VPNconServer.model.Role;
 
 import javax.persistence.*;
 
+@SuppressWarnings("unused")
 @Entity
 @Table(name = "subscription")
 public class SubscriptionEntity {
@@ -16,6 +17,7 @@ public class SubscriptionEntity {
     private Integer priceInRub = 0;
     @Column(nullable = false)
     private Integer peersAvailable = 0;
+    @Column(nullable = false)
     private Integer days = 0;
 
     public Long getId() {

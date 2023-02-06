@@ -1,1 +1,0 @@
-ALTER TABLE `host` ADD `name` varchar(255) NOT NULL;
