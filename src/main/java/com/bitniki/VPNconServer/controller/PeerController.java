@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @RestController
 @RequestMapping("/peers")
 public class PeerController {
@@ -118,5 +119,21 @@ public class PeerController {
             "&& hasAuthority('peer:read')")
     public ResponseEntity<String> getMineDownloadToken(Principal principal,@PathVariable Long id) throws EntityNotFoundException {
         return ResponseEntity.ok(peerService.getDownloadTokenForPeer(principal, id));
+    }
+
+    @PostMapping("/activate/{id}")
+    @PreAuthorize("hasAuthority('any')" +
+            "&& hasAuthority('peer:write')")
+    public ResponseEntity<Boolean> activatePeer(@PathVariable Long id)
+            throws PeerNotFoundException {
+        return ResponseEntity.ok(peerService.activatePeerOnHost(id));
+    }
+
+    @PostMapping("/deactivate/{id}")
+    @PreAuthorize("hasAuthority('any')" +
+            "&& hasAuthority('peer:write')")
+    public ResponseEntity<Boolean> deactivatePeer(@PathVariable Long id)
+            throws PeerNotFoundException {
+        return ResponseEntity.ok(peerService.deactivatePeerOnHost(id));
     }
 }

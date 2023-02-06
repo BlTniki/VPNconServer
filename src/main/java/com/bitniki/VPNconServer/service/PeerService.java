@@ -243,4 +243,28 @@ public class PeerService {
 
         return makeRequestToHostForDownloadToken(peer);
     }
+
+    public Boolean activatePeerOnHost(Long id) throws PeerNotFoundException {
+        //load peer
+        PeerEntity entity = peerRepo.findById(id)
+                .orElseThrow(
+                        () -> new PeerNotFoundException("Peer " + id + " not Found!")
+                );
+        entity.setActivated(true);
+        PeerConnectHandler peerConnectHandler = new PeerConnectHandler(entity);
+        peerConnectHandler.activateOnHost();
+        return true;
+    }
+
+    public Boolean deactivatePeerOnHost(Long id) throws PeerNotFoundException {
+        //load peer
+        PeerEntity entity = peerRepo.findById(id)
+                .orElseThrow(
+                        () -> new PeerNotFoundException("Peer " + id + " not Found!")
+                );
+        entity.setActivated(false);
+        PeerConnectHandler peerConnectHandler = new PeerConnectHandler(entity);
+        peerConnectHandler.deactivateOnHost();
+        return true;
+    }
 }
