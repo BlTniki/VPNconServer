@@ -3,6 +3,7 @@ package com.bitniki.VPNconServer.controller;
 import com.bitniki.VPNconServer.entity.SubscriptionEntity;
 import com.bitniki.VPNconServer.exception.notFoundException.SubscriptionNotFoundException;
 import com.bitniki.VPNconServer.exception.validationFailedException.SubscriptionValidationFailedException;
+import com.bitniki.VPNconServer.model.Role;
 import com.bitniki.VPNconServer.model.Subscription;
 import com.bitniki.VPNconServer.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,12 @@ public class SubscriptionController {
     public ResponseEntity<Subscription> getOne(@PathVariable Long id)
             throws SubscriptionNotFoundException {
         return ResponseEntity.ok(subscriptionService.getById(id));
+    }
+
+    @GetMapping("/byRole/{role}")
+    @PreAuthorize("hasAuthority('subscription:read')")
+    public ResponseEntity<List<Subscription>> getByRole(@PathVariable Role role) {
+        return ResponseEntity.ok(subscriptionService.getByRole(role));
     }
 
     @PostMapping
