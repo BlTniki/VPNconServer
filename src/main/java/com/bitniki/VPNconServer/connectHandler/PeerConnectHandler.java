@@ -90,7 +90,7 @@ public class PeerConnectHandler {
     }
 
     public Boolean deactivateOnHost() {
-        final String uri = this.hostIpAdress + "/deactivate/" + getPeerForRequest().getPeerId();
+        final String uri = this.hostIpAdress + "/peers/deactivate/" + getPeerForRequest().getPeerId();
         RestTemplate restTemplate = new RestTemplate();
         try {
             restTemplate.exchange(uri, HttpMethod.POST, this.httpEntity, HashMap.class);

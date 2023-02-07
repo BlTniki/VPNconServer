@@ -112,6 +112,8 @@ public class UserService {
         }
 
         // configure entity
+        // Set default role
+        user.setRole(Role.ACTIVATED_USER);
         // encode password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 

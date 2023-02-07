@@ -1,11 +1,13 @@
 package com.bitniki.VPNconServer.service;
 
+import com.bitniki.VPNconServer.entity.MailEntity;
 import com.bitniki.VPNconServer.entity.PeerEntity;
 import com.bitniki.VPNconServer.entity.SubscriptionEntity;
 import com.bitniki.VPNconServer.entity.UserEntity;
 import com.bitniki.VPNconServer.exception.notFoundException.EntityNotFoundException;
 import com.bitniki.VPNconServer.exception.notFoundException.SubscriptionNotFoundException;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
+import com.bitniki.VPNconServer.exception.validationFailedException.MailValidationFailedException;
 import com.bitniki.VPNconServer.exception.validationFailedException.SubscriptionValidationFailedException;
 import com.bitniki.VPNconServer.role.Role;
 import com.bitniki.VPNconServer.model.Subscription;
@@ -32,6 +34,11 @@ public class SubscriptionService {
     private UserRepo userRepo;
     @Autowired
     PeerService peerService;
+    @Autowired
+    MailService mailService;
+
+    private final String notifyToPay = "Хей! Завтра сгорит твоя подписка! Думаю что стоит продлить";
+    private final String notifyAboutExpire = "Твоя подписка сгорела из-за неуплаты(";
 
     public List<Subscription> getAll() {
         List<SubscriptionEntity> subscriptions = new ArrayList<>();
@@ -136,8 +143,10 @@ public class SubscriptionService {
         user.setSubscription(null);
         user.setSubscriptionExpirationDay(null);
         //deactivate all peers
-        for (PeerEntity peer: user.getPeers()) {
-            peerService.deactivatePeerOnHost(peer.getId());
+        if(user.getPeers() != null) {
+            for (PeerEntity peer : user.getPeers()) {
+                peerService.deactivatePeerOnHost(peer.getId());
+            }
         }
         //Save and return
         return UserWithRelations.toModel(userRepo.save(user));
@@ -151,14 +160,21 @@ public class SubscriptionService {
      */
     @Scheduled(cron = "0 0 12 * * ?")
     public void checkSubscriptionExpiration() {
-        LocalDate today = LocalDate.now();
-        LocalDate tomorrow = today.plusDays(1);
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
 
         List<UserEntity> users = userRepo.findBySubscriptionExpirationDayIsNotNull();
         for (UserEntity user: users) {
             LocalDate expireDate = user.getSubscriptionExpirationDay();
             if(expireDate.equals(tomorrow)) {
                 //Notice User
+                MailEntity mail = new MailEntity();
+                mail.setForTelegram(true);
+                mail.setPayload(notifyToPay);
+                try {
+                    mailService.createByUserId(user.getId(), mail);
+                } catch (UserNotFoundException | MailValidationFailedException e) {
+                    throw new RuntimeException(e);
+                }
                 return;
             }
             if(expireDate.isBefore(tomorrow)) {
@@ -168,6 +184,14 @@ public class SubscriptionService {
                     throw new RuntimeException(e);
                 }
                 //Notice User
+                MailEntity mail = new MailEntity();
+                mail.setForTelegram(true);
+                mail.setPayload(notifyAboutExpire);
+                try {
+                    mailService.createByUserId(user.getId(), mail);
+                } catch (UserNotFoundException | MailValidationFailedException e) {
+                    throw new RuntimeException(e);
+                }
                 return;
             }
         }

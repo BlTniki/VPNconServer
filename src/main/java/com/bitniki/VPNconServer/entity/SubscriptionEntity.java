@@ -12,6 +12,7 @@ public class SubscriptionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private Role role;
     @Column(nullable = false)
     private Integer priceInRub = 0;
@@ -34,6 +35,9 @@ public class SubscriptionEntity {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+    public void setRole(String role) {
+        this.role = Role.valueOf(role);
     }
 
     public Integer getPriceInRub() {

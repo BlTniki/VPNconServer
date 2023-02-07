@@ -9,6 +9,7 @@ public class Mail {
     private UserEntity user;
     private Boolean forTelegram;
     private Boolean isChecked;
+    private String payload;
 
     public static Mail toModel(MailEntity entity) {
         Mail model = new Mail();
@@ -16,6 +17,7 @@ public class Mail {
         model.setUser(entity.getUser());
         model.setForTelegram(entity.getForTelegram());
         model.setChecked(entity.getChecked());
+        model.setPayload(entity.getPayload());
         return model;
     }
 
@@ -52,5 +54,13 @@ public class Mail {
 
     public void setChecked(Boolean checked) {
         isChecked = checked;
+    }
+
+    public String getPayload() {
+        return payload;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
     }
 }

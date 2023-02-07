@@ -18,11 +18,11 @@ public class UserEntity {
     @Column(nullable = false)
     private String password;
     @Enumerated(value = EnumType.STRING)
-    private Role role = Role.ACTIVATED_USER;
+    private Role role;
     private String token;
     private Long telegramId;
     private String telegramUsername;
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<PeerEntity> peerEntities;
     private LocalDate subscriptionExpirationDay;
     @ManyToOne
