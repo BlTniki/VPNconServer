@@ -10,21 +10,47 @@ import com.bitniki.VPNconServer.model.UserWithRelations;
 import com.bitniki.VPNconServer.repository.UserRepo;
 import com.bitniki.VPNconServer.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 @Service
 public class UserService {
     @Autowired
     private UserRepo userRepo;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Value("${tg.user.password}")
+    String tgPassword;
+    @Value("${accountant.user.password}")
+    String accountantPassword;
+
+    @PostConstruct
+    public void createDefaultUsersIfNotExist()
+            throws UserAlreadyExistException, UserValidationFailedException {
+        if(userRepo.findByLogin("telegramBot") == null && tgPassword != null) {
+            UserEntity bot = new UserEntity();
+            bot.setLogin("telegramBot");
+            bot.setPassword(tgPassword);
+            bot.setRole(Role.ADMIN);
+            create(bot);
+        }
+        if(userRepo.findByLogin("accountant") == null && accountantPassword != null) {
+            UserEntity bot = new UserEntity();
+            bot.setLogin("accountant");
+            bot.setPassword(accountantPassword);
+            bot.setRole(Role.DISABLED_USER);
+            create(bot);
+        }
+    }
 
     private UserEntity updateUser(UserEntity oldUser, UserEntity newUser) throws UserValidationFailedException, UserAlreadyExistException {
         // valid new entity
