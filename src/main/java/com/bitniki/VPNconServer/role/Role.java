@@ -1,4 +1,4 @@
-package com.bitniki.VPNconServer.model;
+package com.bitniki.VPNconServer.role;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 

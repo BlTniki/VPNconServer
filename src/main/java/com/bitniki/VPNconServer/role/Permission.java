@@ -1,4 +1,4 @@
-package com.bitniki.VPNconServer.model;
+package com.bitniki.VPNconServer.role;
 
 public enum Permission {
     GenToken("gen_token"),
@@ -11,7 +11,9 @@ public enum Permission {
     Host_READ("host:read"),
     Host_WRITE("host:write"),
     Subscription_READ("subscription:read"),
-    Subscription_WRITE("subscription:write");
+    Subscription_WRITE("subscription:write"),
+    Mail_READ("mail:read"),
+    Mail_WRITE("mail:write");
 
     private final String permission;
 
