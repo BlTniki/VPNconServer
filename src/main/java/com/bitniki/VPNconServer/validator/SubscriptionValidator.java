@@ -1,7 +1,7 @@
 package com.bitniki.VPNconServer.validator;
 
 import com.bitniki.VPNconServer.entity.SubscriptionEntity;
-import com.bitniki.VPNconServer.model.Role;
+import com.bitniki.VPNconServer.role.Role;
 
 import java.util.Arrays;
 

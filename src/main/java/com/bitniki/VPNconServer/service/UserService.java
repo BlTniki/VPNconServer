@@ -4,6 +4,7 @@ import com.bitniki.VPNconServer.entity.UserEntity;
 import com.bitniki.VPNconServer.exception.alreadyExistException.UserAlreadyExistException;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
 import com.bitniki.VPNconServer.exception.validationFailedException.UserValidationFailedException;
+import com.bitniki.VPNconServer.role.Role;
 import com.bitniki.VPNconServer.model.User;
 import com.bitniki.VPNconServer.model.UserWithRelations;
 import com.bitniki.VPNconServer.repository.UserRepo;

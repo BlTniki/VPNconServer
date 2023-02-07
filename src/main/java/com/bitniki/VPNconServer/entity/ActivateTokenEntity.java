@@ -1,6 +1,6 @@
 package com.bitniki.VPNconServer.entity;
 
-import com.bitniki.VPNconServer.model.Role;
+import com.bitniki.VPNconServer.role.Role;
 
 import javax.persistence.*;
 

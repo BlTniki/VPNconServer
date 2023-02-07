@@ -7,7 +7,7 @@ import com.bitniki.VPNconServer.exception.notFoundException.EntityNotFoundExcept
 import com.bitniki.VPNconServer.exception.notFoundException.SubscriptionNotFoundException;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
 import com.bitniki.VPNconServer.exception.validationFailedException.SubscriptionValidationFailedException;
-import com.bitniki.VPNconServer.model.Role;
+import com.bitniki.VPNconServer.role.Role;
 import com.bitniki.VPNconServer.model.Subscription;
 import com.bitniki.VPNconServer.model.UserWithRelations;
 import com.bitniki.VPNconServer.repository.SubscriptionRepo;
