@@ -1,6 +1,7 @@
 package com.bitniki.VPNconServer.model;
 import com.bitniki.VPNconServer.entity.SubscriptionEntity;
 import com.bitniki.VPNconServer.entity.UserEntity;
+import com.bitniki.VPNconServer.role.Role;
 
 import java.time.LocalDate;
 
