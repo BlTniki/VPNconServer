@@ -14,6 +14,8 @@ import com.bitniki.VPNconServer.repository.SubscriptionRepo;
 import com.bitniki.VPNconServer.repository.UserRepo;
 import com.bitniki.VPNconServer.validator.SubscriptionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,6 +24,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @Service
+@EnableScheduling
 public class SubscriptionService {
     @Autowired
     private SubscriptionRepo subscriptionRepo;
@@ -138,5 +141,35 @@ public class SubscriptionService {
         }
         //Save and return
         return UserWithRelations.toModel(userRepo.save(user));
+    }
+
+    /*
+    Scheduled task for every day at 12:00 PM (noon)
+    It find users by subscriptionExpirationDay
+    If ExpirationDay tomorrow — send notification
+    If ExpirationDay today — use deleteSubscriptionFromUser
+     */
+    @Scheduled(cron = "0 0 12 * * ?")
+    public void checkSubscriptionExpiration() {
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+
+        List<UserEntity> users = userRepo.findBySubscriptionExpirationDayIsNotNull();
+        for (UserEntity user: users) {
+            LocalDate expireDate = user.getSubscriptionExpirationDay();
+            if(expireDate.equals(tomorrow)) {
+                //Notice User
+                return;
+            }
+            if(expireDate.isBefore(tomorrow)) {
+                try {
+                    deleteSubscriptionFromUser(user.getId());
+                } catch (EntityNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                //Notice User
+                return;
+            }
+        }
     }
 }
