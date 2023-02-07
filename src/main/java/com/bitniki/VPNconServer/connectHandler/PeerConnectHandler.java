@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 // this class serve for hand communication with host
@@ -73,6 +74,32 @@ public class PeerConnectHandler {
             System.out.println(e.getMessage());//400 BAD REQUEST: "Service answers like: This peerId has already taken"
             throw e;
         }
+    }
+
+    public Boolean activateOnHost() {
+        final String uri = this.hostIpAdress + "/activate/" + getPeerForRequest().getPeerId();
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            restTemplate.exchange(uri, HttpMethod.POST, this.httpEntity, HashMap.class);
+        } catch (Exception e) {
+            // somewhere there should be logging
+            System.out.println(e.getMessage());//400 BAD REQUEST: "Service answers like: This peerId has already taken"
+            throw e;
+        }
+        return true;
+    }
+
+    public Boolean deactivateOnHost() {
+        final String uri = this.hostIpAdress + "/peers/deactivate/" + getPeerForRequest().getPeerId();
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            restTemplate.exchange(uri, HttpMethod.POST, this.httpEntity, HashMap.class);
+        } catch (Exception e) {
+            // somewhere there should be logging
+            System.out.println(e.getMessage());//400 BAD REQUEST: "Service answers like: This peerId has already taken"
+            throw e;
+        }
+        return true;
     }
 
     public PeerConnectHandler(PeerEntity peer) {

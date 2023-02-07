@@ -1,4 +1,4 @@
-package com.bitniki.VPNconServer.model;
+package com.bitniki.VPNconServer.role;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 
 public enum Role {
     ADMIN(Set.of(Permission.values())),
+    ACTIVATED_CLOSE_USER(Set.of(Permission.Personal,
+                                Permission.User_READ, Permission.User_WRITE,
+                                Permission.Peer_READ, Permission.Peer_WRITE,
+                                Permission.Host_READ)),
     ACTIVATED_USER(Set.of(  Permission.Personal,
                             Permission.User_READ, Permission.User_WRITE,
                             Permission.Peer_READ, Permission.Peer_WRITE,

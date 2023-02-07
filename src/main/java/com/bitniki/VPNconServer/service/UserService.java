@@ -4,26 +4,53 @@ import com.bitniki.VPNconServer.entity.UserEntity;
 import com.bitniki.VPNconServer.exception.alreadyExistException.UserAlreadyExistException;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
 import com.bitniki.VPNconServer.exception.validationFailedException.UserValidationFailedException;
+import com.bitniki.VPNconServer.role.Role;
 import com.bitniki.VPNconServer.model.User;
 import com.bitniki.VPNconServer.model.UserWithRelations;
 import com.bitniki.VPNconServer.repository.UserRepo;
 import com.bitniki.VPNconServer.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 @Service
 public class UserService {
     @Autowired
     private UserRepo userRepo;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Value("${tg.user.password}")
+    String tgPassword;
+    @Value("${accountant.user.password}")
+    String accountantPassword;
+
+    @PostConstruct
+    public void createDefaultUsersIfNotExist()
+            throws UserAlreadyExistException, UserValidationFailedException {
+        if(userRepo.findByLogin("telegramBot") == null && tgPassword != null) {
+            UserEntity bot = new UserEntity();
+            bot.setLogin("telegramBot");
+            bot.setPassword(tgPassword);
+            bot.setRole(Role.ADMIN);
+            create(bot);
+        }
+        if(userRepo.findByLogin("accountant") == null && accountantPassword != null) {
+            UserEntity bot = new UserEntity();
+            bot.setLogin("accountant");
+            bot.setPassword(accountantPassword);
+            bot.setRole(Role.DISABLED_USER);
+            create(bot);
+        }
+    }
 
     private UserEntity updateUser(UserEntity oldUser, UserEntity newUser) throws UserValidationFailedException, UserAlreadyExistException {
         // valid new entity
@@ -67,6 +94,12 @@ public class UserService {
         return UserWithRelations.toModel(user);
     }
 
+    public UserWithRelations getOneByTelegramId (Long telegramId) throws UserNotFoundException {
+        return UserWithRelations.toModel(userRepo.findByTelegramId(telegramId).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        ));
+    }
+
     public User create (UserEntity user) throws UserAlreadyExistException, UserValidationFailedException {
         // valid entity
         UserValidator userValidator = UserValidator.validateAllFields(user);
@@ -79,6 +112,8 @@ public class UserService {
         }
 
         // configure entity
+        // Set default role
+        user.setRole(Role.ACTIVATED_USER);
         // encode password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 

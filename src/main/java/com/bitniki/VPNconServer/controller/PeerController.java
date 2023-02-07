@@ -5,6 +5,7 @@ import com.bitniki.VPNconServer.exception.alreadyExistException.PeerAlreadyExist
 import com.bitniki.VPNconServer.exception.notFoundException.EntityNotFoundException;
 import com.bitniki.VPNconServer.exception.notFoundException.PeerNotFoundException;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
+import com.bitniki.VPNconServer.exception.validationFailedException.EntityValidationFailedException;
 import com.bitniki.VPNconServer.exception.validationFailedException.PeerValidationFailedException;
 import com.bitniki.VPNconServer.model.PeerWithAllRelations;
 import com.bitniki.VPNconServer.service.PeerService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @RestController
 @RequestMapping("/peers")
 public class PeerController {
@@ -59,7 +61,7 @@ public class PeerController {
     public ResponseEntity<PeerWithAllRelations> createPeer(@RequestParam Long user_id,
                                                            @RequestParam Long host_id,
                                                            @RequestBody PeerEntity peerEntity)
-            throws EntityNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
+            throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException {
         return ResponseEntity.ok(peerService.create(user_id, host_id, peerEntity));
     }
 
@@ -69,7 +71,7 @@ public class PeerController {
     public ResponseEntity<PeerWithAllRelations> createMinePeer( Principal principal,
                                                                 @RequestParam Long host_id,
                                                                 @RequestBody PeerEntity peerEntity)
-            throws EntityNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
+            throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException {
         return ResponseEntity.ok(peerService.create(principal, host_id, peerEntity));
     }
 
@@ -118,5 +120,21 @@ public class PeerController {
             "&& hasAuthority('peer:read')")
     public ResponseEntity<String> getMineDownloadToken(Principal principal,@PathVariable Long id) throws EntityNotFoundException {
         return ResponseEntity.ok(peerService.getDownloadTokenForPeer(principal, id));
+    }
+
+    @PostMapping("/activate/{id}")
+    @PreAuthorize("hasAuthority('any')" +
+            "&& hasAuthority('peer:write')")
+    public ResponseEntity<Boolean> activatePeer(@PathVariable Long id)
+            throws PeerNotFoundException {
+        return ResponseEntity.ok(peerService.activatePeerOnHost(id));
+    }
+
+    @PostMapping("/deactivate/{id}")
+    @PreAuthorize("hasAuthority('any')" +
+            "&& hasAuthority('peer:write')")
+    public ResponseEntity<Boolean> deactivatePeer(@PathVariable Long id)
+            throws PeerNotFoundException {
+        return ResponseEntity.ok(peerService.deactivatePeerOnHost(id));
     }
 }

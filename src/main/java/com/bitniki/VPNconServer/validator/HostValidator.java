@@ -11,9 +11,12 @@ public class HostValidator extends Validator {
         HostValidator hostValidator = new HostValidator();
 
         //if field null – addFail, else do match
-        if(host.getIpadress() == null || !hostValidator.ipaddressPattern.matcher(host.getIpadress()).matches()) hostValidator.addFail("Wrong ipaddress");
-        if(host.getServerPassword() == null) hostValidator.addFail("Wrong server password");
-        if(host.getServerPublicKey() == null) hostValidator.addFail("Wrong server public key");
+        if(host.getIpadress() == null || !hostValidator.ipaddressPattern.matcher(host.getIpadress()).matches())
+            hostValidator.addFail("Wrong ipaddress");
+        if(host.getServerPassword() == null)
+            hostValidator.addFail("Wrong server password");
+        if(host.getServerPublicKey() == null)
+            hostValidator.addFail("Wrong server public key");
 
         return hostValidator;
     }

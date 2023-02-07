@@ -6,7 +6,7 @@ import com.bitniki.VPNconServer.exception.notFoundException.ActivateTokenNotFoun
 import com.bitniki.VPNconServer.exception.notFoundException.EntityNotFoundException;
 import com.bitniki.VPNconServer.exception.notFoundException.RoleNotFoundException;
 import com.bitniki.VPNconServer.exception.notFoundException.UserNotFoundException;
-import com.bitniki.VPNconServer.model.Role;
+import com.bitniki.VPNconServer.role.Role;
 import com.bitniki.VPNconServer.repository.ActivateTokenRepo;
 import com.bitniki.VPNconServer.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -11,9 +11,12 @@ public class PeerValidator extends Validator{
     public static PeerValidator validateAllFields(PeerEntity peer) {
         PeerValidator peerValidator = new PeerValidator();
 
+        //if field not null – validate
+        if(peer.getPeerIp() != null && !peerValidator.peerIpPattern.matcher(peer.getPeerIp()).matches())
+            peerValidator.addFail("Wrong peer ip");
         //if field null – addFail, else do match
-        if(peer.getPeerIp() == null || !peerValidator.peerIpPattern.matcher(peer.getPeerIp()).matches()) peerValidator.addFail("Wrong peer ip");
-        if(peer.getPeerConfName() == null || !peerValidator.peerConfNamePattern.matcher(peer.getPeerConfName()).matches()) peerValidator.addFail("Wrong peer conf name");
+        if(peer.getPeerConfName() == null || !peerValidator.peerConfNamePattern.matcher(peer.getPeerConfName()).matches())
+            peerValidator.addFail("Wrong peer conf name");
 
         return peerValidator;
     }
