@@ -1,12 +1,11 @@
 package com.bitniki.VPNconServer.model;
 
 import com.bitniki.VPNconServer.entity.MailEntity;
-import com.bitniki.VPNconServer.entity.UserEntity;
 
 @SuppressWarnings("unused")
 public class Mail {
     private  Long id;
-    private UserEntity user;
+    private User user;
     private Boolean forTelegram;
     private Boolean isChecked;
     private String payload;
@@ -14,7 +13,7 @@ public class Mail {
     public static Mail toModel(MailEntity entity) {
         Mail model = new Mail();
         model.setId(entity.getId());
-        model.setUser(entity.getUser());
+        model.setUser(User.toModel(entity.getUser()));
         model.setForTelegram(entity.getForTelegram());
         model.setChecked(entity.getChecked());
         model.setPayload(entity.getPayload());
@@ -32,11 +31,11 @@ public class Mail {
         this.id = id;
     }
 
-    public UserEntity getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(UserEntity user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
