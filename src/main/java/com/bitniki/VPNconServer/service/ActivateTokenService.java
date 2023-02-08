@@ -17,6 +17,7 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.Random;
 
+@SuppressWarnings("unused")
 @Service
 public class ActivateTokenService {
     @Autowired
@@ -26,22 +27,20 @@ public class ActivateTokenService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private String genRandomString(int targetStringLength) {
+    private String genRandomString() {
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
         Random random = new Random();
 
         return random.ints(leftLimit, rightLimit + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-                .limit(targetStringLength)
+                .limit(10)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
     }
     public ActivateTokenEntity generate(String newRole) throws RoleNotFoundException {
         ActivateTokenEntity entity = new ActivateTokenEntity();
-        entity.setToken(passwordEncoder
-                .encode(genRandomString(10))
-                .replaceAll("/", "_"));
+        entity.setToken(genRandomString());
 
         entity.setNewRole((Arrays.stream(Role.values())
                 .filter(role -> role.name().equals(newRole))
@@ -50,11 +49,7 @@ public class ActivateTokenService {
         return activateTokenRepo.save(entity);
     }
 
-    public String changeRole(Principal principal, String token) throws EntityNotFoundException {
-        // load user
-        UserEntity user = userRepo.findByLogin(principal.getName());
-        if(user == null) throw new UserNotFoundException("User not found");
-
+    private String changeRole(UserEntity user, String token) throws ActivateTokenNotFoundException {
         // load activate token
         ActivateTokenEntity activateToken = activateTokenRepo.findByToken(token).orElseThrow(
                 () -> new ActivateTokenNotFoundException("Activate token not found")
@@ -65,5 +60,22 @@ public class ActivateTokenService {
         userRepo.save(user);
         activateTokenRepo.delete(activateToken);
         return "Success";
+    }
+
+    public String changeRole(Long userId, String token) throws EntityNotFoundException {
+        // load user
+        UserEntity user = userRepo.findById(userId).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        );
+
+        return changeRole(user, token);
+    }
+
+    public String changeMineRole(Principal principal, String token) throws EntityNotFoundException {
+        // load user
+        UserEntity user = userRepo.findByLogin(principal.getName());
+        if(user == null) throw new UserNotFoundException("User not found");
+
+        return  changeRole(user, token);
     }
 }

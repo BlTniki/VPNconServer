@@ -27,6 +27,8 @@ public class UserEntity {
     private LocalDate subscriptionExpirationDay;
     @ManyToOne
     private SubscriptionEntity subscription;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<MailEntity> mails;
 
 
 
@@ -123,5 +125,13 @@ public class UserEntity {
 
     public void setSubscription(SubscriptionEntity subscription) {
         this.subscription = subscription;
+    }
+
+    public List<MailEntity> getMails() {
+        return mails;
+    }
+
+    public void setMails(List<MailEntity> mails) {
+        this.mails = mails;
     }
 }

@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 @Service
 public class AuthenticationService {
     @Autowired
@@ -65,6 +66,16 @@ public class AuthenticationService {
             throw new UserValidationFailedException("No telegramId or telegramUsername of is given");
         userEntity.setTelegramId(user.getTelegramId());
         userEntity.setTelegramUsername(user.getTelegramUsername());
+        return UserWithRelations.toModel(userRepo.save(userEntity));
+    }
+
+    public UserWithRelations dissociateTelegramId(UserEntity user) throws UserNotFoundException {
+        //load user
+        UserEntity userEntity = userRepo.findByLogin(user.getLogin());
+        if(userEntity == null) throw new UserNotFoundException("User not found");
+        // del telegram id and save
+        userEntity.setTelegramId(null);
+        userEntity.setTelegramUsername(null);
         return UserWithRelations.toModel(userRepo.save(userEntity));
     }
 }

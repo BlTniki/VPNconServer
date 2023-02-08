@@ -31,6 +31,7 @@ public class MailService {
         List<MailEntity> entities = mailRepo.findByForTelegramAndIsChecked(forTelegram, isChecked);
         //Set checked
         entities.forEach(entity -> entity.setChecked(true));
+        mailRepo.saveAll(entities);
         return entities.stream().map(Mail::toModel).toList();
     }
 
