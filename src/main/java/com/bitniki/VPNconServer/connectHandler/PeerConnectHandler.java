@@ -77,7 +77,7 @@ public class PeerConnectHandler {
     }
 
     public Boolean activateOnHost() {
-        final String uri = this.hostIpAdress + "/activate/" + getPeerForRequest().getPeerId();
+        final String uri = this.hostIpAdress + "/peers/activate/" + getPeerForRequest().getPeerId();
         RestTemplate restTemplate = new RestTemplate();
         try {
             restTemplate.exchange(uri, HttpMethod.POST, this.httpEntity, HashMap.class);
