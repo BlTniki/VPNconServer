@@ -65,6 +65,7 @@ public class MailService {
         return createMail(user, mail);
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public Mail createByUserId(Long userId, MailEntity mail)
             throws UserNotFoundException, MailValidationFailedException {
         //Find user
@@ -84,6 +85,7 @@ public class MailService {
         mailRepo.deleteByIsChecked(true);
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public Mail saveCheque(String cheque) {
         //Find accountant user
         UserEntity accountant = userRepo.findByLogin("accountant");
