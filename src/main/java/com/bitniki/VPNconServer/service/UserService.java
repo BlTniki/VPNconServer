@@ -40,15 +40,21 @@ public class UserService {
             UserEntity bot = new UserEntity();
             bot.setLogin("telegramBot");
             bot.setPassword(tgPassword);
-            bot.setRole(Role.ADMIN);
-            create(bot);
+            Long botId = create(bot).getId();
+            //Change role
+            UserEntity savedBot = userRepo.findByLogin("telegramBot");
+            savedBot.setRole(Role.ADMIN);
+            userRepo.save(savedBot);
         }
         if(userRepo.findByLogin("accountant") == null && accountantPassword != null) {
             UserEntity bot = new UserEntity();
             bot.setLogin("accountant");
             bot.setPassword(accountantPassword);
-            bot.setRole(Role.DISABLED_USER);
-            create(bot);
+            Long botId = create(bot).getId();
+            //Change role
+            UserEntity savedBot = userRepo.findByLogin("accountant");
+            savedBot.setRole(Role.DISABLED_USER);
+            userRepo.save(savedBot);
         }
     }
 
