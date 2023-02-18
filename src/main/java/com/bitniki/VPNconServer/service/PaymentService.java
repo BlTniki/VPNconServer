@@ -95,7 +95,7 @@ public class PaymentService {
     <div style="border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;">
         <p2 class="checkmark">🏪</p2>
     </div>
-    <h1>Полупка</h1>
+    <h1>Покупка</h1>
     <p>Подписка:<br/>
         Цена в рублях: %s<br/>
         Кол-во дней: %s<br/>
