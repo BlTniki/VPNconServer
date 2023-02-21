@@ -1,8 +1,5 @@
 package com.bitniki.VPNconServer.exception;
 
-import com.bitniki.VPNconServer.exception.alreadyExistException.EntityAlreadyExistException;
-import com.bitniki.VPNconServer.exception.notFoundException.EntityNotFoundException;
-import com.bitniki.VPNconServer.exception.validationFailedException.EntityValidationFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
