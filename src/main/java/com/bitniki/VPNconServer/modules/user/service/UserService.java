@@ -46,7 +46,7 @@ public interface UserService {
      * @param user Сущность нового юзера.
      * {@link String} login и {@link String} password необходимо указать. Остальные поля необязательны.
      * @return Нового юзера
-     * @throws UserAlreadyExistException Если юзер с данным логином уже существует .
+     * @throws UserAlreadyExistException Если юзер с данным логином уже существует.
      * @throws UserValidationFailedException Если поля {@link String} login и {@link String} password не прошли валидацию.
      */
     User create (UserEntity user) throws UserAlreadyExistException, UserValidationFailedException;
