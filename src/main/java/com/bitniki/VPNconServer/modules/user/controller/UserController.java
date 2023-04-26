@@ -49,7 +49,7 @@ public class UserController {
             "&& hasAuthority('user:read')")
     public ResponseEntity<User> getMineUser(Principal principal)
             throws UserNotFoundException {
-        return ResponseEntity.ok(userService.getOne(principal));
+        return ResponseEntity.ok(userService.getOne(principal.getName()));
     }
 
     @PostMapping
@@ -71,7 +71,7 @@ public class UserController {
             "&& hasAuthority('user:write')")
     public ResponseEntity<User> updateMineUser(Principal principal, @RequestBody UserEntity user)
             throws UserNotFoundException, UserAlreadyExistException, UserValidationFailedException {
-        return ResponseEntity.ok(userService.update(principal, user));
+        return ResponseEntity.ok(userService.update(principal.getName(), user));
     }
 
     @DeleteMapping("/{id}")
@@ -87,7 +87,7 @@ public class UserController {
             "&& hasAuthority('user:write')")
     public ResponseEntity<User> deleteMineUser(Principal principal)
             throws UserNotFoundException {
-        return ResponseEntity.ok(userService.delete(principal));
+        return ResponseEntity.ok(userService.delete(principal.getName()));
     }
 
 

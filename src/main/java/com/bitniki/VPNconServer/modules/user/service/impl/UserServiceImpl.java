@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -92,8 +91,8 @@ public class UserServiceImpl implements UserService {
                 );
     }
 
-    public User getOne (Principal principal) throws UserNotFoundException {
-        return userRepo.findByLogin(principal.getName())
+    public User getOne (String login) throws UserNotFoundException {
+        return userRepo.findByLogin(login)
                 .map(User::toModel)
                 .orElseThrow(
                         () -> new UserNotFoundException("User not found")
@@ -148,11 +147,11 @@ public class UserServiceImpl implements UserService {
         return User.toModel(updateUser(oldUser, newUser));
     }
 
-    public User update (Principal principal, UserEntity newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
+    public User update (String login, UserEntity newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
         // load old entity
-        UserEntity oldUser = userRepo.findByLogin(principal.getName()).orElseThrow(
+        UserEntity oldUser = userRepo.findByLogin(login).orElseThrow(
                 () -> new UserNotFoundException(
-                        "User with login \"%s\" not found".formatted(principal.getName())
+                        "User with login \"%s\" not found".formatted(login)
                 )
         );
 
@@ -170,11 +169,11 @@ public class UserServiceImpl implements UserService {
         return User.toModel(deleteUser(user));
     }
 
-    public User delete(Principal principal) throws UserNotFoundException {
+    public User delete(String login) throws UserNotFoundException {
         // load entity
-        UserEntity user = userRepo.findByLogin(principal.getName()).orElseThrow(
+        UserEntity user = userRepo.findByLogin(login).orElseThrow(
                 () -> new UserNotFoundException(
-                        "User with login \"%s\" not found".formatted(principal.getName())
+                        "User with login \"%s\" not found".formatted(login)
                 )
         );
 
