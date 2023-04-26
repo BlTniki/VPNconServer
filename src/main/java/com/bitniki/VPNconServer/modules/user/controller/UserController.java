@@ -4,7 +4,6 @@ import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.model.User;
-import com.bitniki.VPNconServer.modules.user.model.UserWithRelations;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -24,14 +24,14 @@ public class UserController {
     @GetMapping
     @PreAuthorize("hasAuthority('any')" +
                     "&& hasAuthority('user:read')")
-    public ResponseEntity<List<UserWithRelations>> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
             return ResponseEntity.ok(userService.getAll());
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('user:read')")
-    public ResponseEntity<UserWithRelations> getUser(@PathVariable Long id)
+    public ResponseEntity<User> getUser(@PathVariable Long id)
             throws UserNotFoundException {
         return ResponseEntity.ok(userService.getOne(id));
     }
@@ -39,7 +39,7 @@ public class UserController {
     @GetMapping("/tg/{telegramId}")
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('user:read')")
-    public ResponseEntity<UserWithRelations> getUserByTelegramId(@PathVariable Long telegramId)
+    public ResponseEntity<User> getUserByTelegramId(@PathVariable Long telegramId)
             throws UserNotFoundException {
         return ResponseEntity.ok(userService.getOneByTelegramId(telegramId));
     }
@@ -47,7 +47,7 @@ public class UserController {
     @GetMapping("/mine")
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('user:read')")
-    public ResponseEntity<UserWithRelations> getMineUser(Principal principal)
+    public ResponseEntity<User> getMineUser(Principal principal)
             throws UserNotFoundException {
         return ResponseEntity.ok(userService.getOne(principal));
     }
