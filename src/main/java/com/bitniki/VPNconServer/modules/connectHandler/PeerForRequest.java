@@ -1,6 +1,6 @@
 package com.bitniki.VPNconServer.modules.connectHandler;
 
-import com.bitniki.VPNconServer.modules.peer.PeerEntity;
+import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
 
 
 public class PeerForRequest {

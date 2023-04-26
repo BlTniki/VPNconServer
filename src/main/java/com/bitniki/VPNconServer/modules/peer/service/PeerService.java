@@ -1,9 +1,16 @@
-package com.bitniki.VPNconServer.modules.peer;
+package com.bitniki.VPNconServer.modules.peer.service;
 
 import com.bitniki.VPNconServer.modules.connectHandler.PeerConnectHandler;
 import com.bitniki.VPNconServer.modules.host.entity.HostEntity;
 import com.bitniki.VPNconServer.modules.host.exception.HostNotFoundException;
 import com.bitniki.VPNconServer.modules.host.repository.HostRepo;
+import com.bitniki.VPNconServer.modules.peer.exception.PeerNotFoundException;
+import com.bitniki.VPNconServer.modules.peer.exception.PeerValidationFailedException;
+import com.bitniki.VPNconServer.modules.peer.validator.PeerValidator;
+import com.bitniki.VPNconServer.modules.peer.model.PeerWithAllRelations;
+import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
+import com.bitniki.VPNconServer.modules.peer.exception.PeerAlreadyExistException;
+import com.bitniki.VPNconServer.modules.peer.repository.PeerRepo;
 import com.bitniki.VPNconServer.modules.subscription.exception.SubscriptionValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;

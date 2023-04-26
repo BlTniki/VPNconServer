@@ -1,7 +1,8 @@
-package com.bitniki.VPNconServer.modules.peer;
+package com.bitniki.VPNconServer.modules.peer.model;
 
 import com.bitniki.VPNconServer.modules.host.model.Host;
 import com.bitniki.VPNconServer.modules.host.entity.HostEntity;
+import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
 
 /*
     Model with Host relationships

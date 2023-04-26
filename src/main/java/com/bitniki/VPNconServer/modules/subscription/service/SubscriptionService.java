@@ -2,8 +2,8 @@ package com.bitniki.VPNconServer.modules.subscription.service;
 
 import com.bitniki.VPNconServer.modules.mail.entity.MailEntity;
 import com.bitniki.VPNconServer.modules.mail.service.MailService;
-import com.bitniki.VPNconServer.modules.peer.PeerEntity;
-import com.bitniki.VPNconServer.modules.peer.PeerService;
+import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
+import com.bitniki.VPNconServer.modules.peer.service.PeerService;
 import com.bitniki.VPNconServer.exception.EntityNotFoundException;
 import com.bitniki.VPNconServer.modules.mail.exception.MailValidationFailedException;
 import com.bitniki.VPNconServer.modules.subscription.exception.SubscriptionValidationFailedException;

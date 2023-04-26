@@ -1,5 +1,6 @@
-package com.bitniki.VPNconServer.modules.peer;
+package com.bitniki.VPNconServer.modules.peer.validator;
 
+import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
 import com.bitniki.VPNconServer.validator.Validator;
 
 import java.util.regex.Pattern;

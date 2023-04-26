@@ -1,6 +1,7 @@
-package com.bitniki.VPNconServer.modules.peer;
+package com.bitniki.VPNconServer.modules.peer.repository;
 
 import com.bitniki.VPNconServer.modules.host.entity.HostEntity;
+import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 

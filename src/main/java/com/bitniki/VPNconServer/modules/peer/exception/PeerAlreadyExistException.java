@@ -1,4 +1,4 @@
-package com.bitniki.VPNconServer.modules.peer;
+package com.bitniki.VPNconServer.modules.peer.exception;
 
 import com.bitniki.VPNconServer.exception.EntityAlreadyExistException;
 

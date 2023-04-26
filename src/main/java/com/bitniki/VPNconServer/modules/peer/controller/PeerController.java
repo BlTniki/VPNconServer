@@ -1,6 +1,12 @@
-package com.bitniki.VPNconServer.modules.peer;
+package com.bitniki.VPNconServer.modules.peer.controller;
 
 import com.bitniki.VPNconServer.exception.EntityNotFoundException;
+import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
+import com.bitniki.VPNconServer.modules.peer.exception.PeerAlreadyExistException;
+import com.bitniki.VPNconServer.modules.peer.exception.PeerNotFoundException;
+import com.bitniki.VPNconServer.modules.peer.exception.PeerValidationFailedException;
+import com.bitniki.VPNconServer.modules.peer.model.PeerWithAllRelations;
+import com.bitniki.VPNconServer.modules.peer.service.PeerService;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.exception.EntityValidationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;

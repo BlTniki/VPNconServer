@@ -1,6 +1,6 @@
 package com.bitniki.VPNconServer.modules.host.entity;
 
-import com.bitniki.VPNconServer.modules.peer.PeerEntity;
+import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
 
 import javax.persistence.*;
 import java.util.List;

@@ -1,9 +1,9 @@
 package com.bitniki.VPNconServer.modules.host.model;
 
 import com.bitniki.VPNconServer.modules.host.entity.HostEntity;
-import com.bitniki.VPNconServer.modules.peer.PeerEntity;
-import com.bitniki.VPNconServer.modules.peer.Peer;
-import com.bitniki.VPNconServer.modules.peer.PeerWithUserRelations;
+import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
+import com.bitniki.VPNconServer.modules.peer.model.Peer;
+import com.bitniki.VPNconServer.modules.peer.model.PeerWithUserRelations;
 
 import java.util.List;
 import java.util.stream.Collectors;
