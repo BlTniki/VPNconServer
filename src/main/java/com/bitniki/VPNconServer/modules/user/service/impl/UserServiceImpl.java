@@ -15,9 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
@@ -78,9 +77,9 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<User> getAll() {
-        List<UserEntity> users = new ArrayList<>();
-        userRepo.findAll().forEach(users::add);
-        return users.stream().map(User::toModel).collect(Collectors.toList());
+        return StreamSupport.stream(userRepo.findAll().spliterator(), false)
+                .map(User::toModel)
+                .toList();
     }
 
     public User getOne (Long id) throws UserNotFoundException {
@@ -100,9 +99,6 @@ public class UserServiceImpl implements UserService {
     }
 
     public User getOneByTelegramId (Long telegramId) throws UserNotFoundException {
-//        return User.toModel(userRepo.findByTelegramId(telegramId).orElseThrow(
-//                () -> new UserNotFoundException("User not found")
-//        ));
         return userRepo.findByTelegramId(telegramId)
                 .map(User::toModel)
                 .orElseThrow(
