@@ -76,12 +76,12 @@ public class UserController {
     }
 
     /**
-     * Создание нового пользователя
-     *
-     * @param user объект UserEntity, содержащий информацию о новом пользователе
-     * @return ResponseEntity с созданным пользователем и статусом ответа
-     * @throws UserAlreadyExistException если пользователь с таким именем уже существует в базе данных
-     * @throws UserValidationFailedException если введенные данные пользователя не проходят валидацию
+     * Создание нового пользователя.
+     * В теле запроса необходимо указать {@link String} login и {@link String} password.
+     * @param user объект UserEntity, содержащий {@link String} login и {@link String} password нового пользователя.
+     * @return ResponseEntity с созданным пользователем и статусом ответа.
+     * @throws UserAlreadyExistException если юзер с данным логином уже существует.
+     * @throws UserValidationFailedException если введенные данные пользователя не проходят валидацию.
      */
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody UserEntity user)
@@ -95,7 +95,7 @@ public class UserController {
      * @param user Объект UserEntity, содержащий обновленные данные пользователя.
      * @return ResponseEntity<User> Объект ResponseEntity, содержащий обновленный объект пользователя и код 200 в случае успеха.
      * @throws UserNotFoundException Исключение, возникающее при попытке обновления несуществующего пользователя.
-     * @throws UserAlreadyExistException Исключение, возникающее при попытке обновления пользователя с данными, уже существующими в базе данных.
+     * @throws UserAlreadyExistException если юзер с данным логином уже существует.
      * @throws UserValidationFailedException Исключение, возникающее при попытке обновления пользователя с некорректными данными.
      */
     @PutMapping("/{id}")
@@ -112,7 +112,7 @@ public class UserController {
      * @param user Объект UserEntity, содержащий обновленные данные пользователя.
      * @return ResponseEntity<User> Объект ResponseEntity, содержащий обновленный объект пользователя и код 200 в случае успеха.
      * @throws UserNotFoundException Исключение, возникающее при попытке обновления несуществующего пользователя.
-     * @throws UserAlreadyExistException Исключение, возникающее при попытке обновления пользователя с данными, уже существующими в базе данных.
+     * @throws UserAlreadyExistException если юзер с данным логином уже существует.
      * @throws UserValidationFailedException Исключение, возникающее при попытке обновления пользователя с некорректными данными.
      */
     @PutMapping("/mine")
