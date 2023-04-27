@@ -1,106 +1,76 @@
 package com.bitniki.VPNconServer.modules.host.entity;
 
-import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
+import java.lang.reflect.Field;
 
-@SuppressWarnings("unused")
+/**
+ * Сущность хоста. Содержит информацию о модуле <a href="https://github.com/BlTniki/vpnconhost">vpnconhost</a>,
+ * до которого будет строиться тоннель.
+ */
 @Entity
-@Table (name = "host")
+@Table (name = "hosts")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
 public class HostEntity {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * Название сервера. Уникальный.
+     */
     @Column(nullable = false, unique = true)
     private String name;
+
+    /**
+     * Ip адрес до сервера. Уникальный.
+     */
     @Column(nullable = false, unique = true)
-    private String ipadress;
+    private String ipaddress;
+
+    /**
+     * Порт, который слушает хост.
+     */
     @Column(nullable = false)
-    private String serverPassword;
+    Integer port = 80;
+
+    /**
+     * Пароль хоста.
+     */
     @Column(nullable = false)
-    private String serverPublicKey;
-    private String dns;
+    private String hostPassword;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "host", orphanRemoval = true)
-    private List<PeerEntity> peerEntities;
+    /**
+     * Публичный ключ Wireguard.
+     */
+    @Column(nullable = false)
+    private String hostPublicKey;
 
-    /*
-     this static method update existing host fields if some of new host field is not null
-    */
-    public static HostEntity updateHost(HostEntity oldHost, HostEntity newHost) {
-        oldHost.setName( (newHost.getName() != null) ? newHost.getName() : oldHost.getName() );
-        oldHost.setIpadress((newHost.getIpadress() != null) ? newHost.getIpadress() : oldHost.getIpadress());
-        oldHost.setServerPublicKey((newHost.getServerPublicKey() != null) ? newHost.getServerPublicKey() : oldHost.getServerPublicKey());
-        oldHost.setDns( (newHost.getDns() != null) ? newHost.getDns() : oldHost.getDns() );
+    /**
+     * Обновляет посредством рефлексии поля этого объекта HostEntity ненулевыми полями данного объекта HostEntity.
+     * @param newHost объект HostEntity, ненулевые поля которого будут использоваться для обновления полей этого объекта.
+     * @return обновленный объект UserEntity.
+     * @throws RuntimeException если произошла ошибка при доступе к полям через рефлексию.
+     */
+    public HostEntity updateWith(HostEntity newHost) {
+        //get all fields
+        Field[] fields = HostEntity.class.getDeclaredFields();
 
-        return oldHost;
-    }
-
-    public HostEntity() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getIpadress() {
-        return ipadress;
-    }
-
-    public void setIpadress(String ipadress) {
-        this.ipadress = ipadress;
-    }
-
-    public String getServerPassword() {
-        return serverPassword;
-    }
-
-    public void setServerPassword(String serverPassword) {
-        this.serverPassword = serverPassword;
-    }
-
-    public String getServerPublicKey() {
-        return serverPublicKey;
-    }
-
-    public void setServerPublicKey(String serverPublicKey) {
-        this.serverPublicKey = serverPublicKey;
-    }
-
-    public List<PeerEntity> getPeers() {
-        return peerEntities;
-    }
-
-    public void setPeers(List<PeerEntity> peerEntities) {
-        this.peerEntities = peerEntities;
-    }
-
-    public String getDns() {
-        return dns;
-    }
-
-    public void setDns(String dns) {
-        this.dns = dns;
-    }
-
-    public List<PeerEntity> getPeerEntities() {
-        return peerEntities;
-    }
-
-    public void setPeerEntities(List<PeerEntity> peerEntities) {
-        this.peerEntities = peerEntities;
+        //replace in this entity all fields that not null in new entity
+        for (Field field: fields) {
+            try {
+                if (field.get(newHost) != null) {
+                    field.set(this, field.get(newHost));
+                }
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return this;
     }
 }
