@@ -51,7 +51,7 @@ public class UserEntity {
      */
     public UserEntity updateWith(UserEntity newUser) {
         //get all fields
-        var fields = UserEntity.class.getDeclaredFields();
+        Field[] fields = UserEntity.class.getDeclaredFields();
 
         //replace in this entity all fields that not null in new entity
         for (Field field: fields) {
