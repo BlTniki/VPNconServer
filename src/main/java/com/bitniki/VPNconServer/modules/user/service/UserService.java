@@ -42,7 +42,6 @@ public interface UserService {
 
     /**
      * Метод создаёт нового пользователя.
-     * В теле запроса необходимо указать {@link String} login и {@link String} password.
      * @param user Сущность нового юзера.
      * {@link String} login и {@link String} password необходимо указать. Остальные поля необязательны.
      * @return Нового юзера
