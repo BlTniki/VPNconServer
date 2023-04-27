@@ -28,14 +28,19 @@ public class UserEntity {
 
 
     public UserEntity updateWith(UserEntity newUser) {
-        // update field if not null
-        this.setLogin((newUser.getLogin() != null) ? newUser.getLogin() : this.getLogin());
-        this.setPassword((newUser.getPassword() != null) ? newUser.getPassword() : this.getPassword());
-        this.setToken((newUser.getToken() != null) ? newUser.getToken() : this.getToken());
-        this.setTelegramId((newUser.getTelegramId() != null)
-                ? newUser.getTelegramId() : this.getTelegramId());
-        this.setTelegramFirstName((newUser.getTelegramFirstName() != null)
-                ? newUser.getTelegramFirstName() : this.getTelegramFirstName());
+        //get all fields
+        var fields = UserEntity.class.getDeclaredFields();
+
+        //replace in this entity all fields that not null in new entity
+        for (Field field: fields) {
+            try {
+                if (field.get(newUser) != null) {
+                    field.set(this, field.get(newUser));
+                }
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
         return this;
     }
 }
