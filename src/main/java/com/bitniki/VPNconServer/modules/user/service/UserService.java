@@ -9,7 +9,6 @@ import com.bitniki.VPNconServer.modules.user.model.User;
 
 import java.util.List;
 
-@SuppressWarnings("unused")
 public interface UserService {
     /**
      * @return Возвращает список всех пользователей.

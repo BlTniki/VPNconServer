@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("unused")
 @Service
 public class PeerService {
     @Autowired

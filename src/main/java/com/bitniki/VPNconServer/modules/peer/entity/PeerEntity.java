@@ -5,7 +5,6 @@ import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 
 import javax.persistence.*;
 
-@SuppressWarnings("unused")
 @Entity
 @Table(name = "peer")
 public class PeerEntity {

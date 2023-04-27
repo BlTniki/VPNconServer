@@ -6,7 +6,6 @@ import lombok.*;
 /**
  * Модель {@link UserEntity} без внутренней информации
  */
-@SuppressWarnings("unused")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

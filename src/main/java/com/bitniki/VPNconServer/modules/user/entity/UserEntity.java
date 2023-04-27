@@ -8,7 +8,6 @@ import java.lang.reflect.Field;
 /**
  * Сущность юзера.
  */
-@SuppressWarnings("unused")
 @Entity
 @Table (name = "users")
 @NoArgsConstructor

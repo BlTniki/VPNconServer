@@ -2,7 +2,6 @@ package com.bitniki.VPNconServer.modules.peer.model;
 
 import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
 
-@SuppressWarnings("unused")
 public class Peer {
     private Long id;
     private String peerIp;
