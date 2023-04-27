@@ -3,6 +3,9 @@ package com.bitniki.VPNconServer.modules.user.model;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import lombok.*;
 
+/**
+ * Модель {@link UserEntity} без внутренней информации
+ */
 @SuppressWarnings("unused")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,11 +14,30 @@ import lombok.*;
 @Setter
 public class User {
     private Long id;
+
     private String login;
 //    private Role role;
+
+    /**
+     * Id пользователя в Телеграм
+     */
     private Long telegramId;
+
+    /**
+     * Имя пользователя в Телеграм
+     */
     private String telegramFirstName;
 
+    /**
+     * Ник пользователя в Телеграм
+     */
+    private String telegramNickname;
+
+    /**
+     * Статический метод создания модели из сущности.
+     * @param entity сущность, на основе которой следует создать модель.
+     * @return новую модель.
+     */
     public static User toModel (UserEntity entity) {
         return new User(entity);
     }
@@ -26,5 +48,6 @@ public class User {
 //        this.setRole(entity.getRole());
         this.setTelegramId(entity.getTelegramId());
         this.setTelegramFirstName(entity.getTelegramFirstName());
+        this.setTelegramNickname(entity.getTelegramNickname());
     }
 }
