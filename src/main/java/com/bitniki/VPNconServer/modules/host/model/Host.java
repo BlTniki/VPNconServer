@@ -1,67 +1,44 @@
 package com.bitniki.VPNconServer.modules.host.model;
 
 import com.bitniki.VPNconServer.modules.host.entity.HostEntity;
+import lombok.*;
 
+/**
+ * Модель {@link HostEntity}
+ */
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
 public class Host {
     private Long id;
+
+    /**
+     * Название сервера.
+     */
     private String name;
-    private String ipadress;
-    private String serverPublicKey;
-    private String dns;
+
+    /**
+     * Ip адрес до сервера.
+     */
+    private String ipaddress;
+
+    /**
+     * Публичный ключ Wireguard.
+     */
+    private String hostPublicKey;
 
 
     public static Host toModel (HostEntity entity) {
         return new Host(entity);
     }
 
-    public Host() {
-    }
-
     public Host(HostEntity entity) {
         this.setId(entity.getId());
         this.setName(entity.getName());
-        this.setIpadress(entity.getIpadress());
-        this.setServerPublicKey(entity.getServerPublicKey());
-        this.setDns(entity.getDns());
-    }
+        this.setIpaddress(entity.getIpaddress());
+        this.setHostPublicKey(entity.getHostPublicKey());
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getIpadress() {
-        return ipadress;
-    }
-
-    public void setIpadress(String ipadress) {
-        this.ipadress = ipadress;
-    }
-
-    public String getServerPublicKey() {
-        return serverPublicKey;
-    }
-
-    public void setServerPublicKey(String serverPublicKey) {
-        this.serverPublicKey = serverPublicKey;
-    }
-
-    public String getDns() {
-        return dns;
-    }
-
-    public void setDns(String dns) {
-        this.dns = dns;
     }
 }
