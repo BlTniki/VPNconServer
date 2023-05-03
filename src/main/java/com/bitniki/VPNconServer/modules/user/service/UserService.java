@@ -1,11 +1,11 @@
 package com.bitniki.VPNconServer.modules.user.service;
 
 
-import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.model.User;
+import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
 
 import java.util.List;
 
@@ -41,35 +41,35 @@ public interface UserService {
 
     /**
      * Метод создаёт нового пользователя.
-     * @param user Сущность нового юзера.
-     * {@link String} login и {@link String} password необходимо указать. Остальные поля необязательны.
+     * @param model {@link UserFromRequest} -- Сущность нового юзера.
+     * {@link String} login и {@link String} password необходимо указать.
      * @return Нового юзера
      * @throws UserAlreadyExistException Если юзер с данным логином уже существует.
      * @throws UserValidationFailedException Если поля {@link String} login и {@link String} password не прошли валидацию.
      */
-    User create (UserEntity user) throws UserAlreadyExistException, UserValidationFailedException;
+    User create (UserFromRequest model) throws UserAlreadyExistException, UserValidationFailedException;
 
     /**
      * Обновляет предоставленные поля в существующем юзере с данным id.
      * @param id id Существующего юзера.
-     * @param newUser Сущность юзера с указанными полями, которые следует изменить.
+     * @param newUser {@link UserFromRequest} -- Сущность юзера с указанными полями, которые следует изменить.
      * @return Обновлённого юзера.
      * @throws UserAlreadyExistException Если новый логин уже занят.
      * @throws UserNotFoundException Если юзер с данным id не найден.
      * @throws UserValidationFailedException Если новые поля проваливают валидацию.
      */
-    User update (Long id, UserEntity newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException;
+    User update (Long id, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException;
 
     /**
      * Обновляет предоставленные поля в существующем юзере с данным логином.
      * @param login логин юзера.
-     * @param newUser Сущность юзера с указанными полями, которые следует изменить.
+     * @param newUser {@link UserFromRequest} -- Сущность юзера с указанными полями, которые следует изменить.
      * @return Обновлённого юзера.
      * @throws UserAlreadyExistException Если новый логин уже занят.
      * @throws UserNotFoundException Если юзер с данным логином не найден.
      * @throws UserValidationFailedException Если новые поля проваливают валидацию.
      */
-    User update (String login, UserEntity newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException;
+    User update (String login, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException;
 
     /**
      * Удаляет юзера с данным id.

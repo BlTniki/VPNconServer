@@ -5,6 +5,7 @@ import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.model.User;
+import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
 import com.bitniki.VPNconServer.modules.user.repository.UserRepo;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
 import com.bitniki.VPNconServer.modules.user.validator.UserValidator;
@@ -49,26 +50,28 @@ public class UserServiceImpl implements UserService {
 //        }
     }
 
-    private UserEntity updateUser(UserEntity oldUser, UserEntity newUser) throws UserValidationFailedException, UserAlreadyExistException {
+    private UserEntity updateUser(UserEntity oldUser, UserFromRequest newUserModel) throws UserValidationFailedException, UserAlreadyExistException {
         // valid new entity
-        UserValidator userValidator = UserValidator.validateNonNullFields(newUser);
+        UserValidator userValidator = UserValidator.validateNonNullFields(newUserModel);
         if(userValidator.hasFails()){
             throw new UserValidationFailedException(userValidator.toString());
         }
 
-        //if we have new login check its unique
-        if (newUser.getLogin() != null && userRepo.findByLogin(newUser.getLogin()).isPresent()) {
+        //if we have new login check its unique then set it
+        if (newUserModel.getLogin() != null && userRepo.findByLogin(newUserModel.getLogin()).isPresent()) {
             throw new UserAlreadyExistException(
-                    "User with login \"%s\" already exist!".formatted(newUser.getLogin())
+                    "User with login \"%s\" already exist!".formatted(newUserModel.getLogin())
             );
         }
-        //if we have new password encode it
-        if(newUser.getPassword() != null) {
-            newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        oldUser.setLogin(newUserModel.getLogin());
+
+        //if we have new password encode it then set it
+        if(newUserModel.getPassword() != null) {
+            oldUser.setPassword(passwordEncoder.encode(newUserModel.getPassword()));
         }
 
         //update, save and return entity
-        return userRepo.save(oldUser.updateWith(newUser));
+        return userRepo.save(oldUser);
     }
 
     private UserEntity deleteUser(UserEntity user) {
@@ -108,31 +111,31 @@ public class UserServiceImpl implements UserService {
                 );
     }
 
-    public User create (UserEntity user) throws UserAlreadyExistException, UserValidationFailedException {
+    public User create (UserFromRequest model) throws UserAlreadyExistException, UserValidationFailedException {
         // valid entity
-        UserValidator userValidator = UserValidator.validateAllFields(user);
+        UserValidator userValidator = UserValidator.validateAllFields(model);
         if(userValidator.hasFails()){
             throw new UserValidationFailedException(userValidator.toString());
         }
 
         // check in repo login unique
-        if(userRepo.findByLogin(user.getLogin()).isPresent()) {
+        if(userRepo.findByLogin(model.getLogin()).isPresent()) {
             throw new UserAlreadyExistException(
-                    "User with login \"%s\" already exist!".formatted(user.getLogin())
+                    "User with login \"%s\" already exist!".formatted(model.getLogin())
             );
         }
 
-        // configure entity
-        // Set default role
-//        user.setRole(Role.ACTIVATED_USER);
+        // create entity
+        UserEntity entity = UserEntity.builder()
+                .login(model.getLogin())
+                .password(passwordEncoder.encode(model.getPassword())) // encode password
+//                .role(Role.ACTIVATED_USER); // Set default role
+                .build();
 
-        // encode password
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        return User.toModel(userRepo.save(user));
+        return User.toModel(userRepo.save(entity));
     }
 
-    public User update (Long id, UserEntity newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
+    public User update (Long id, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
         // load old entity
         UserEntity oldUser = userRepo.findById(id).orElseThrow(
                 () -> new UserNotFoundException(
@@ -143,7 +146,7 @@ public class UserServiceImpl implements UserService {
         return User.toModel(updateUser(oldUser, newUser));
     }
 
-    public User update (String login, UserEntity newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
+    public User update (String login, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
         // load old entity
         UserEntity oldUser = userRepo.findByLogin(login).orElseThrow(
                 () -> new UserNotFoundException(
