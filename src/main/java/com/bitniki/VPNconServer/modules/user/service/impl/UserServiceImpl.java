@@ -10,6 +10,7 @@ import com.bitniki.VPNconServer.modules.user.service.UserService;
 import com.bitniki.VPNconServer.modules.user.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -83,21 +84,21 @@ public class UserServiceImpl implements UserService {
         return userRepo.findAll().spliterator();
     }
 
-    public UserEntity getOne (Long id) throws UserNotFoundException {
+    public UserEntity getOneById(@NotNull Long id) throws UserNotFoundException {
         return userRepo.findById(id)
                 .orElseThrow(
                         () -> new UserNotFoundException("User with id %d not found".formatted(id))
                 );
     }
 
-    public UserEntity getOne (String login) throws UserNotFoundException {
+    public UserEntity getOneByLogin(@NotNull String login) throws UserNotFoundException {
         return userRepo.findByLogin(login)
                 .orElseThrow(
                         () -> new UserNotFoundException("User not found")
                 );
     }
 
-    public UserEntity getOneByTelegramId (Long telegramId) throws UserNotFoundException {
+    public UserEntity getOneByTelegramId (@NotNull Long telegramId) throws UserNotFoundException {
         return userRepo.findByTelegramId(telegramId)
                 .orElseThrow(
                         () -> new UserNotFoundException(
