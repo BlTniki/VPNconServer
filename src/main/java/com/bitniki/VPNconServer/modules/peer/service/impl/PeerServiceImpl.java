@@ -138,7 +138,7 @@ public class PeerServiceImpl implements PeerService {
         if (model.getUserId() == null) {
             throw new UserValidationFailedException("Wrong userId");
         }
-        UserEntity user = userService.getOne(model.getUserId());
+        UserEntity user = userService.getOneById(model.getUserId());
 
         return createPeer(user, model);
     }
@@ -146,7 +146,7 @@ public class PeerServiceImpl implements PeerService {
     public PeerEntity create(String login, PeerFromRequest model)
             throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException {
         // load user
-        UserEntity user = userService.getOne(login);
+        UserEntity user = userService.getOneByLogin(login);
         //make sure that userId in model is null or equal to user id
         if ( model.getUserId() != null && !model.getUserId().equals(user.getId()) ) {
             throw new UserValidationFailedException("You have no permission to this user");
