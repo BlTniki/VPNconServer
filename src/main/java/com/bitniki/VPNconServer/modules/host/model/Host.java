@@ -25,6 +25,16 @@ public class Host {
     private String ipaddress;
 
     /**
+     * Порт, который слушает хост.
+     */
+    private Integer port;
+
+    /**
+     * Внутренний адрес сети (например 10.8.0.0)
+     */
+    private String hostInternalNetworkPrefix;
+
+    /**
      * Публичный ключ Wireguard.
      */
     private String hostPublicKey;
@@ -38,7 +48,8 @@ public class Host {
         this.setId(entity.getId());
         this.setName(entity.getName());
         this.setIpaddress(entity.getIpaddress());
+        this.setPort(entity.getPort());
+        this.setHostInternalNetworkPrefix(entity.getHostInternalNetworkPrefix());
         this.setHostPublicKey(entity.getHostPublicKey());
-
     }
 }

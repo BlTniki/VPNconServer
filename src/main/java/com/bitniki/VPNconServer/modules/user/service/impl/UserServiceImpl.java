@@ -4,7 +4,6 @@ import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
-import com.bitniki.VPNconServer.modules.user.model.User;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
 import com.bitniki.VPNconServer.modules.user.repository.UserRepo;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
@@ -16,8 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.stream.StreamSupport;
+import java.util.Spliterator;
 
 @Slf4j
 @Service
@@ -79,31 +77,26 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    public List<User> getAll() {
-        return StreamSupport.stream(userRepo.findAll().spliterator(), false)
-                .map(User::toModel)
-                .toList();
+    public Spliterator<UserEntity> getAll() {
+        return userRepo.findAll().spliterator();
     }
 
-    public User getOne (Long id) throws UserNotFoundException {
+    public UserEntity getOne (Long id) throws UserNotFoundException {
         return userRepo.findById(id)
-                .map(User::toModel)
                 .orElseThrow(
                         () -> new UserNotFoundException("User with id %d not found".formatted(id))
                 );
     }
 
-    public User getOne (String login) throws UserNotFoundException {
+    public UserEntity getOne (String login) throws UserNotFoundException {
         return userRepo.findByLogin(login)
-                .map(User::toModel)
                 .orElseThrow(
                         () -> new UserNotFoundException("User not found")
                 );
     }
 
-    public User getOneByTelegramId (Long telegramId) throws UserNotFoundException {
+    public UserEntity getOneByTelegramId (Long telegramId) throws UserNotFoundException {
         return userRepo.findByTelegramId(telegramId)
-                .map(User::toModel)
                 .orElseThrow(
                         () -> new UserNotFoundException(
                                 "User with telegramId %d not found".formatted(telegramId)
@@ -111,7 +104,7 @@ public class UserServiceImpl implements UserService {
                 );
     }
 
-    public User create (UserFromRequest model) throws UserAlreadyExistException, UserValidationFailedException {
+    public UserEntity create (UserFromRequest model) throws UserAlreadyExistException, UserValidationFailedException {
         // valid entity
         UserValidator userValidator = UserValidator.validateAllFields(model);
         if(userValidator.hasFails()){
@@ -132,10 +125,10 @@ public class UserServiceImpl implements UserService {
 //                .role(Role.ACTIVATED_USER); // Set default role
                 .build();
 
-        return User.toModel(userRepo.save(entity));
+        return userRepo.save(entity);
     }
 
-    public User update (Long id, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
+    public UserEntity update (Long id, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
         // load old entity
         UserEntity oldUser = userRepo.findById(id).orElseThrow(
                 () -> new UserNotFoundException(
@@ -143,10 +136,10 @@ public class UserServiceImpl implements UserService {
                 )
         );
 
-        return User.toModel(updateUser(oldUser, newUser));
+        return updateUser(oldUser, newUser);
     }
 
-    public User update (String login, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
+    public UserEntity update (String login, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
         // load old entity
         UserEntity oldUser = userRepo.findByLogin(login).orElseThrow(
                 () -> new UserNotFoundException(
@@ -154,10 +147,10 @@ public class UserServiceImpl implements UserService {
                 )
         );
 
-        return User.toModel(updateUser(oldUser, newUser));
+        return updateUser(oldUser, newUser);
     }
 
-    public User delete(Long id) throws UserNotFoundException {
+    public UserEntity delete(Long id) throws UserNotFoundException {
         // load entity
         UserEntity user = userRepo.findById(id).orElseThrow(
                 () -> new UserNotFoundException(
@@ -165,10 +158,10 @@ public class UserServiceImpl implements UserService {
                 )
         );
 
-        return User.toModel(deleteUser(user));
+        return deleteUser(user);
     }
 
-    public User delete(String login) throws UserNotFoundException {
+    public UserEntity delete(String login) throws UserNotFoundException {
         // load entity
         UserEntity user = userRepo.findByLogin(login).orElseThrow(
                 () -> new UserNotFoundException(
@@ -176,6 +169,6 @@ public class UserServiceImpl implements UserService {
                 )
         );
 
-        return User.toModel(deleteUser(user));
+        return deleteUser(user);
     }
 }

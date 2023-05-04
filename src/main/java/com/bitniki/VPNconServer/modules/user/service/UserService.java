@@ -4,16 +4,16 @@ package com.bitniki.VPNconServer.modules.user.service;
 import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
-import com.bitniki.VPNconServer.modules.user.model.User;
+import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
 
-import java.util.List;
+import java.util.Spliterator;
 
 public interface UserService {
     /**
      * @return Возвращает список всех пользователей.
      */
-    List<User> getAll();
+    Spliterator<UserEntity> getAll();
 
     /**
      * Возвращает юзера с данным id.
@@ -21,7 +21,7 @@ public interface UserService {
      * @return Юзер с id.
      * @throws UserNotFoundException Если юзер не найден.
      */
-    User getOne (Long id) throws UserNotFoundException;
+    UserEntity getOne (Long id) throws UserNotFoundException;
 
     /**
      * Возвращает юзера с данным логином.
@@ -29,7 +29,7 @@ public interface UserService {
      * @return Юзер с данным логином.
      * @throws UserNotFoundException Если юзер не найден.
      */
-    User getOne (String login) throws UserNotFoundException;
+    UserEntity getOne (String login) throws UserNotFoundException;
 
     /**
      * Возвращает юзера с данным telegramId.
@@ -37,7 +37,7 @@ public interface UserService {
      * @return юзер с данным telegramId.
      * @throws UserNotFoundException Если юзер не найден.
      */
-    User getOneByTelegramId (Long telegramId) throws UserNotFoundException;
+    UserEntity getOneByTelegramId (Long telegramId) throws UserNotFoundException;
 
     /**
      * Метод создаёт нового пользователя.
@@ -47,7 +47,7 @@ public interface UserService {
      * @throws UserAlreadyExistException Если юзер с данным логином уже существует.
      * @throws UserValidationFailedException Если поля {@link String} login и {@link String} password не прошли валидацию.
      */
-    User create (UserFromRequest model) throws UserAlreadyExistException, UserValidationFailedException;
+    UserEntity create (UserFromRequest model) throws UserAlreadyExistException, UserValidationFailedException;
 
     /**
      * Обновляет предоставленные поля в существующем юзере с данным id.
@@ -58,7 +58,7 @@ public interface UserService {
      * @throws UserNotFoundException Если юзер с данным id не найден.
      * @throws UserValidationFailedException Если новые поля проваливают валидацию.
      */
-    User update (Long id, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException;
+    UserEntity update (Long id, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException;
 
     /**
      * Обновляет предоставленные поля в существующем юзере с данным логином.
@@ -69,7 +69,7 @@ public interface UserService {
      * @throws UserNotFoundException Если юзер с данным логином не найден.
      * @throws UserValidationFailedException Если новые поля проваливают валидацию.
      */
-    User update (String login, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException;
+    UserEntity update (String login, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException;
 
     /**
      * Удаляет юзера с данным id.
@@ -77,7 +77,7 @@ public interface UserService {
      * @return удалённого юзера.
      * @throws UserNotFoundException Если юзер с данным id не найден.
      */
-    User delete(Long id) throws UserNotFoundException;
+    UserEntity delete(Long id) throws UserNotFoundException;
 
     /**
      * удаляет юзера по логину.
@@ -85,5 +85,5 @@ public interface UserService {
      * @return удалённого юзера.
      * @throws UserNotFoundException Если юзер с данным логином не найден.
      */
-    User delete(String login) throws UserNotFoundException;
+    UserEntity delete(String login) throws UserNotFoundException;
 }

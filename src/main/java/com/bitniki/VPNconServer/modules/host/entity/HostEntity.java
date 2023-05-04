@@ -37,7 +37,13 @@ public class HostEntity {
      * Порт, который слушает хост.
      */
     @Column(nullable = false)
-    Integer port = 80;
+    private Integer port = 80;
+
+    /**
+     * Внутренний адрес сети (например 10.8.0.0)
+     */
+    @Column(nullable = false)
+    private String hostInternalNetworkPrefix;
 
     /**
      * Пароль хоста.

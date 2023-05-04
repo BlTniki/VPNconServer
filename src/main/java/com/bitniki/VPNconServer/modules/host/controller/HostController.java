@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/hosts")
@@ -26,7 +27,11 @@ public class HostController {
     @GetMapping
     @PreAuthorize("hasAuthority('host:read')")
     public ResponseEntity<List<Host>> getAllHosts() {
-        return ResponseEntity.ok(hostService.getAll());
+        return ResponseEntity.ok(
+                StreamSupport.stream(hostService.getAll(), false)
+                        .map(Host::toModel)
+                        .toList()
+        );
     }
 
     /**
@@ -39,7 +44,9 @@ public class HostController {
     @PreAuthorize("hasAuthority('host:read')")
     public ResponseEntity<Host> getHost (@PathVariable Long id)
             throws HostNotFoundException {
-        return ResponseEntity.ok(hostService.getOne(id));
+        return ResponseEntity.ok(
+                Host.toModel(hostService.getOne(id))
+        );
     }
 
     /**
@@ -53,7 +60,9 @@ public class HostController {
     @PreAuthorize("hasAuthority('host:write')")
     public ResponseEntity<Host> createHost(@RequestBody HostEntity host)
             throws HostAlreadyExistException, HostValidationFailedException {
-        return ResponseEntity.ok(hostService.create(host));
+        return ResponseEntity.ok(
+                Host.toModel(hostService.create(host))
+        );
     }
 
     /**
@@ -69,7 +78,9 @@ public class HostController {
     @PreAuthorize("hasAuthority('host:write')")
     public ResponseEntity<Host> updateHost (@PathVariable Long id, @RequestBody HostEntity host)
             throws HostNotFoundException, HostAlreadyExistException, HostValidationFailedException {
-        return ResponseEntity.ok(hostService.update(id, host));
+        return ResponseEntity.ok(
+                Host.toModel(hostService.update(id, host))
+        );
     }
 
     /**
@@ -81,6 +92,8 @@ public class HostController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('host:write')")
     public ResponseEntity<Host> deleteHost (@PathVariable Long id) throws HostNotFoundException {
-        return ResponseEntity.ok(hostService.delete(id));
+        return ResponseEntity.ok(
+                Host.toModel(hostService.delete(id))
+        );
     }
 }

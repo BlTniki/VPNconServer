@@ -4,38 +4,33 @@ import com.bitniki.VPNconServer.modules.host.entity.HostEntity;
 import com.bitniki.VPNconServer.modules.host.exception.HostAlreadyExistException;
 import com.bitniki.VPNconServer.modules.host.exception.HostNotFoundException;
 import com.bitniki.VPNconServer.modules.host.exception.HostValidationFailedException;
-import com.bitniki.VPNconServer.modules.host.model.Host;
 import com.bitniki.VPNconServer.modules.host.repository.HostRepo;
 import com.bitniki.VPNconServer.modules.host.service.HostService;
 import com.bitniki.VPNconServer.modules.host.validator.HostValidator;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.StreamSupport;
+import java.util.Spliterator;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class HostServiceImpl implements HostService {
-    @Autowired
-    private HostRepo hostRepo;
+    private final HostRepo hostRepo;
 
-    public List<Host> getAll () {
-        return StreamSupport.stream(hostRepo.findAll().spliterator(), false)
-                .map(Host::toModel)
-                .toList();
+    public Spliterator<HostEntity> getAll () {
+        return hostRepo.findAll().spliterator();
     }
 
-    public Host getOne (Long id) throws HostNotFoundException {
+    public HostEntity getOne (Long id) throws HostNotFoundException {
         return hostRepo.findById(id)
-                .map(Host::toModel)
                 .orElseThrow(
                         () -> new HostNotFoundException("Host with id %d not found".formatted(id))
                 );
     }
 
-    public Host create (HostEntity host) throws HostAlreadyExistException, HostValidationFailedException {
+    public HostEntity create (HostEntity host) throws HostAlreadyExistException, HostValidationFailedException {
         // valid entity
         HostValidator hostValidator = HostValidator.validateAllFields(host);
         if(hostValidator.hasFails()) {
@@ -55,10 +50,10 @@ public class HostServiceImpl implements HostService {
                     "Host with ip %s already exist!".formatted(host.getIpaddress())
             );
         }
-        return Host.toModel(hostRepo.save(host));
+        return hostRepo.save(host);
     }
 
-    public Host update (Long id, HostEntity newHost) throws HostNotFoundException, HostAlreadyExistException, HostValidationFailedException {
+    public HostEntity update (Long id, HostEntity newHost) throws HostNotFoundException, HostAlreadyExistException, HostValidationFailedException {
         // valid entity non null fields
         HostValidator hostValidator = HostValidator.validateNonNullFields(newHost);
         if(hostValidator.hasFails()) {
@@ -84,16 +79,16 @@ public class HostServiceImpl implements HostService {
                 () -> new HostNotFoundException("Host with id %d not found".formatted(id))
         );
 
-        return Host.toModel(hostRepo.save(oldHost.updateWith(newHost)));
+        return hostRepo.save(oldHost.updateWith(newHost));
     }
 
-    public Host delete (Long id) throws HostNotFoundException {
+    public HostEntity delete (Long id) throws HostNotFoundException {
         // load entity
         HostEntity host = hostRepo.findById(id).orElseThrow(
                 () -> new HostNotFoundException("Host with id %d not found".formatted(id))
         );
 
         hostRepo.delete(host);
-        return Host.toModel(host);
+        return host;
     }
 }

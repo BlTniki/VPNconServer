@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/users")
@@ -28,7 +29,11 @@ public class UserController {
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('user:read')")
     public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAll());
+        return ResponseEntity.ok(
+                StreamSupport.stream(userService.getAll(),false)
+                        .map(User::toModel)
+                        .toList()
+        );
     }
 
     /**
@@ -42,7 +47,9 @@ public class UserController {
             "&& hasAuthority('user:read')")
     public ResponseEntity<User> getUser(@PathVariable Long id)
             throws UserNotFoundException {
-        return ResponseEntity.ok(userService.getOne(id));
+        return ResponseEntity.ok(
+                User.toModel(userService.getOne(id))
+        );
     }
 
     /**
@@ -57,7 +64,9 @@ public class UserController {
             "&& hasAuthority('user:read')")
     public ResponseEntity<User> getUserByTelegramId(@PathVariable Long telegramId)
             throws UserNotFoundException {
-        return ResponseEntity.ok(userService.getOneByTelegramId(telegramId));
+        return ResponseEntity.ok(
+                User.toModel(userService.getOneByTelegramId(telegramId))
+        );
     }
 
     /**
@@ -71,7 +80,9 @@ public class UserController {
             "&& hasAuthority('user:read')")
     public ResponseEntity<User> getMineUser(Principal principal)
             throws UserNotFoundException {
-        return ResponseEntity.ok(userService.getOne(principal.getName()));
+        return ResponseEntity.ok(
+                User.toModel(userService.getOne(principal.getName()))
+        );
     }
 
     /**
@@ -85,7 +96,9 @@ public class UserController {
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody UserFromRequest user)
             throws UserAlreadyExistException, UserValidationFailedException {
-        return ResponseEntity.ok(userService.create(user));
+        return ResponseEntity.ok(
+                User.toModel(userService.create(user))
+        );
     }
 
     /**
@@ -102,7 +115,9 @@ public class UserController {
             "&& hasAuthority('user:write')")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserFromRequest user)
             throws UserNotFoundException, UserAlreadyExistException, UserValidationFailedException {
-        return ResponseEntity.ok(userService.update(id, user));
+        return ResponseEntity.ok(
+                User.toModel(userService.update(id, user))
+        );
     }
 
     /**
@@ -119,7 +134,9 @@ public class UserController {
             "&& hasAuthority('user:write')")
     public ResponseEntity<User> updateMineUser(Principal principal, @RequestBody UserFromRequest user)
             throws UserNotFoundException, UserAlreadyExistException, UserValidationFailedException {
-        return ResponseEntity.ok(userService.update(principal.getName(), user));
+        return ResponseEntity.ok(
+                User.toModel(userService.update(principal.getName(), user))
+        );
     }
 
     /**
@@ -133,7 +150,9 @@ public class UserController {
             "&& hasAuthority('user:write')")
     public ResponseEntity<User> deleteUser(@PathVariable Long id)
             throws UserNotFoundException {
-        return ResponseEntity.ok(userService.delete(id));
+        return ResponseEntity.ok(
+                User.toModel(userService.delete(id))
+        );
     }
 
     /**
@@ -147,7 +166,9 @@ public class UserController {
             "&& hasAuthority('user:write')")
     public ResponseEntity<User> deleteMineUser(Principal principal)
             throws UserNotFoundException {
-        return ResponseEntity.ok(userService.delete(principal.getName()));
+        return ResponseEntity.ok(
+                User.toModel(userService.delete(principal.getName()))
+        );
     }
 
 
