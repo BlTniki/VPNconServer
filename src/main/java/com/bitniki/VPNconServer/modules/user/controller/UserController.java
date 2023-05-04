@@ -48,7 +48,7 @@ public class UserController {
     public ResponseEntity<User> getUser(@PathVariable Long id)
             throws UserNotFoundException {
         return ResponseEntity.ok(
-                User.toModel(userService.getOne(id))
+                User.toModel(userService.getOneById(id))
         );
     }
 
@@ -81,7 +81,7 @@ public class UserController {
     public ResponseEntity<User> getMineUser(Principal principal)
             throws UserNotFoundException {
         return ResponseEntity.ok(
-                User.toModel(userService.getOne(principal.getName()))
+                User.toModel(userService.getOneByLogin(principal.getName()))
         );
     }
 

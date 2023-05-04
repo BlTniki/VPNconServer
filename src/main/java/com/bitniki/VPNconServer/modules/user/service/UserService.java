@@ -6,6 +6,7 @@ import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Spliterator;
 
@@ -21,7 +22,7 @@ public interface UserService {
      * @return Юзер с id.
      * @throws UserNotFoundException Если юзер не найден.
      */
-    UserEntity getOne (Long id) throws UserNotFoundException;
+    UserEntity getOneById(@NotNull Long id) throws UserNotFoundException;
 
     /**
      * Возвращает юзера с данным логином.
@@ -29,7 +30,7 @@ public interface UserService {
      * @return Юзер с данным логином.
      * @throws UserNotFoundException Если юзер не найден.
      */
-    UserEntity getOne (String login) throws UserNotFoundException;
+    UserEntity getOneByLogin(@NotNull String login) throws UserNotFoundException;
 
     /**
      * Возвращает юзера с данным telegramId.
@@ -37,7 +38,7 @@ public interface UserService {
      * @return юзер с данным telegramId.
      * @throws UserNotFoundException Если юзер не найден.
      */
-    UserEntity getOneByTelegramId (Long telegramId) throws UserNotFoundException;
+    UserEntity getOneByTelegramId (@NotNull Long telegramId) throws UserNotFoundException;
 
     /**
      * Метод создаёт нового пользователя.
