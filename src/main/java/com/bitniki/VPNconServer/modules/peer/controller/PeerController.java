@@ -1,14 +1,13 @@
 package com.bitniki.VPNconServer.modules.peer.controller;
 
 import com.bitniki.VPNconServer.exception.EntityNotFoundException;
-import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
+import com.bitniki.VPNconServer.exception.EntityValidationFailedException;
 import com.bitniki.VPNconServer.modules.peer.exception.PeerAlreadyExistException;
 import com.bitniki.VPNconServer.modules.peer.exception.PeerNotFoundException;
 import com.bitniki.VPNconServer.modules.peer.exception.PeerValidationFailedException;
-import com.bitniki.VPNconServer.modules.peer.model.PeerWithAllRelations;
+import com.bitniki.VPNconServer.modules.peer.model.Peer;
+import com.bitniki.VPNconServer.modules.peer.model.PeerFromRequest;
 import com.bitniki.VPNconServer.modules.peer.service.PeerService;
-import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
-import com.bitniki.VPNconServer.exception.EntityValidationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/peers")
@@ -27,84 +27,102 @@ public class PeerController {
     @GetMapping
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:read')")
-    public ResponseEntity<List<PeerWithAllRelations>> getAllPeers() {
-        return ResponseEntity.ok(peerService.getAll());
+    public ResponseEntity<List<Peer>> getAllPeers() {
+        return ResponseEntity.ok(
+                StreamSupport.stream(peerService.getAll(), false)
+                        .map(Peer::toModel)
+                        .toList()
+        );
     }
 
     @GetMapping("/mine")
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:read')")
-    public ResponseEntity<List<PeerWithAllRelations>> getAllMinePeers(Principal principal) throws UserNotFoundException {
-        return ResponseEntity.ok(peerService.getAll(principal));
+    public ResponseEntity<List<Peer>> getAllMinePeers(Principal principal) {
+        return ResponseEntity.ok(
+                StreamSupport.stream(peerService.getAllByLogin(principal.getName()), false)
+                        .map(Peer::toModel)
+                        .toList()
+        );
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:read')")
-    public ResponseEntity<PeerWithAllRelations> getOnePeer(@PathVariable Long id)
+    public ResponseEntity<Peer> getOnePeer(@PathVariable Long id)
             throws PeerNotFoundException {
-        return ResponseEntity.ok(peerService.getOne(id));
+        return ResponseEntity.ok(
+                Peer.toModel(peerService.getOne(id))
+        );
     }
 
     @GetMapping("/mine/{id}")
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:read')")
-    public ResponseEntity<PeerWithAllRelations> getOneMinePeer(@PathVariable Long id, Principal principal)
+    public ResponseEntity<Peer> getOneMinePeer(@PathVariable Long id, Principal principal)
             throws EntityNotFoundException {
-        return ResponseEntity.ok(peerService.getOne(id, principal));
+        return ResponseEntity.ok(
+                Peer.toModel(peerService.getOne(principal.getName(), id))
+        );
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:write')")
-    public ResponseEntity<PeerWithAllRelations> createPeer(@RequestParam Long user_id,
-                                                           @RequestParam Long host_id,
-                                                           @RequestBody PeerEntity peerEntity)
+    public ResponseEntity<Peer> createPeer(@RequestBody PeerFromRequest model)
             throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException {
-        return ResponseEntity.ok(peerService.create(user_id, host_id, peerEntity));
+        return ResponseEntity.ok(
+                Peer.toModel(peerService.create(model))
+        );
     }
 
     @PostMapping("/mine")
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:write')")
-    public ResponseEntity<PeerWithAllRelations> createMinePeer( Principal principal,
-                                                                @RequestParam Long host_id,
-                                                                @RequestBody PeerEntity peerEntity)
+    public ResponseEntity<Peer> createMinePeer(Principal principal, @RequestBody PeerFromRequest model)
             throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException {
-        return ResponseEntity.ok(peerService.create(principal, host_id, peerEntity));
+        return ResponseEntity.ok(
+                Peer.toModel(peerService.create( principal.getName(),model))
+        );
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:write')")
-    public ResponseEntity<PeerWithAllRelations> updatePeer(@PathVariable Long id, @RequestBody PeerEntity peer)
+    public ResponseEntity<Peer> updatePeer(@PathVariable Long id, @RequestBody PeerFromRequest newPeerModel)
             throws PeerNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
-        return ResponseEntity.ok(peerService.update(id, peer));
+        return ResponseEntity.ok(
+                Peer.toModel(peerService.update(id, newPeerModel))
+        );
     }
 
     @PutMapping("/mine/{id}")
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:write')")
-    public ResponseEntity<PeerWithAllRelations> updateMinePeer(Principal principal,
-                                                               @PathVariable Long id,
-                                                               @RequestBody PeerEntity peer)
+    public ResponseEntity<Peer> updateMinePeer(Principal principal, @PathVariable Long id, @RequestBody PeerFromRequest newPeerModel)
             throws EntityNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
-        return ResponseEntity.ok(peerService.update(principal, id, peer));
+        return ResponseEntity.ok(
+                Peer.toModel(peerService.update(principal.getName(), id, newPeerModel))
+        );
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:write')")
-    public ResponseEntity<PeerWithAllRelations> deletePeer(@PathVariable Long id) throws PeerNotFoundException {
-        return ResponseEntity.ok(peerService.delete(id));
+    public ResponseEntity<Peer> deletePeer(@PathVariable Long id) throws PeerNotFoundException {
+        return ResponseEntity.ok(
+                Peer.toModel(peerService.delete(id))
+        );
     }
 
     @DeleteMapping("/mine/{id}")
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:write')")
-    public ResponseEntity<PeerWithAllRelations> deleteMinePeer(Principal principal, @PathVariable Long id)
+    public ResponseEntity<Peer> deleteMinePeer(Principal principal, @PathVariable Long id)
             throws EntityNotFoundException {
-        return ResponseEntity.ok(peerService.delete(principal, id));
+        return ResponseEntity.ok(
+                Peer.toModel(peerService.delete(principal.getName(), id))
+        );
     }
 
     @GetMapping("/conf/{id}")
@@ -118,7 +136,7 @@ public class PeerController {
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:read')")
     public ResponseEntity<String> getMineDownloadToken(Principal principal,@PathVariable Long id) throws EntityNotFoundException {
-        return ResponseEntity.ok(peerService.getDownloadTokenForPeer(principal, id));
+        return ResponseEntity.ok(peerService.getDownloadTokenForPeer(principal.getName(), id));
     }
 
     @PostMapping("/activate/{id}")

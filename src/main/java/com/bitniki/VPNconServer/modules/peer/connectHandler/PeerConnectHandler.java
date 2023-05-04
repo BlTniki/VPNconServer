@@ -1,7 +1,8 @@
-package com.bitniki.VPNconServer.modules.connectHandler;
+package com.bitniki.VPNconServer.modules.peer.connectHandler;
 
 import com.bitniki.VPNconServer.modules.host.entity.HostEntity;
 import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
+import com.bitniki.VPNconServer.modules.peer.model.PeerForRequest;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,11 +20,11 @@ public class PeerConnectHandler {
     private UserEntity user;
     private PeerEntity peer;
     private PeerForRequest peerForRequest;
-    private String hostIpAdress;
+    private String hostIpAddress;
     private HttpEntity<PeerForRequest> httpEntity;
 
     public void createPeerOnHostAndFillEntity() {
-        final String uri = this.hostIpAdress + "/peers";
+        final String uri = this.hostIpAddress + "/peers";
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<PeerForRequest> response;
         try {
@@ -37,7 +38,7 @@ public class PeerConnectHandler {
     }
 
     public void updatePeerOnHost() {
-        final String uri = this.hostIpAdress + "/peers";
+        final String uri = this.hostIpAddress + "/peers";
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<PeerForRequest> response;
         try {
@@ -52,7 +53,7 @@ public class PeerConnectHandler {
 
     public void deletePeerOnHost() {
         //build uri avoiding nullable warning
-        final String uri = this.hostIpAdress + "/peers/"+ getPeerForRequest().getPeerId();
+        final String uri = this.hostIpAddress + "/peers/"+ getPeerForRequest().getPeerId();
         RestTemplate restTemplate = new RestTemplate();
         try {
             restTemplate.exchange(uri, HttpMethod.DELETE, this.httpEntity, String.class);
@@ -64,7 +65,7 @@ public class PeerConnectHandler {
     }
 
     public String getDownloadConfToken() {
-        final String uri = this.hostIpAdress + "/conf/" + getPeerForRequest().getPeerId();
+        final String uri = this.hostIpAddress + "/conf/" + getPeerForRequest().getPeerId();
         RestTemplate restTemplate = new RestTemplate();
         try {
             return restTemplate.exchange(uri, HttpMethod.POST, this.httpEntity, String.class).getBody();
@@ -76,7 +77,7 @@ public class PeerConnectHandler {
     }
 
     public Boolean activateOnHost() {
-        final String uri = this.hostIpAdress + "/peers/activate/" + getPeerForRequest().getPeerId();
+        final String uri = this.hostIpAddress + "/peers/activate/" + getPeerForRequest().getPeerId();
         RestTemplate restTemplate = new RestTemplate();
         try {
             restTemplate.exchange(uri, HttpMethod.POST, this.httpEntity, HashMap.class);
@@ -89,7 +90,7 @@ public class PeerConnectHandler {
     }
 
     public Boolean deactivateOnHost() {
-        final String uri = this.hostIpAdress + "/peers/deactivate/" + getPeerForRequest().getPeerId();
+        final String uri = this.hostIpAddress + "/peers/deactivate/" + getPeerForRequest().getPeerId();
         RestTemplate restTemplate = new RestTemplate();
         try {
             restTemplate.exchange(uri, HttpMethod.POST, this.httpEntity, HashMap.class);
@@ -106,7 +107,7 @@ public class PeerConnectHandler {
         this.setPeerForRequest(PeerForRequest.toModel(peer));
         this.setHost(this.peer.getHost());
         this.setUser(this.peer.getUser());
-        this.setHostIpAdress(this.host.getIpadress());
+        this.setHostIpAddress(this.host.getIpaddress());
         this.setHttpEntity(this.makeHttpEntity());
     }
 
@@ -142,9 +143,9 @@ public class PeerConnectHandler {
         this.peerForRequest = peerForRequest;
     }
 
-    public void setHostIpAdress(String hostIpAdress) {
+    public void setHostIpAddress(String hostIpAddress) {
         //build host url with chosen api version
-        this.hostIpAdress = "http://"+ hostIpAdress +"/api/"+this.apiVersion;
+        this.hostIpAddress = "http://"+ hostIpAddress +"/api/"+this.apiVersion;
     }
 
     public void setHttpEntity(HttpEntity<PeerForRequest> httpEntity) {
@@ -155,7 +156,7 @@ public class PeerConnectHandler {
         //making HttpEntity for requests
         //set auth header and body for request
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Auth", host.getServerPassword());
+        headers.set("Auth", host.getHostPassword());
         return new HttpEntity<>(peerForRequest, headers);
     }
 }

@@ -1,8 +1,13 @@
-package com.bitniki.VPNconServer.modules.connectHandler;
+package com.bitniki.VPNconServer.modules.peer.model;
 
 import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PeerForRequest {
     private String peerId;
     private String peerIp;
@@ -24,38 +29,7 @@ public class PeerForRequest {
         entity.setPeerPublicKey(this.getPeerPublicKey());
     }
 
-    public PeerForRequest() {
-    }
-
-    public String getPeerId() {
-        return peerId;
-    }
-
     public void setPeerId(Long user_id, String confName) {
         this.peerId = confName + "_" + user_id;
-    }
-
-    public String getPeerIp() {
-        return peerIp;
-    }
-
-    public void setPeerIp(String peerIp) {
-        this.peerIp = peerIp;//Integer.parseInt(peerIp.substring(peerIp.lastIndexOf(".")+1));
-    }
-
-    public String getPeerPublicKey() {
-        return peerPublicKey;
-    }
-
-    public void setPeerPublicKey(String peerPublicKey) {
-        this.peerPublicKey = peerPublicKey;
-    }
-
-    public String getPeerPrivateKey() {
-        return peerPrivateKey;
-    }
-
-    public void setPeerPrivateKey(String peerPrivateKey) {
-        this.peerPrivateKey = peerPrivateKey;
     }
 }
