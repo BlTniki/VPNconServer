@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS hosts (
     name varchar(255) UNIQUE NOT NULL,
     ipaddress varchar(255) UNIQUE NOT NULL,
     port INTEGER NOT NULL DEFAULT 80,
+    host_internal_network_prefix varchar(255) NOT NULL,
     host_password varchar(255) NOT NULL,
     host_public_key varchar(255) NOT NULL
 );
@@ -23,6 +24,7 @@ CREATE TABLE IF NOT EXISTS peers (
     peer_ip varchar(255) NOT NULL,
     peer_private_key varchar(255) NOT NULL,
     peer_public_key varchar(255) NOT NULL,
+    is_activated BOOLEAN DEFAULT TRUE NOT NULL,
     user_id BIGINT NOT NULL REFERENCES users(id),
     host_id BIGINT NOT NULL REFERENCES hosts(id)
 );
