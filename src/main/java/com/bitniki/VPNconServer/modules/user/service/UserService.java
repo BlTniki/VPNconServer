@@ -48,7 +48,7 @@ public interface UserService {
      * @throws UserAlreadyExistException Если юзер с данным логином уже существует.
      * @throws UserValidationFailedException Если поля {@link String} login и {@link String} password не прошли валидацию.
      */
-    UserEntity create (UserFromRequest model) throws UserAlreadyExistException, UserValidationFailedException;
+    UserEntity create (@NotNull UserFromRequest model) throws UserAlreadyExistException, UserValidationFailedException;
 
     /**
      * Обновляет предоставленные поля в существующем юзере с данным id.

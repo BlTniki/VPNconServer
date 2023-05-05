@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
                 );
     }
 
-    public UserEntity create (UserFromRequest model) throws UserAlreadyExistException, UserValidationFailedException {
+    public UserEntity create (@NotNull UserFromRequest model) throws UserAlreadyExistException, UserValidationFailedException {
         // valid entity
         UserValidator userValidator = UserValidator.validateAllFields(model);
         if(userValidator.hasFails()){

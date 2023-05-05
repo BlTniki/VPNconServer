@@ -1,7 +1,10 @@
 package com.bitniki.VPNconServer;
 
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
+import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
+import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
+import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,5 +122,47 @@ public class UserServiceTest extends VpNconServerApplicationTests {
     public void testGetOneByTelegramId_Null() {
         //noinspection DataFlowIssue
         assertThrows(IllegalArgumentException.class, () -> userService.getOneByTelegramId(null));
+    }
+
+    @Test
+    public void testCreate_Valid() throws UserAlreadyExistException, UserValidationFailedException {
+        UserEntity model = new UserEntity(3L, "test3", "aA123456", null, 1L, "test", "test");
+
+        UserFromRequest toCreate = new UserFromRequest("test3", "aA123456");
+        UserEntity result = userService.create(toCreate);
+
+        //Compare
+        assertEquals(model.getLogin(), result.getLogin());
+        assertNotEquals(model.getPassword(), result.getPassword());
+        assertEquals(60, result.getPassword().length());
+    }
+
+    @Test
+    public void testCreate_UserValidationFailedException_Null() {
+        //noinspection DataFlowIssue
+        assertThrows(IllegalArgumentException.class, () -> userService.create(null));
+
+        UserFromRequest toCreate = new UserFromRequest(null, null);
+        Exception exception = assertThrows(
+                UserValidationFailedException.class,
+                () -> userService.create(toCreate)
+        );
+        assertTrue(exception.getMessage().contains("login") && exception.getMessage().contains("password"));
+    }
+
+    @Test
+    public void testCreate_UserValidationFailedException_Incorrect_Fields() {
+        UserFromRequest toCreate = new UserFromRequest("re2./.!#$$%^^", "a");
+        Exception exception = assertThrows(
+                UserValidationFailedException.class,
+                () -> userService.create(toCreate)
+        );
+        assertTrue(exception.getMessage().contains("login") && exception.getMessage().contains("password"));
+    }
+
+    @Test
+    public void testCreate_UserAlreadyExistException() {
+        UserFromRequest toCreate = new UserFromRequest("test", "aA123456");
+        assertThrows(UserAlreadyExistException.class, () -> userService.create(toCreate));
     }
 }
