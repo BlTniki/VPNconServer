@@ -59,7 +59,7 @@ public interface UserService {
      * @throws UserNotFoundException Если юзер с данным id не найден.
      * @throws UserValidationFailedException Если новые поля проваливают валидацию.
      */
-    UserEntity update (Long id, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException;
+    UserEntity updateById(@NotNull Long id, @NotNull UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException;
 
     /**
      * Обновляет предоставленные поля в существующем юзере с данным логином.
@@ -70,7 +70,7 @@ public interface UserService {
      * @throws UserNotFoundException Если юзер с данным логином не найден.
      * @throws UserValidationFailedException Если новые поля проваливают валидацию.
      */
-    UserEntity update (String login, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException;
+    UserEntity updateByLogin(@NotNull String login, @NotNull UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException;
 
     /**
      * Удаляет юзера с данным id.
@@ -78,7 +78,7 @@ public interface UserService {
      * @return удалённого юзера.
      * @throws UserNotFoundException Если юзер с данным id не найден.
      */
-    UserEntity delete(Long id) throws UserNotFoundException;
+    UserEntity deleteById(@NotNull Long id) throws UserNotFoundException;
 
     /**
      * удаляет юзера по логину.
@@ -86,5 +86,5 @@ public interface UserService {
      * @return удалённого юзера.
      * @throws UserNotFoundException Если юзер с данным логином не найден.
      */
-    UserEntity delete(String login) throws UserNotFoundException;
+    UserEntity deleteByLogin(@NotNull String login) throws UserNotFoundException;
 }
