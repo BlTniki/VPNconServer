@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 //        }
     }
 
-    private UserEntity updateUser(UserEntity oldUser, UserFromRequest newUserModel) throws UserValidationFailedException, UserAlreadyExistException {
+    private UserEntity updateUser(@NotNull UserEntity oldUser, @NotNull UserFromRequest newUserModel) throws UserValidationFailedException, UserAlreadyExistException {
         // valid new entity
         UserValidator userValidator = UserValidator.validateNonNullFields(newUserModel);
         if(userValidator.hasFails()){
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
         return userRepo.save(oldUser);
     }
 
-    private UserEntity deleteUser(UserEntity user) {
+    private UserEntity deleteUser(@NotNull UserEntity user) {
         userRepo.delete(user);
         return user;
     }
@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
         return userRepo.save(entity);
     }
 
-    public UserEntity update (Long id, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
+    public UserEntity updateById(@NotNull Long id, @NotNull UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
         // load old entity
         UserEntity oldUser = userRepo.findById(id).orElseThrow(
                 () -> new UserNotFoundException(
@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
         return updateUser(oldUser, newUser);
     }
 
-    public UserEntity update (String login, UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
+    public UserEntity updateByLogin(@NotNull String login, @NotNull UserFromRequest newUser) throws UserAlreadyExistException, UserNotFoundException, UserValidationFailedException {
         // load old entity
         UserEntity oldUser = userRepo.findByLogin(login).orElseThrow(
                 () -> new UserNotFoundException(
@@ -153,7 +153,7 @@ public class UserServiceImpl implements UserService {
         return updateUser(oldUser, newUser);
     }
 
-    public UserEntity delete(Long id) throws UserNotFoundException {
+    public UserEntity deleteById(@NotNull Long id) throws UserNotFoundException {
         // load entity
         UserEntity user = userRepo.findById(id).orElseThrow(
                 () -> new UserNotFoundException(
@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService {
         return deleteUser(user);
     }
 
-    public UserEntity delete(String login) throws UserNotFoundException {
+    public UserEntity deleteByLogin(@NotNull String login) throws UserNotFoundException {
         // load entity
         UserEntity user = userRepo.findByLogin(login).orElseThrow(
                 () -> new UserNotFoundException(

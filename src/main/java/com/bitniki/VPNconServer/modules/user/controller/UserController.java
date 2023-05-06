@@ -116,7 +116,7 @@ public class UserController {
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserFromRequest user)
             throws UserNotFoundException, UserAlreadyExistException, UserValidationFailedException {
         return ResponseEntity.ok(
-                User.toModel(userService.update(id, user))
+                User.toModel(userService.updateById(id, user))
         );
     }
 
@@ -135,7 +135,7 @@ public class UserController {
     public ResponseEntity<User> updateMineUser(Principal principal, @RequestBody UserFromRequest user)
             throws UserNotFoundException, UserAlreadyExistException, UserValidationFailedException {
         return ResponseEntity.ok(
-                User.toModel(userService.update(principal.getName(), user))
+                User.toModel(userService.updateByLogin(principal.getName(), user))
         );
     }
 
@@ -151,7 +151,7 @@ public class UserController {
     public ResponseEntity<User> deleteUser(@PathVariable Long id)
             throws UserNotFoundException {
         return ResponseEntity.ok(
-                User.toModel(userService.delete(id))
+                User.toModel(userService.deleteById(id))
         );
     }
 
@@ -167,7 +167,7 @@ public class UserController {
     public ResponseEntity<User> deleteMineUser(Principal principal)
             throws UserNotFoundException {
         return ResponseEntity.ok(
-                User.toModel(userService.delete(principal.getName()))
+                User.toModel(userService.deleteByLogin(principal.getName()))
         );
     }
 
