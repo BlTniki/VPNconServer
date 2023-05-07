@@ -99,7 +99,7 @@ public class PeerServiceImpl implements PeerService {
         }
 
         // load host
-        HostEntity host = hostService.getOne(model.getHostId());
+        HostEntity host = hostService.getOneById(model.getHostId());
 
         //check the uniqueness of the confName for a specific host and user
         if(peerRepo.findByPeerConfNameAndUserIdAndHostId(model.getPeerConfName(), user.getId(), host.getId()).isPresent()) {
