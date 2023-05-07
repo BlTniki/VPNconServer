@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
 public interface HostRepo extends CrudRepository<HostEntity, Long> {
-    Optional<HostEntity> findByIpaddress(String ipaddress);
+    Optional<HostEntity> findByIpaddressAndPort(String ipaddress, Integer port);
     Optional<HostEntity> findByName(String name);
 }
