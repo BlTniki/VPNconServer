@@ -64,7 +64,9 @@ public class UserServiceImpl implements UserService {
                     "User with login \"%s\" already exist!".formatted(newUserModel.getLogin())
             );
         }
-        oldUser.setLogin(newUserModel.getLogin());
+        if (newUserModel.getLogin() != null) {
+            oldUser.setLogin(newUserModel.getLogin());
+        }
 
         //if we have new password encode it then set it
         if(newUserModel.getPassword() != null) {
