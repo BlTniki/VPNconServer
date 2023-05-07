@@ -28,19 +28,19 @@ public class HostEntity {
     private String name;
 
     /**
-     * Ip адрес до сервера. Уникальный.
+     * Ip адрес до сервера. Комбинация айпи и порта должна быть уникальна.
      */
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String ipaddress;
 
     /**
-     * Порт, который слушает хост.
+     * Порт, который слушает хост. Комбинация айпи и порта должна быть уникальна.
      */
     @Column(nullable = false)
     private Integer port = 80;
 
     /**
-     * Внутренний адрес сети (например 10.8.0.0)
+     * Внутренний адрес сети (например 10.8.0.0).
      */
     @Column(nullable = false)
     private String hostInternalNetworkPrefix;
