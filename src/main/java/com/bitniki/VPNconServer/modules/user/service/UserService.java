@@ -42,7 +42,7 @@ public interface UserService {
 
     /**
      * Метод создаёт нового пользователя.
-     * @param model {@link UserFromRequest} -- Сущность нового юзера.
+     * @param model Сущность нового юзера. Правила для полей можно найти в {@link UserFromRequest}.
      * {@link String} login и {@link String} password необходимо указать.
      * @return Нового юзера
      * @throws UserAlreadyExistException Если юзер с данным логином уже существует.
@@ -53,7 +53,7 @@ public interface UserService {
     /**
      * Обновляет предоставленные поля в существующем юзере с данным id.
      * @param id id Существующего юзера.
-     * @param newUser {@link UserFromRequest} -- Сущность юзера с указанными полями, которые следует изменить.
+     * @param newUser Сущность юзера с указанными полями, которые следует изменить. Правила для полей можно найти в {@link UserFromRequest}.
      * @return Обновлённого юзера.
      * @throws UserAlreadyExistException Если новый логин уже занят.
      * @throws UserNotFoundException Если юзер с данным id не найден.
@@ -64,7 +64,7 @@ public interface UserService {
     /**
      * Обновляет предоставленные поля в существующем юзере с данным логином.
      * @param login логин юзера.
-     * @param newUser {@link UserFromRequest} -- Сущность юзера с указанными полями, которые следует изменить.
+     * @param newUser Сущность юзера с указанными полями, которые следует изменить. Правила для полей можно найти в {@link UserFromRequest}.
      * @return Обновлённого юзера.
      * @throws UserAlreadyExistException Если новый логин уже занят.
      * @throws UserNotFoundException Если юзер с данным логином не найден.

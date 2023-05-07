@@ -88,7 +88,7 @@ public class UserController {
     /**
      * Создание нового пользователя.
      * В теле запроса необходимо указать {@link String} login и {@link String} password.
-     * @param user объект {@link UserFromRequest}, содержащий {@link String} login и {@link String} password нового пользователя.
+     * @param user объект {@link UserFromRequest}, содержащий {@link String} login и {@link String} password нового пользователя. Правила для полей можно найти в описании полей.
      * @return ResponseEntity с созданным пользователем и статусом ответа.
      * @throws UserAlreadyExistException если юзер с данным логином уже существует.
      * @throws UserValidationFailedException если введенные данные пользователя не проходят валидацию.
@@ -104,7 +104,7 @@ public class UserController {
     /**
      * PUT метод для обновления пользователя по его ID. Для использования требуется авторизация с ролью "user:write" и "any".
      * @param id ID пользователя, которого требуется обновить.
-     * @param user Объект {@link UserFromRequest}, содержащий обновленные данные пользователя.
+     * @param user Объект {@link UserFromRequest}, содержащий обновленные данные пользователя. Правила для полей можно найти в описании полей.
      * @return ResponseEntity<User> Объект ResponseEntity, содержащий обновленный объект пользователя и код 200 в случае успеха.
      * @throws UserNotFoundException Исключение, возникающее при попытке обновления несуществующего пользователя.
      * @throws UserAlreadyExistException если юзер с данным логином уже существует.
@@ -123,7 +123,7 @@ public class UserController {
     /**
      * PUT метод для обновления текущего пользователя. Для использования требуется авторизация с ролью "user:write" и "personal".
      * @param principal Объект Principal, содержащий информацию о текущем пользователе.
-     * @param user Объект {@link UserFromRequest}, содержащий обновленные данные пользователя.
+     * @param user Объект {@link UserFromRequest}, содержащий обновленные данные пользователя. Правила для полей можно найти в описании полей.
      * @return ResponseEntity<User> Объект ResponseEntity, содержащий обновленный объект пользователя и код 200 в случае успеха.
      * @throws UserNotFoundException Исключение, возникающее при попытке обновления несуществующего пользователя.
      * @throws UserAlreadyExistException если юзер с данным логином уже существует.
