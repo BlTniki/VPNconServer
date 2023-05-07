@@ -162,4 +162,147 @@ public class HostServiceTest extends VpNconServerApplicationTests {
                 )
         ));
     }
+
+    @Test
+    public void testUpdateById_Valid() throws HostNotFoundException, HostAlreadyExistException, HostValidationFailedException {
+        HostEntity model = new HostEntity(1L, "newTest", "127.0.0.1", 3, "127.0.1.0", "654321", "keklol");
+
+        HostFromRequest toUpdate = new HostFromRequest(
+                "newTest",
+                "127.0.0.1",
+                3,
+                "127.0.1.0",
+                "654321",
+                "keklol"
+        );
+        HostEntity result = hostService.updateById(1L, toUpdate);
+
+        //Compare
+        assertEquals(model.getId(), result.getId());
+        assertEquals(model.getName(), result.getName());
+        assertEquals(model.getIpaddress(), result.getIpaddress());
+        assertEquals(model.getPort(), result.getPort());
+        assertEquals(model.getHostInternalNetworkPrefix(), result.getHostInternalNetworkPrefix());
+        assertEquals(model.getHostPassword(), result.getHostPassword());
+        assertEquals(model.getHostPublicKey(), result.getHostPublicKey());
+    }
+
+    @Test
+    public void testUpdateById_NullField() throws HostNotFoundException, HostAlreadyExistException, HostValidationFailedException {
+        HostEntity model = new HostEntity(1L, "test", "127.0.0.1", 1, "127.0.0.0", "123456", "lolkek");
+
+        HostFromRequest toUpdate = new HostFromRequest(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+        HostEntity result = hostService.updateById(1L, toUpdate);
+
+        //Compare
+        assertEquals(model.getId(), result.getId());
+        assertEquals(model.getName(), result.getName());
+        assertEquals(model.getIpaddress(), result.getIpaddress());
+        assertEquals(model.getPort(), result.getPort());
+        assertEquals(model.getHostInternalNetworkPrefix(), result.getHostInternalNetworkPrefix());
+        assertEquals(model.getHostPassword(), result.getHostPassword());
+        assertEquals(model.getHostPublicKey(), result.getHostPublicKey());
+    }
+
+    @Test
+    public void testUpdateById_HostNotFoundException() {
+        HostFromRequest toUpdate = new HostFromRequest(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+        assertThrows(HostNotFoundException.class, () -> hostService.updateById(-1L, toUpdate) );
+    }
+
+    @Test
+    public void testUpdateById_HostAlreadyExistException() {
+        // Name
+        Exception exception = assertThrows( HostAlreadyExistException.class, () -> hostService.updateById(
+                1L,
+                new HostFromRequest(
+                        "test2",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                )
+        ) );
+        assertTrue( exception.getMessage().contains("Host with name") );
+
+        // ip and port pair
+        Exception exception2 = assertThrows( HostAlreadyExistException.class, () -> hostService.updateById(
+                1L,
+                new HostFromRequest(
+                        null,
+                        "127.0.0.1",
+                        2,
+                        null,
+                        null,
+                        null
+                )
+        ) );
+        assertTrue( exception2.getMessage().contains("Host with ip") );
+    }
+
+    @Test
+    public void testUpdateById_HostValidationFailedException() {
+        Exception exception = assertThrows(HostValidationFailedException.class, () -> hostService.updateById(
+                1L,
+                new HostFromRequest(
+                        "newTest",
+                        "127 0.0.1",
+                        -1,
+                        "127.0.1.1",
+                        null,
+                        null
+                )
+        ));
+        assertTrue( exception.getMessage().contains("ipaddress") );
+        assertTrue( exception.getMessage().contains("port") );
+        assertTrue( exception.getMessage().contains("host internal network prefix") );
+    }
+
+    @Test
+    public void testUpdateById_Null() {
+        //noinspection DataFlowIssue
+        assertThrows(IllegalArgumentException.class, () -> hostService.updateById(null, null));
+    }
+
+    @Test
+    public void testDeleteById_Valid() throws HostNotFoundException {
+        HostEntity model = new HostEntity(1L, "test", "127.0.0.1", 1, "127.0.0.0", "123456", "lolkek");
+
+        HostEntity result = hostService.deleteById(1L);
+
+        //Compare
+        assertEquals(model.getId(), result.getId());
+        assertEquals(model.getName(), result.getName());
+        assertEquals(model.getIpaddress(), result.getIpaddress());
+        assertEquals(model.getPort(), result.getPort());
+        assertEquals(model.getHostInternalNetworkPrefix(), result.getHostInternalNetworkPrefix());
+        assertEquals(model.getHostPassword(), result.getHostPassword());
+        assertEquals(model.getHostPublicKey(), result.getHostPublicKey());
+    }
+
+    @Test
+    public void testDeleteById_HostNotFoundException() {
+        assertThrows( HostNotFoundException.class, () -> hostService.deleteById(-1L) );
+    }
+
+    @Test
+    public void testDeleteById_Null() {
+        //noinspection DataFlowIssue
+        assertThrows( IllegalArgumentException.class, () -> hostService.deleteById(null) );
+    }
 }
