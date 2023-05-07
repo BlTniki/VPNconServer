@@ -1,10 +1,10 @@
 package com.bitniki.VPNconServer.modules.host.controller;
 
-import com.bitniki.VPNconServer.modules.host.entity.HostEntity;
 import com.bitniki.VPNconServer.modules.host.exception.HostAlreadyExistException;
 import com.bitniki.VPNconServer.modules.host.exception.HostNotFoundException;
 import com.bitniki.VPNconServer.modules.host.exception.HostValidationFailedException;
 import com.bitniki.VPNconServer.modules.host.model.Host;
+import com.bitniki.VPNconServer.modules.host.model.HostFromRequest;
 import com.bitniki.VPNconServer.modules.host.service.HostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,29 +36,29 @@ public class HostController {
 
     /**
      * Получает хост по его идентификатору. Для использования требуется авторизация с ролью "host:read"
-     * @param id идентификатор хоста.
+     * @param id Идентификатор хоста.
      * @return ResponseEntity с объектом типа Host и статусом ответа.
-     * @throws HostNotFoundException если хост не найден.
+     * @throws HostNotFoundException Если хост не найден.
      */
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('host:read')")
     public ResponseEntity<Host> getHost (@PathVariable Long id)
             throws HostNotFoundException {
         return ResponseEntity.ok(
-                Host.toModel(hostService.getOne(id))
+                Host.toModel(hostService.getOneById(id))
         );
     }
 
     /**
      * Создает новый хост на основе переданных данных. Для использования требуется авторизация с ролью "host:write"
-     * @param host данные нового хоста.
+     * @param host Данные нового хоста. Имя и комбинация айпи и порта должна быть уникальна.
      * @return ResponseEntity с объектом типа Host и статусом ответа.
-     * @throws HostAlreadyExistException если хост с данными именем или ip уже существует.
-     * @throws HostValidationFailedException если данные хоста не прошли валидацию.
+     * @throws HostAlreadyExistException Если хост с данными именем или ip уже существует.
+     * @throws HostValidationFailedException Если данные хоста не прошли валидацию.
      */
     @PostMapping
     @PreAuthorize("hasAuthority('host:write')")
-    public ResponseEntity<Host> createHost(@RequestBody HostEntity host)
+    public ResponseEntity<Host> createHost(@RequestBody HostFromRequest host)
             throws HostAlreadyExistException, HostValidationFailedException {
         return ResponseEntity.ok(
                 Host.toModel(hostService.create(host))
@@ -67,33 +67,33 @@ public class HostController {
 
     /**
      * Обновляет данные существующего хоста. Для использования требуется авторизация с ролью "host:write"
-     * @param id идентификатор хоста.
-     * @param host новые данные хоста.
+     * @param id Идентификатор хоста.
+     * @param host Новые данные хоста. Имя и комбинация айпи и порта должна быть уникальна.
      * @return ResponseEntity с объектом типа Host и статусом ответа.
-     * @throws HostNotFoundException если хост не найден.
-     * @throws HostAlreadyExistException если хост с данными именем или ip уже существует.
-     * @throws HostValidationFailedException если данные хоста не прошли валидацию.
+     * @throws HostNotFoundException Если хост не найден.
+     * @throws HostAlreadyExistException Если хост с данными именем или ip уже существует.
+     * @throws HostValidationFailedException Если данные хоста не прошли валидацию.
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('host:write')")
-    public ResponseEntity<Host> updateHost (@PathVariable Long id, @RequestBody HostEntity host)
+    public ResponseEntity<Host> updateHost (@PathVariable Long id, @RequestBody HostFromRequest host)
             throws HostNotFoundException, HostAlreadyExistException, HostValidationFailedException {
         return ResponseEntity.ok(
-                Host.toModel(hostService.update(id, host))
+                Host.toModel(hostService.updateById(id, host))
         );
     }
 
     /**
      * Удаляет хост по его идентификатору.
-     * @param id идентификатор хоста.
+     * @param id Идентификатор хоста.
      * @return ResponseEntity с объектом типа Host, который был удален, и статусом ответа.
-     * @throws HostNotFoundException если хост не найден.
+     * @throws HostNotFoundException Если хост не найден.
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('host:write')")
     public ResponseEntity<Host> deleteHost (@PathVariable Long id) throws HostNotFoundException {
         return ResponseEntity.ok(
-                Host.toModel(hostService.delete(id))
+                Host.toModel(hostService.deleteById(id))
         );
     }
 }
