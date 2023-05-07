@@ -185,6 +185,17 @@ public class UserServiceTest extends VpNconServerApplicationTests {
     }
 
     @Test
+    public void testUpdateById_NullField() throws UserNotFoundException, UserAlreadyExistException, UserValidationFailedException {
+        UserFromRequest toUpdate = new UserFromRequest(null, null);
+        UserEntity result = userService.updateById(1L, toUpdate);
+
+        //Compare
+        assertEquals(1L, result.getId());
+        assertNotEquals(null, result.getLogin());
+        assertNotEquals(null, result.getPassword());
+    }
+
+    @Test
     public void testUpdateById_UserValidationFailedException_Null() {
         //noinspection DataFlowIssue
         assertThrows(IllegalArgumentException.class, () -> userService.updateById( 1L,null));
