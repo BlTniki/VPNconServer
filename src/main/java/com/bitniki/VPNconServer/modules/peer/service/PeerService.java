@@ -2,34 +2,28 @@ package com.bitniki.VPNconServer.modules.peer.service;
 
 import com.bitniki.VPNconServer.exception.EntityNotFoundException;
 import com.bitniki.VPNconServer.exception.EntityValidationFailedException;
+import com.bitniki.VPNconServer.modules.peer.connectHandler.exception.PeerConnectHandlerException;
 import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
 import com.bitniki.VPNconServer.modules.peer.exception.PeerAlreadyExistException;
 import com.bitniki.VPNconServer.modules.peer.exception.PeerNotFoundException;
-
-import com.bitniki.VPNconServer.modules.peer.exception.PeerValidationFailedException;
 import com.bitniki.VPNconServer.modules.peer.model.PeerFromRequest;
-import org.springframework.stereotype.Service;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Spliterator;
 
-@Service
 public interface PeerService {
     Spliterator<PeerEntity> getAll();
-    Spliterator<PeerEntity> getAllByLogin(String login);
-    PeerEntity getOne(Long id) throws PeerNotFoundException;
-    PeerEntity getOne(String login, Long id) throws EntityNotFoundException;
-    PeerEntity create(PeerFromRequest model)
-            throws EntityValidationFailedException, PeerAlreadyExistException, EntityNotFoundException;
-    PeerEntity create(String login, PeerFromRequest model)
-            throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException;
-    PeerEntity update(Long id, PeerFromRequest newPeerModel)
-            throws PeerNotFoundException, PeerAlreadyExistException, PeerValidationFailedException;
-    PeerEntity update(String login, Long id, PeerFromRequest newPeerModel)
-            throws EntityNotFoundException, PeerAlreadyExistException, PeerValidationFailedException;
-    PeerEntity delete(Long id) throws PeerNotFoundException;
-    PeerEntity delete(String login, Long id) throws EntityNotFoundException;
-    String getDownloadTokenForPeer(Long id) throws PeerNotFoundException;
-    String getDownloadTokenForPeer(String login, Long id) throws EntityNotFoundException;
-    Boolean activatePeerOnHost(Long id) throws PeerNotFoundException;
-    Boolean deactivatePeerOnHost(Long id) throws PeerNotFoundException;
+    Spliterator<PeerEntity> getAllByLogin(@NotNull String login);
+    PeerEntity getOneById(@NotNull Long id) throws PeerNotFoundException;
+    PeerEntity getOneByLoginAndId(@NotNull String login, @NotNull Long id) throws EntityNotFoundException;
+    PeerEntity create(@NotNull PeerFromRequest model)
+            throws EntityValidationFailedException, PeerAlreadyExistException, EntityNotFoundException, PeerConnectHandlerException;
+    PeerEntity create(@NotNull String login, @NotNull PeerFromRequest model)
+            throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException, PeerConnectHandlerException;
+    PeerEntity delete(@NotNull Long id) throws PeerNotFoundException, PeerConnectHandlerException;
+    PeerEntity delete(@NotNull String login, @NotNull Long id) throws EntityNotFoundException, PeerConnectHandlerException;
+    String getDownloadTokenForPeer(@NotNull Long id) throws PeerNotFoundException, PeerConnectHandlerException;
+    String getDownloadTokenForPeer(@NotNull String login, @NotNull Long id) throws EntityNotFoundException, PeerConnectHandlerException;
+    Boolean activatePeerOnHost(@NotNull Long id) throws PeerNotFoundException, PeerConnectHandlerException;
+    Boolean deactivatePeerOnHost(@NotNull Long id) throws PeerNotFoundException, PeerConnectHandlerException;
 }
