@@ -8,10 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PeerRepo extends CrudRepository<PeerEntity, Long> {
-    @Query(
-            value = "SELECT p FROM peers p WHERE p.peer_conf_name = :peerConfName AND p.user_id = :userId AND p.host_id = :hostId",
-            nativeQuery = true
-    )
+    @Query("SELECT p FROM PeerEntity p WHERE p.peerConfName = :peerConfName AND p.user.id = :userId AND p.host.id = :hostId")
     Optional<PeerEntity> findByPeerConfNameAndUserIdAndHostId(String peerConfName, Long userId, Long hostId);
 
     @Query("SELECT p FROM PeerEntity p JOIN p.user u WHERE u.login = :login")
@@ -20,15 +17,9 @@ public interface PeerRepo extends CrudRepository<PeerEntity, Long> {
     @Query("SELECT p FROM PeerEntity p WHERE p.id = :id AND p.user.login = :login")
     Optional<PeerEntity> findByIdAndUserLogin(Long id, String login);
 
-    @Query(
-            value = "SELECT p FROM peers p WHERE p.host_id = :hostId",
-            nativeQuery = true
-    )
+    @Query("SELECT p FROM PeerEntity p WHERE p.host.id = :hostId")
     List<PeerEntity> findAllByHostId(Long hostId);
 
-    @Query(
-            value = "SELECT p FROM peers p WHERE p.peer_ip = :peerIp AND p.host_id = :hostId",
-            nativeQuery = true
-    )
+    @Query("SELECT p FROM PeerEntity p WHERE p.peerIp = :peerIp AND p.host.id = :hostId")
     Optional<PeerEntity> findByPeerIpAndHostId(String peerIp, Long hostId);
 }
