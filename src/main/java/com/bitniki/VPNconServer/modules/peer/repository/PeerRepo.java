@@ -14,16 +14,10 @@ public interface PeerRepo extends CrudRepository<PeerEntity, Long> {
     )
     Optional<PeerEntity> findByPeerConfNameAndUserIdAndHostId(String peerConfName, Long userId, Long hostId);
 
-    @Query(
-        value = "SELECT p FROM peers p INNER JOIN users u ON u.id = p.user_id WHERE u.login = :login",
-        nativeQuery = true
-    )
+    @Query("SELECT p FROM PeerEntity p JOIN p.user u WHERE u.login = :login")
     Iterable<PeerEntity> findAllWithUserLogin(String login);
 
-    @Query(
-            value = "SELECT p FROM peers p WHERE p.id = :id AND p.user.login = :login",
-            nativeQuery = true
-    )
+    @Query("SELECT p FROM PeerEntity p WHERE p.id = :id AND p.user.login = :login")
     Optional<PeerEntity> findByIdAndUserLogin(Long id, String login);
 
     @Query(
