@@ -2,9 +2,9 @@ package com.bitniki.VPNconServer.modules.peer.controller;
 
 import com.bitniki.VPNconServer.exception.EntityNotFoundException;
 import com.bitniki.VPNconServer.exception.EntityValidationFailedException;
+import com.bitniki.VPNconServer.modules.peer.connectHandler.exception.PeerConnectHandlerException;
 import com.bitniki.VPNconServer.modules.peer.exception.PeerAlreadyExistException;
 import com.bitniki.VPNconServer.modules.peer.exception.PeerNotFoundException;
-import com.bitniki.VPNconServer.modules.peer.exception.PeerValidationFailedException;
 import com.bitniki.VPNconServer.modules.peer.model.Peer;
 import com.bitniki.VPNconServer.modules.peer.model.PeerFromRequest;
 import com.bitniki.VPNconServer.modules.peer.service.PeerService;
@@ -52,7 +52,7 @@ public class PeerController {
     public ResponseEntity<Peer> getOnePeer(@PathVariable Long id)
             throws PeerNotFoundException {
         return ResponseEntity.ok(
-                Peer.toModel(peerService.getOne(id))
+                Peer.toModel(peerService.getOneById(id))
         );
     }
 
@@ -62,7 +62,7 @@ public class PeerController {
     public ResponseEntity<Peer> getOneMinePeer(@PathVariable Long id, Principal principal)
             throws EntityNotFoundException {
         return ResponseEntity.ok(
-                Peer.toModel(peerService.getOne(principal.getName(), id))
+                Peer.toModel(peerService.getOneByLoginAndId(principal.getName(), id))
         );
     }
 
@@ -70,7 +70,7 @@ public class PeerController {
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:write')")
     public ResponseEntity<Peer> createPeer(@RequestBody PeerFromRequest model)
-            throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException {
+            throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException, PeerConnectHandlerException {
         return ResponseEntity.ok(
                 Peer.toModel(peerService.create(model))
         );
@@ -80,36 +80,17 @@ public class PeerController {
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:write')")
     public ResponseEntity<Peer> createMinePeer(Principal principal, @RequestBody PeerFromRequest model)
-            throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException {
+            throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException, PeerConnectHandlerException {
         return ResponseEntity.ok(
                 Peer.toModel(peerService.create( principal.getName(),model))
         );
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('any')" +
-            "&& hasAuthority('peer:write')")
-    public ResponseEntity<Peer> updatePeer(@PathVariable Long id, @RequestBody PeerFromRequest newPeerModel)
-            throws PeerNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
-        return ResponseEntity.ok(
-                Peer.toModel(peerService.update(id, newPeerModel))
-        );
-    }
-
-    @PutMapping("/mine/{id}")
-    @PreAuthorize("hasAuthority('personal')" +
-            "&& hasAuthority('peer:write')")
-    public ResponseEntity<Peer> updateMinePeer(Principal principal, @PathVariable Long id, @RequestBody PeerFromRequest newPeerModel)
-            throws EntityNotFoundException, PeerAlreadyExistException, PeerValidationFailedException {
-        return ResponseEntity.ok(
-                Peer.toModel(peerService.update(principal.getName(), id, newPeerModel))
-        );
-    }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:write')")
-    public ResponseEntity<Peer> deletePeer(@PathVariable Long id) throws PeerNotFoundException {
+    public ResponseEntity<Peer> deletePeer(@PathVariable Long id) throws PeerNotFoundException, PeerConnectHandlerException {
         return ResponseEntity.ok(
                 Peer.toModel(peerService.delete(id))
         );
@@ -119,7 +100,7 @@ public class PeerController {
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:write')")
     public ResponseEntity<Peer> deleteMinePeer(Principal principal, @PathVariable Long id)
-            throws EntityNotFoundException {
+            throws EntityNotFoundException, PeerConnectHandlerException {
         return ResponseEntity.ok(
                 Peer.toModel(peerService.delete(principal.getName(), id))
         );
@@ -128,14 +109,14 @@ public class PeerController {
     @GetMapping("/conf/{id}")
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:read')")
-    public ResponseEntity<String> getDownloadToken(@PathVariable Long id) throws PeerNotFoundException {
+    public ResponseEntity<String> getDownloadToken(@PathVariable Long id) throws PeerNotFoundException, PeerConnectHandlerException {
         return ResponseEntity.ok(peerService.getDownloadTokenForPeer(id));
     }
 
     @GetMapping("/conf/mine/{id}")
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:read')")
-    public ResponseEntity<String> getMineDownloadToken(Principal principal,@PathVariable Long id) throws EntityNotFoundException {
+    public ResponseEntity<String> getMineDownloadToken(Principal principal,@PathVariable Long id) throws EntityNotFoundException, PeerConnectHandlerException {
         return ResponseEntity.ok(peerService.getDownloadTokenForPeer(principal.getName(), id));
     }
 
@@ -143,7 +124,7 @@ public class PeerController {
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:write')")
     public ResponseEntity<Boolean> activatePeer(@PathVariable Long id)
-            throws PeerNotFoundException {
+            throws PeerNotFoundException, PeerConnectHandlerException {
         return ResponseEntity.ok(peerService.activatePeerOnHost(id));
     }
 
@@ -151,7 +132,7 @@ public class PeerController {
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:write')")
     public ResponseEntity<Boolean> deactivatePeer(@PathVariable Long id)
-            throws PeerNotFoundException {
+            throws PeerNotFoundException, PeerConnectHandlerException {
         return ResponseEntity.ok(peerService.deactivatePeerOnHost(id));
     }
 }
