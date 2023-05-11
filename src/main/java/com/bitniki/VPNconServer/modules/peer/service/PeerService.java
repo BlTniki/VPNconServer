@@ -18,7 +18,7 @@ public interface PeerService {
     PeerEntity getOneByLoginAndId(@NotNull String login, @NotNull Long id) throws EntityNotFoundException;
     PeerEntity create(@NotNull PeerFromRequest model)
             throws EntityValidationFailedException, PeerAlreadyExistException, EntityNotFoundException, PeerConnectHandlerException;
-    PeerEntity create(@NotNull String login, @NotNull PeerFromRequest model)
+    PeerEntity createByLogin(@NotNull String login, @NotNull PeerFromRequest model)
             throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException, PeerConnectHandlerException;
     PeerEntity delete(@NotNull Long id) throws PeerNotFoundException, PeerConnectHandlerException;
     PeerEntity delete(@NotNull String login, @NotNull Long id) throws EntityNotFoundException, PeerConnectHandlerException;
