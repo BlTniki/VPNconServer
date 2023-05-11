@@ -82,7 +82,7 @@ public class PeerController {
     public ResponseEntity<Peer> createMinePeer(Principal principal, @RequestBody PeerFromRequest model)
             throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException, PeerConnectHandlerException {
         return ResponseEntity.ok(
-                Peer.toModel(peerService.create( principal.getName(),model))
+                Peer.toModel(peerService.createByLogin( principal.getName(),model))
         );
     }
 
