@@ -11,3 +11,10 @@ INSERT INTO hosts (id, name, ipaddress, port, host_internal_network_prefix, host
     VALUES
         (1, 'test', '127.0.0.1', 1, '127.0.0.0', '123456', 'lolkek'),
         (2, 'test2', '127.0.0.1', 2, '127.0.0.0', '123456', 'lolkek');
+
+DELETE FROM peers;
+INSERT INTO peers (id, peer_conf_name, peer_ip, peer_private_key, peer_public_key, is_activated, user_id, host_id)
+    VALUES
+        (1, 'test', '10.8.0.10', 'private', 'public', TRUE, 1, 1),
+        (2, 'test2', '10.8.0.11', 'private', 'public', TRUE, 1, 1),
+        (3, 'test3', '10.8.0.12', 'private', 'public', TRUE, 2, 1);
