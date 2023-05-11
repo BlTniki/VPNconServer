@@ -1,5 +1,6 @@
 package com.bitniki.VPNconServer.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -9,39 +10,41 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<String> catchException (Exception e) {
-        //somewhere there should be logging
+        log.error("Unexpected exception", e);
         return ResponseEntity.internalServerError().body("Internal Server Error");
     }
 
     @ExceptionHandler
+    public ResponseEntity<String> catchIllegalArgumentException (IllegalArgumentException e) {
+        log.error("Unexpected exception", e);
+        return ResponseEntity.badRequest().body("Bad request param or request body");
+    }
+
+    @ExceptionHandler
     public ResponseEntity<String> catchEntityAlreadyExistException (EntityAlreadyExistException e) {
-        //somewhere there should be logging
         return ResponseEntity.badRequest().body(e.getMessage());
     }
     @ExceptionHandler
     public ResponseEntity<String> catchEntityNotFoundException (EntityNotFoundException e) {
-        //somewhere there should be logging
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler
     public ResponseEntity<String> catchUsernameNotFoundException (UsernameNotFoundException e) {
-        //somewhere there should be logging
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler
     public ResponseEntity<String> catchEntityValidationFailedException (EntityValidationFailedException e) {
-        //somewhere there should be logging
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
     @ExceptionHandler
     public ResponseEntity<String> catchAccessDeniedException(AccessDeniedException e) {
-        //somewhere there should be logging
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
