@@ -1,9 +1,13 @@
 package com.bitniki.VPNconServer;
 
 import com.bitniki.VPNconServer.exception.EntityNotFoundException;
+import com.bitniki.VPNconServer.exception.EntityValidationFailedException;
 import com.bitniki.VPNconServer.modules.host.entity.HostEntity;
+import com.bitniki.VPNconServer.modules.peer.connectHandler.exception.PeerConnectHandlerException;
 import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
+import com.bitniki.VPNconServer.modules.peer.exception.PeerAlreadyExistException;
 import com.bitniki.VPNconServer.modules.peer.exception.PeerNotFoundException;
+import com.bitniki.VPNconServer.modules.peer.model.PeerFromRequest;
 import com.bitniki.VPNconServer.modules.peer.service.PeerService;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import org.junit.jupiter.api.Test;
@@ -12,6 +16,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -192,5 +197,35 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
         assertThrows(IllegalArgumentException.class, () -> peerService.getOneByLoginAndId(null, null));
     }
 
+    @Test
+    public void testCreate_Valid() throws EntityValidationFailedException, EntityNotFoundException, PeerConnectHandlerException, PeerAlreadyExistException {
+        var confName = "newTest" + (new Random()).nextInt(1000);
+        PeerEntity model = new PeerEntity(
+                null,
+                confName,
+                null,
+                null,
+                null,
+                true,
+                UserEntity.builder().id(1L).login("test").build(),
+                HostEntity.builder()
+                        .id(3L)
+                        .name("test3")
 
+                        .build()
+        );
+
+        PeerFromRequest toCreate = new PeerFromRequest(confName, null, 1L, 3L);
+        PeerEntity result = peerService.create(toCreate);
+
+        //Compare
+        assertEquals(model.getPeerConfName(), result.getPeerConfName());
+        assertNotEquals(model.getPeerIp(), result.getPeerIp());
+        assertNotEquals(model.getPeerPrivateKey(), result.getPeerPrivateKey());
+        assertNotEquals(model.getPeerPublicKey(), result.getPeerPublicKey());
+        assertEquals(model.getIsActivated(), result.getIsActivated());
+        assertEquals(model.getUser().getId(), result.getUser().getId());
+        assertEquals(model.getUser().getLogin(), result.getUser().getLogin());
+        assertEquals(model.getHost().getId(), result.getHost().getId());
+    }
 }
