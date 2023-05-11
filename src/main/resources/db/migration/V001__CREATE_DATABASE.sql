@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS peers (
     peer_private_key varchar(255) NOT NULL,
     peer_public_key varchar(255) NOT NULL,
     is_activated BOOLEAN DEFAULT TRUE NOT NULL,
-    user_id BIGINT NOT NULL REFERENCES users(id),
-    host_id BIGINT NOT NULL REFERENCES hosts(id),
+    user_id BIGINT REFERENCES users(id) ON DELETE SET NULL,
+    host_id BIGINT REFERENCES hosts(id) ON DELETE SET NULL,
 
     CONSTRAINT peer_ip_host_id UNIQUE (peer_ip, host_id)
 );
