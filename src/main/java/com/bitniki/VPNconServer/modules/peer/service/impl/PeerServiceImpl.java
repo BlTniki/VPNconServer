@@ -67,6 +67,10 @@ public class PeerServiceImpl implements PeerService {
      * @throws PeerValidationFailedException если хост полон и не получается сгенерировать новый peerIp
      */
     private String getFirstAvailableIpOnHost(List<PeerEntity> peers) throws PeerValidationFailedException {
+        if (peers.size() == 0) {
+            return "10.8.0.2";
+        }
+
         //get last dot index in host network prefix
         int lastDotIndex = peers.get(0).getHost().getHostInternalNetworkPrefix().lastIndexOf('.');
 
@@ -108,7 +112,7 @@ public class PeerServiceImpl implements PeerService {
 
         //check the uniqueness of the confName for a specific host and user
         if(peerRepo.findByPeerConfNameAndUserIdAndHostId(model.getPeerConfName(), user.getId(), host.getId()).isPresent()) {
-            throw new PeerAlreadyExistException("Peer already exist");
+            throw new PeerAlreadyExistException("Peer with conf name %s, user id %d and host id %d already exist".formatted(model.getPeerConfName(), user.getId(), host.getId()));
         }
         //if peerIp not null — check the uniqueness of the peerIp on this host
         if(model.getPeerIp() != null && peerRepo.findByPeerIpAndHostId(model.getPeerIp(), model.getHostId()).isPresent()) {
@@ -153,7 +157,7 @@ public class PeerServiceImpl implements PeerService {
         return createPeer(user, model);
     }
 
-    public PeerEntity create(@NotNull String login, @NotNull PeerFromRequest model)
+    public PeerEntity createByLogin(@NotNull String login, @NotNull PeerFromRequest model)
             throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException, PeerConnectHandlerException {
         // load user
         UserEntity user = userService.getOneByLogin(login);
