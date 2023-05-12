@@ -18,4 +18,5 @@ INSERT INTO peers (id, peer_conf_name, peer_ip, peer_private_key, peer_public_ke
     VALUES
         (1, 'test', '10.8.0.10', 'private', 'public', TRUE, 1, 1),
         (2, 'test2', '10.8.0.11', 'private', 'public', TRUE, 1, 1),
-        (3, 'test3', '10.8.0.12', 'private', 'public', TRUE, 2, 1);
+        (3, 'test3', '10.8.0.12', 'private', 'public', TRUE, 2, 1),
+        (4, 'test', '10.8.0.10', 'private', 'public', TRUE, 1, 2);
