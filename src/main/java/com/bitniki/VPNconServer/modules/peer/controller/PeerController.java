@@ -23,7 +23,10 @@ public class PeerController {
     @Autowired
     private PeerService peerService;
 
-
+    /**
+     * Получение списка всех пиров. Для использования требуется авторизация с ролью "user:read" и "any".
+     * @return ResponseEntity со списком пиров и статусом ответа
+     */
     @GetMapping
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:read')")
@@ -35,6 +38,11 @@ public class PeerController {
         );
     }
 
+    /**
+     * Получение списка всех пиров текущего пользователя. Для использования требуется авторизация с ролью "user:read" и "any".
+     * @param principal Принципал текущего пользователя.
+     * @return ResponseEntity со списком пиров и статусом ответа.
+     */
     @GetMapping("/mine")
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:read')")
@@ -46,6 +54,12 @@ public class PeerController {
         );
     }
 
+    /**
+     * Получение пира по его ID. Для использования требуется авторизация с ролью "peer:read" и "any".
+     * @param id ID пира
+     * @return ResponseEntity с найденным пиром и статусом ответа
+     * @throws PeerNotFoundException если пир не найден в базе данных
+     */
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:read')")
@@ -56,6 +70,13 @@ public class PeerController {
         );
     }
 
+    /**
+     * Получение пира текущего пользователя по его ID. Для использования требуется авторизация с ролью "peer:read" и "personal".
+     * @param id ID пира.
+     * @param principal Принципал текущего пользователя.
+     * @return ResponseEntity с найденным пиром и статусом ответа.
+     * @throws PeerNotFoundException Если пир среди пиров текущего пользователя не найден.
+     */
     @GetMapping("/mine/{id}")
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:read')")
@@ -66,6 +87,16 @@ public class PeerController {
         );
     }
 
+    /**
+     * Создание нового пира.
+     * В {@link PeerFromRequest} должны быть указанны все поля. Ограничения на поля можно найти в самом {@link PeerFromRequest}.
+     * @param model объект {@link PeerFromRequest}.
+     * @return ResponseEntity с созданным пиром и статусом ответа.
+     * @throws EntityNotFoundException Если данные userId и/или hostId не найдены.
+     * @throws PeerAlreadyExistException Если пир с комбинацией peerConfName + userId + hostId или peerIp + hostId уже существует.
+     * @throws EntityValidationFailedException При провале проверки полей в PeerFromRequest.
+     * @throws PeerConnectHandlerException Если возникли проблемы на стороне хоста.
+     */
     @PostMapping
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:write')")
@@ -76,17 +107,35 @@ public class PeerController {
         );
     }
 
+    /**
+     * Создание нового пира текущим пользователем.
+     * В {@link PeerFromRequest} должны быть указанны все поля. Ограничения на поля можно найти в самом {@link PeerFromRequest}.
+     * Юзер текущего пользователя должен совпадать с юзером, указанным в {@link PeerFromRequest}.
+     * @param principal Принципал текущего пользователя.
+     * @param model объект {@link PeerFromRequest}.
+     * @return ResponseEntity с созданным пиром и статусом ответа.
+     * @throws EntityNotFoundException Если данные userId и/или hostId не найдены.
+     * @throws PeerAlreadyExistException Если пир с комбинацией peerConfName + userId + hostId или peerIp + hostId уже существует.
+     * @throws EntityValidationFailedException При провале проверки полей в {@link PeerFromRequest} или переданный логин не совпадает с логином юзера в {@link PeerFromRequest}.
+     * @throws PeerConnectHandlerException Если возникли проблемы на стороне хоста.
+     */
     @PostMapping("/mine")
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:write')")
     public ResponseEntity<Peer> createMinePeer(Principal principal, @RequestBody PeerFromRequest model)
             throws EntityNotFoundException, PeerAlreadyExistException, EntityValidationFailedException, PeerConnectHandlerException {
         return ResponseEntity.ok(
-                Peer.toModel(peerService.createByLogin( principal.getName(),model))
+                Peer.toModel(peerService.createByLogin(principal.getName(), model))
         );
     }
 
-
+    /**
+     * Удаление пира по id.
+     * @param id Id пира.
+     * @return ResponseEntity с удалённым пиром и статусом ответа.
+     * @throws PeerNotFoundException Если пир не найден.
+     * @throws PeerConnectHandlerException Если возникли проблемы на стороне хоста.
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:write')")
@@ -96,6 +145,14 @@ public class PeerController {
         );
     }
 
+    /**
+     * Удаление пира текущего пользователя по id пира.
+     * @param principal Принципал текущего пользователя.
+     * @param id Id пира.
+     * @return ResponseEntity с удалённым пиром и статусом ответа.
+     * @throws PeerNotFoundException Если пир среди пиров текущего пользователя не найден.
+     * @throws PeerConnectHandlerException Если возникли проблемы на стороне хоста.
+     */
     @DeleteMapping("/mine/{id}")
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:write')")
@@ -106,6 +163,13 @@ public class PeerController {
         );
     }
 
+    /**
+     * Получение токена для скачивания конфига пира с хоста по id пира.
+     * @param id Id пира.
+     * @return ResponseEntity с токеном и статусом ответа.
+     * @throws PeerNotFoundException Если пир не найден.
+     * @throws PeerConnectHandlerException Если возникли проблемы на стороне хоста.
+     */
     @GetMapping("/conf/{id}")
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:read')")
@@ -113,6 +177,13 @@ public class PeerController {
         return ResponseEntity.ok(peerService.getDownloadTokenForPeerById(id));
     }
 
+    /**
+     * Получение токена для скачивания конфига пира с хоста текущего пользователя по id пира.
+     * @param id Id пира.
+     * @return ResponseEntity с токеном и статусом ответа.
+     * @throws PeerNotFoundException Если пир среди пиров текущего пользователя не найден.
+     * @throws PeerConnectHandlerException Если возникли проблемы на стороне хоста.
+     */
     @GetMapping("/conf/mine/{id}")
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:read')")
@@ -120,6 +191,13 @@ public class PeerController {
         return ResponseEntity.ok(peerService.getDownloadTokenForPeerByLoginAndId(principal.getName(), id));
     }
 
+    /**
+     * Активация пира по его id.
+     * @param id Id пира.
+     * @return ResponseEntity с истиной и статусом ответа.
+     * @throws PeerNotFoundException Если пир не найден.
+     * @throws PeerConnectHandlerException Если возникли проблемы на стороне хоста.
+     */
     @PostMapping("/activate/{id}")
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:write')")
@@ -128,6 +206,13 @@ public class PeerController {
         return ResponseEntity.ok(peerService.activatePeerOnHostById(id));
     }
 
+    /**
+     * Деактивация пира по его id.
+     * @param id Id пира.
+     * @return ResponseEntity с истиной и статусом ответа.
+     * @throws PeerNotFoundException Если пир не найден.
+     * @throws PeerConnectHandlerException Если возникли проблемы на стороне хоста.
+     */
     @PostMapping("/deactivate/{id}")
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:write')")
