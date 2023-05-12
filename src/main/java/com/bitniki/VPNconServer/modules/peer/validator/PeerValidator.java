@@ -44,10 +44,6 @@ public class PeerValidator extends Validator {
         if (peer.getHostId() == null) {
             peerValidator.addFail("Wrong host id");
         }
-//        //check that user_id is not null
-//        if (peer.getUserId() == null) {
-//            peerValidator.addFail("Wrong u id");
-//        }
 
         return peerValidator;
     }
