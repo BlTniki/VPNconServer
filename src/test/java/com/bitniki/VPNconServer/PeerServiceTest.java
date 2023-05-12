@@ -3,29 +3,49 @@ package com.bitniki.VPNconServer;
 import com.bitniki.VPNconServer.exception.EntityNotFoundException;
 import com.bitniki.VPNconServer.exception.EntityValidationFailedException;
 import com.bitniki.VPNconServer.modules.host.entity.HostEntity;
+import com.bitniki.VPNconServer.modules.host.exception.HostNotFoundException;
+import com.bitniki.VPNconServer.modules.host.service.HostService;
+import com.bitniki.VPNconServer.modules.peer.connectHandler.PeerConnectHandlerService;
 import com.bitniki.VPNconServer.modules.peer.connectHandler.exception.PeerConnectHandlerException;
+import com.bitniki.VPNconServer.modules.peer.connectHandler.model.PeerFromHost;
 import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
 import com.bitniki.VPNconServer.modules.peer.exception.PeerAlreadyExistException;
 import com.bitniki.VPNconServer.modules.peer.exception.PeerNotFoundException;
+import com.bitniki.VPNconServer.modules.peer.exception.PeerValidationFailedException;
 import com.bitniki.VPNconServer.modules.peer.model.PeerFromRequest;
-import com.bitniki.VPNconServer.modules.peer.service.PeerService;
+import com.bitniki.VPNconServer.modules.peer.repository.PeerRepo;
+import com.bitniki.VPNconServer.modules.peer.service.impl.PeerServiceImpl;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
+import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
+import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
+import com.bitniki.VPNconServer.modules.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @Transactional
 @Rollback
 public class PeerServiceTest extends VpNconServerApplicationTests {
-    @Autowired
-    private PeerService peerService;
+    private final PeerConnectHandlerService peerConnectHandlerService;
+    private final PeerServiceImpl peerService;
+
+    public PeerServiceTest(@Autowired PeerRepo peerRepo,
+                           @Autowired UserService userService,
+                           @Autowired HostService hostService) {
+
+        peerConnectHandlerService = mock(PeerConnectHandlerService.class);
+        this.peerService = new PeerServiceImpl(peerRepo, userService, hostService, peerConnectHandlerService);
+    }
 
     @Test
     public void testGetAll_Valid() {
@@ -100,7 +120,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                 .toList();
 
         //Compare
-        assertEquals(2, resultList.size());
+        assertEquals(3, resultList.size());
         for (int i = 0; i < modelList.size(); i++) {
             var model = modelList.get(i);
             var result = resultList.get(i);
@@ -198,11 +218,115 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
     }
 
     @Test
+    public void testGetFirstAvailableIpOnHost_Valid_ZeroList() throws PeerValidationFailedException {
+        List<String> model = new ArrayList<>();
+        String networkPrefix = "10.8.0.0";
+        String result = peerService.getFirstAvailableIpOnHost(model, networkPrefix);
+
+        assertEquals("10.8.0.2", result);
+    }
+
+    @Test
+    public void testGetFirstAvailableIpOnHost_Valid_NonZeroList() throws PeerValidationFailedException {
+        List<String> model = List.of("10.8.0.2", "10.8.0.3", "10.8.0.4", "10.8.0.6");
+        String networkPrefix = "10.8.0.0";
+        String result = peerService.getFirstAvailableIpOnHost(model, networkPrefix);
+
+        assertEquals("10.8.0.5", result);
+    }
+
+    @Test
+    public void testGetFirstAvailableIpOnHost_PeerValidationFailedException() {
+        List<String> model = new ArrayList<>();
+        String fOctets = "10.8.0.";
+        for (int i = 2; i < 255; i++) {
+            model.add(fOctets + i);
+        }
+        String networkPrefix = "10.8.0.0";
+        assertThrows(PeerValidationFailedException.class, () -> peerService.getFirstAvailableIpOnHost(model, networkPrefix));
+    }
+
+    @Test
     public void testCreate_Valid() throws EntityValidationFailedException, EntityNotFoundException, PeerConnectHandlerException, PeerAlreadyExistException {
-        var confName = "newTest" + (new Random()).nextInt(1000);
         PeerEntity model = new PeerEntity(
                 null,
-                confName,
+                "newTest",
+                null,
+                null,
+                null,
+                true,
+                UserEntity.builder().id(1L).login("test").build(),
+                HostEntity.builder()
+                        .id(1L)
+                        .build()
+        );
+
+        //Configure peerConnectHandlerService mock
+        when(peerConnectHandlerService.createPeerOnHost(any())).thenReturn(new PeerFromHost(null, null, "prilol", "pubKek"));
+
+        PeerFromRequest toCreate = new PeerFromRequest("newTest", null, 1L, 1L);
+        PeerEntity result = peerService.create(toCreate);
+
+        //Compare
+        assertEquals(model.getPeerConfName(), result.getPeerConfName());
+        assertNotEquals(model.getPeerIp(), result.getPeerIp());
+        assertNotEquals(model.getPeerPrivateKey(), result.getPeerPrivateKey());
+        assertNotEquals(model.getPeerPublicKey(), result.getPeerPublicKey());
+        assertEquals(model.getIsActivated(), result.getIsActivated());
+        assertEquals(model.getUser().getId(), result.getUser().getId());
+        assertEquals(model.getUser().getLogin(), result.getUser().getLogin());
+        assertEquals(model.getHost().getId(), result.getHost().getId());
+    }
+
+    @Test
+    public void testCreate_UserValidationFailedException() {
+        PeerFromRequest toCreate = new PeerFromRequest("newTest", null, null, 3L);
+        Exception exception = assertThrows(UserValidationFailedException.class, () -> peerService.create(toCreate));
+        assertTrue(exception.getMessage().contains("userId"));
+    }
+
+    @Test
+    public void testCreate_EntityValidationFailedException() {
+        PeerFromRequest toCreate = new PeerFromRequest("new_123_-eTest", "null", 1L, null);
+        Exception exception = assertThrows(EntityValidationFailedException.class, () -> peerService.create(toCreate));
+        assertTrue(
+                exception.getMessage().contains("host id")
+                && exception.getMessage().contains("peer conf name")
+                && exception.getMessage().contains("peer ip")
+        );
+    }
+
+    @Test
+    public void testCreate_UserNotFoundException() {
+        PeerFromRequest toCreate = new PeerFromRequest("newTest", "10.8.0.2", -1L, 1L);
+        assertThrows(UserNotFoundException.class, () -> peerService.create(toCreate));
+    }
+
+    @Test
+    public void testCreate_HostNotFoundException() {
+        PeerFromRequest toCreate = new PeerFromRequest("newTest", "10.8.0.2", 1L, -1L);
+        assertThrows(HostNotFoundException.class, () -> peerService.create(toCreate));
+    }
+
+    @Test
+    public void testCreate_PeerAlreadyExistException_Name() {
+        PeerFromRequest toCreate = new PeerFromRequest("test", "10.8.0.2", 1L, 1L);
+        Exception exception = assertThrows(PeerAlreadyExistException.class, () -> peerService.create(toCreate));
+        assertTrue(exception.getMessage().contains("conf name"));
+    }
+
+    @Test
+    public void testCreate_PeerAlreadyExistException_peerIp() {
+        PeerFromRequest toCreate = new PeerFromRequest("12test", "10.8.0.10", 1L, 1L);
+        Exception exception = assertThrows(PeerAlreadyExistException.class, () -> peerService.create(toCreate));
+        assertTrue(exception.getMessage().contains("Peer ip"));
+    }
+
+    @Test
+    public void testCreateByLogin_Valid() throws EntityValidationFailedException, EntityNotFoundException, PeerConnectHandlerException, PeerAlreadyExistException {
+        PeerEntity model = new PeerEntity(
+                null,
+                "newTest",
                 null,
                 null,
                 null,
@@ -215,8 +339,11 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                         .build()
         );
 
-        PeerFromRequest toCreate = new PeerFromRequest(confName, null, 1L, 3L);
-        PeerEntity result = peerService.create(toCreate);
+        //Configure peerConnectHandlerService mock
+        when(peerConnectHandlerService.createPeerOnHost(any())).thenReturn(new PeerFromHost(null, null, "prilol", "pubKek"));
+
+        PeerFromRequest toCreate = new PeerFromRequest("newTest", null, 1L, 3L);
+        PeerEntity result = peerService.createByLogin("test", toCreate);
 
         //Compare
         assertEquals(model.getPeerConfName(), result.getPeerConfName());
@@ -227,5 +354,182 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
         assertEquals(model.getUser().getId(), result.getUser().getId());
         assertEquals(model.getUser().getLogin(), result.getUser().getLogin());
         assertEquals(model.getHost().getId(), result.getHost().getId());
+    }
+
+    @Test
+    public void testCreateByLogin_UserValidationFailedException() {
+        PeerFromRequest toCreate = new PeerFromRequest("newTest", null, 2L, 3L);
+        Exception exception = assertThrows(UserValidationFailedException.class, () -> peerService.createByLogin("test", toCreate));
+        assertTrue(exception.getMessage().contains("You have no permission"));
+    }
+
+    @Test
+    public void testDelete_Valid() throws PeerNotFoundException, PeerConnectHandlerException {
+        PeerEntity model = new PeerEntity(
+                1L,
+                "test",
+                "10.8.0.10",
+                "private",
+                "public",
+                true,
+                UserEntity.builder().id(1L).login("test").build(),
+                HostEntity.builder().id(1L).build()
+        );
+
+        PeerEntity result = peerService.delete(1L);
+
+        //Compare
+        assertEquals(model.getId(), result.getId());
+        assertEquals(model.getPeerConfName(), result.getPeerConfName());
+        assertEquals(model.getPeerIp(), result.getPeerIp());
+        assertEquals(model.getPeerPrivateKey(), result.getPeerPrivateKey());
+        assertEquals(model.getPeerPublicKey(), result.getPeerPublicKey());
+        assertEquals(model.getIsActivated(), result.getIsActivated());
+        assertEquals(model.getUser().getId(), result.getUser().getId());
+        assertEquals(model.getHost().getId(), result.getHost().getId());
+    }
+
+    @Test
+    public void testDelete_PeerNotFoundException() {
+        assertThrows(PeerNotFoundException.class, () -> peerService.delete(-1L));
+    }
+
+    @Test
+    public void testDeleteByLogin_Valid() throws EntityNotFoundException, PeerConnectHandlerException {
+        PeerEntity model = new PeerEntity(
+                1L,
+                "test",
+                "10.8.0.10",
+                "private",
+                "public",
+                true,
+                UserEntity.builder().id(1L).login("test").build(),
+                HostEntity.builder().id(1L).build()
+        );
+
+        PeerEntity result = peerService.deleteByLogin("test", 1L);
+
+        //Compare
+        assertEquals(model.getId(), result.getId());
+        assertEquals(model.getPeerConfName(), result.getPeerConfName());
+        assertEquals(model.getPeerIp(), result.getPeerIp());
+        assertEquals(model.getPeerPrivateKey(), result.getPeerPrivateKey());
+        assertEquals(model.getPeerPublicKey(), result.getPeerPublicKey());
+        assertEquals(model.getIsActivated(), result.getIsActivated());
+        assertEquals(model.getUser().getId(), result.getUser().getId());
+        assertEquals(model.getHost().getId(), result.getHost().getId());
+    }
+
+    @Test
+    public void testDeleteByLogin_PeerNotFoundException_Name() {
+        assertThrows(PeerNotFoundException.class, () -> peerService.deleteByLogin("testdwwadwa", 1L));
+    }
+
+    @Test
+    public void testDeleteByLogin_PeerNotFoundException_Id() {
+        assertThrows(PeerNotFoundException.class, () -> peerService.deleteByLogin("test", -1L));
+    }
+
+    @Test
+    public void testGetDownloadTokenForPeerById_Valid() throws PeerNotFoundException, PeerConnectHandlerException {
+        String model = "lolKek";
+
+        //Configure peerConnectHandlerService mock
+        when(peerConnectHandlerService.getDownloadConfToken(any())).thenReturn(model);
+
+        String result = peerService.getDownloadTokenForPeerById(1L);
+
+        //Compare
+        assertEquals(model, result);
+    }
+
+    @Test
+    public void testGetDownloadTokenForPeerById_PeerNotFoundException() {
+        assertThrows(PeerNotFoundException.class, () -> peerService.getDownloadTokenForPeerById(-1L));
+    }
+
+    @Test
+    public void testGetDownloadTokenForPeerByLoginAndId_Valid() throws EntityNotFoundException, PeerConnectHandlerException {
+        String model = "lolKek";
+
+        //Configure peerConnectHandlerService mock
+        when(peerConnectHandlerService.getDownloadConfToken(any())).thenReturn(model);
+
+        String result = peerService.getDownloadTokenForPeerByLoginAndId("test", 1L);
+
+        //Compare
+        assertEquals(model, result);
+    }
+
+    @Test
+    public void testGetDownloadTokenForPeerByLoginAndId_PeerNotFoundException_Name() {
+        assertThrows(PeerNotFoundException.class, () -> peerService.getDownloadTokenForPeerByLoginAndId("test123fg", 1L));
+    }
+
+    @Test
+    public void testGetDownloadTokenForPeerByLoginAndId_PeerNotFoundException_Id() {
+        assertThrows(PeerNotFoundException.class, () -> peerService.getDownloadTokenForPeerByLoginAndId("test", -1L));
+    }
+
+    @Test
+    public void testActivatePeerOnHost_Valid() throws PeerNotFoundException, PeerConnectHandlerException {
+        PeerEntity model = new PeerEntity(
+                4L,
+                "test",
+                "10.8.0.10",
+                "private",
+                "public",
+                true,
+                UserEntity.builder().id(1L).login("test").build(),
+                HostEntity.builder().id(2L).build()
+        );
+        peerService.activatePeerOnHostById(4L);
+        PeerEntity result = peerService.getOneById(4L);
+
+        //Compare
+        assertEquals(model.getId(), result.getId());
+        assertEquals(model.getPeerConfName(), result.getPeerConfName());
+        assertEquals(model.getPeerIp(), result.getPeerIp());
+        assertEquals(model.getPeerPrivateKey(), result.getPeerPrivateKey());
+        assertEquals(model.getPeerPublicKey(), result.getPeerPublicKey());
+        assertEquals(model.getIsActivated(), result.getIsActivated());
+        assertEquals(model.getUser().getId(), result.getUser().getId());
+        assertEquals(model.getHost().getId(), result.getHost().getId());
+    }
+
+    @Test
+    public void testActivatePeerOnHost_PeerNotFoundException() {
+        assertThrows(PeerNotFoundException.class, () -> peerService.activatePeerOnHostById(-4L));
+    }
+
+    @Test
+    public void testDeactivatePeerOnHost_Valid() throws PeerNotFoundException, PeerConnectHandlerException {
+        PeerEntity model = new PeerEntity(
+                4L,
+                "test",
+                "10.8.0.10",
+                "private",
+                "public",
+                false,
+                UserEntity.builder().id(1L).login("test").build(),
+                HostEntity.builder().id(2L).build()
+        );
+        peerService.deactivatePeerOnHostById(4L);
+        PeerEntity result = peerService.getOneById(4L);
+
+        //Compare
+        assertEquals(model.getId(), result.getId());
+        assertEquals(model.getPeerConfName(), result.getPeerConfName());
+        assertEquals(model.getPeerIp(), result.getPeerIp());
+        assertEquals(model.getPeerPrivateKey(), result.getPeerPrivateKey());
+        assertEquals(model.getPeerPublicKey(), result.getPeerPublicKey());
+        assertEquals(model.getIsActivated(), result.getIsActivated());
+        assertEquals(model.getUser().getId(), result.getUser().getId());
+        assertEquals(model.getHost().getId(), result.getHost().getId());
+    }
+
+    @Test
+    public void testDeactivatePeerOnHost_PeerNotFoundException() {
+        assertThrows(PeerNotFoundException.class, () -> peerService.deactivatePeerOnHostById(-4L));
     }
 }
