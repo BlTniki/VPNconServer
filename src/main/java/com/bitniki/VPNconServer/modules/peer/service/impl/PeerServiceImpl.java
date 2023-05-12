@@ -5,7 +5,7 @@ import com.bitniki.VPNconServer.exception.EntityValidationFailedException;
 import com.bitniki.VPNconServer.modules.host.entity.HostEntity;
 import com.bitniki.VPNconServer.modules.host.exception.HostNotFoundException;
 import com.bitniki.VPNconServer.modules.host.service.HostService;
-import com.bitniki.VPNconServer.modules.peer.connectHandler.PeerConnectHandler;
+import com.bitniki.VPNconServer.modules.peer.connectHandler.PeerConnectHandlerService;
 import com.bitniki.VPNconServer.modules.peer.connectHandler.exception.PeerConnectHandlerException;
 import com.bitniki.VPNconServer.modules.peer.connectHandler.model.PeerFromHost;
 import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
@@ -37,6 +37,7 @@ public class PeerServiceImpl implements PeerService {
     private final PeerRepo peerRepo;
     private final UserService userService;
     private final HostService hostService;
+    private final PeerConnectHandlerService peerConnectHandlerService;
 
     public Spliterator<PeerEntity> getAll() {
         return peerRepo.findAll().spliterator();
@@ -136,8 +137,7 @@ public class PeerServiceImpl implements PeerService {
                 .build();
 
         //create peer on host
-        PeerConnectHandler peerConnectHandler = new PeerConnectHandler(peer);
-        PeerFromHost answer = peerConnectHandler.createPeerOnHost();
+        PeerFromHost answer = peerConnectHandlerService.createPeerOnHost(peer);
 
         //complete peer entity
         peer.setPeerPrivateKey( answer.getPeerPrivateKey() );
@@ -171,8 +171,8 @@ public class PeerServiceImpl implements PeerService {
 
     private PeerEntity deletePeer(PeerEntity peer) throws PeerConnectHandlerException {
         //deleting peer on host
-        PeerConnectHandler peerConnectHandler = new PeerConnectHandler(peer);
-        peerConnectHandler.deletePeerOnHost();
+        peerConnectHandlerService.deletePeerOnHost(peer);
+
         //deleting in db
         peerRepo.delete(peer);
         return peer;
@@ -200,8 +200,7 @@ public class PeerServiceImpl implements PeerService {
 
     private String makeRequestToHostForDownloadToken(PeerEntity peer) throws PeerConnectHandlerException {
         //make request to host
-        PeerConnectHandler peerConnectHandler = new PeerConnectHandler(peer);
-        return peerConnectHandler.getDownloadConfToken();
+        return peerConnectHandlerService.getDownloadConfToken(peer);
     }
 
     public String getDownloadTokenForPeer(@NotNull Long id) throws PeerNotFoundException, PeerConnectHandlerException {
@@ -230,8 +229,7 @@ public class PeerServiceImpl implements PeerService {
                         () -> new PeerNotFoundException("Peer " + id + " not Found!")
                 );
         //activate on host
-        PeerConnectHandler peerConnectHandler = new PeerConnectHandler(entity);
-        peerConnectHandler.activateOnHost();
+        peerConnectHandlerService.activateOnHost(entity);
 
         //update entity
         entity.setIsActivated(true);
@@ -247,8 +245,7 @@ public class PeerServiceImpl implements PeerService {
                         () -> new PeerNotFoundException("Peer " + id + " not Found!")
                 );
         //activate on host
-        PeerConnectHandler peerConnectHandler = new PeerConnectHandler(entity);
-        peerConnectHandler.deactivateOnHost();
+        peerConnectHandlerService.deactivateOnHost(entity);
 
         //update entity
         entity.setIsActivated(false);
