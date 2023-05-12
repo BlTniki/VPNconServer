@@ -66,7 +66,7 @@ public interface PeerService {
      * @param login логин юзера {@link UserEntity}.
      * @param model Модель PeerFromRequest для создания объекта PeerEntity.
      * @return Созданный объект PeerEntity.
-     * @throws EntityValidationFailedException При провале проверки полей в {@link PeerFromRequest} или переданный логин не совпадает
+     * @throws EntityValidationFailedException При провале проверки полей в {@link PeerFromRequest} или переданный логин не совпадает с логином юзера в {@link PeerFromRequest}.
      * @throws PeerAlreadyExistException Если пир с комбинацией peerConfName + userId + hostId или peerIp + hostId уже существует.
      * @throws EntityNotFoundException Если данные userId и/или hostId не найдены.
      * @throws PeerConnectHandlerException Если возникли проблемы на стороне хоста.
