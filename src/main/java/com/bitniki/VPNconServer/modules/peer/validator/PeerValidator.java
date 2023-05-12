@@ -33,8 +33,15 @@ public class PeerValidator extends Validator {
         PeerValidator peerValidator = new PeerValidator();
 
         //peerIp can be null but if not -- validate
-        if(peer.getPeerIp() != null && !peerValidator.peerIpPattern.matcher(peer.getPeerIp()).matches()) {
-            peerValidator.addFail("Wrong peer ip");
+        if(peer.getPeerIp() != null) {
+            if (!peerValidator.peerIpPattern.matcher(peer.getPeerIp()).matches()) {
+                peerValidator.addFail("Wrong peer ip");
+            } else {
+                int lastOctet = Integer.parseInt(peer.getPeerIp().substring(peer.getPeerIp().lastIndexOf(".") + 1));
+                if (lastOctet < 2 || lastOctet > 254) {
+                    peerValidator.addFail("Wrong peer ip");
+                }
+            }
         }
         //if field null – addFail, else do match
         if(peer.getPeerConfName() == null || !peerValidator.peerConfNamePattern.matcher(peer.getPeerConfName()).matches()) {
