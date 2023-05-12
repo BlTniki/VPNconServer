@@ -10,7 +10,8 @@ DELETE FROM hosts;
 INSERT INTO hosts (id, name, ipaddress, port, host_internal_network_prefix, host_password, host_public_key)
     VALUES
         (1, 'test', '127.0.0.1', 1, '127.0.0.0', '123456', 'lolkek'),
-        (2, 'test2', '127.0.0.1', 2, '127.0.0.0', '123456', 'lolkek');
+        (2, 'test2', '127.0.0.1', 2, '127.0.0.0', '123456', 'lolkek'),
+        (3, 'test3', '127.0.0.1', 5000, '127.0.0.0', '5543678', 'lolkek');
 
 DELETE FROM peers;
 INSERT INTO peers (id, peer_conf_name, peer_ip, peer_private_key, peer_public_key, is_activated, user_id, host_id)
