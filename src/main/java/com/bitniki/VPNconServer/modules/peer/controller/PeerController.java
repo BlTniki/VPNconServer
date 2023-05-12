@@ -102,7 +102,7 @@ public class PeerController {
     public ResponseEntity<Peer> deleteMinePeer(Principal principal, @PathVariable Long id)
             throws EntityNotFoundException, PeerConnectHandlerException {
         return ResponseEntity.ok(
-                Peer.toModel(peerService.delete(principal.getName(), id))
+                Peer.toModel(peerService.deleteByLogin(principal.getName(), id))
         );
     }
 
@@ -110,14 +110,14 @@ public class PeerController {
     @PreAuthorize("hasAuthority('any')" +
             "&& hasAuthority('peer:read')")
     public ResponseEntity<String> getDownloadToken(@PathVariable Long id) throws PeerNotFoundException, PeerConnectHandlerException {
-        return ResponseEntity.ok(peerService.getDownloadTokenForPeer(id));
+        return ResponseEntity.ok(peerService.getDownloadTokenForPeerById(id));
     }
 
     @GetMapping("/conf/mine/{id}")
     @PreAuthorize("hasAuthority('personal')" +
             "&& hasAuthority('peer:read')")
     public ResponseEntity<String> getMineDownloadToken(Principal principal,@PathVariable Long id) throws EntityNotFoundException, PeerConnectHandlerException {
-        return ResponseEntity.ok(peerService.getDownloadTokenForPeer(principal.getName(), id));
+        return ResponseEntity.ok(peerService.getDownloadTokenForPeerByLoginAndId(principal.getName(), id));
     }
 
     @PostMapping("/activate/{id}")
@@ -125,7 +125,7 @@ public class PeerController {
             "&& hasAuthority('peer:write')")
     public ResponseEntity<Boolean> activatePeer(@PathVariable Long id)
             throws PeerNotFoundException, PeerConnectHandlerException {
-        return ResponseEntity.ok(peerService.activatePeerOnHost(id));
+        return ResponseEntity.ok(peerService.activatePeerOnHostById(id));
     }
 
     @PostMapping("/deactivate/{id}")
@@ -133,6 +133,6 @@ public class PeerController {
             "&& hasAuthority('peer:write')")
     public ResponseEntity<Boolean> deactivatePeer(@PathVariable Long id)
             throws PeerNotFoundException, PeerConnectHandlerException {
-        return ResponseEntity.ok(peerService.deactivatePeerOnHost(id));
+        return ResponseEntity.ok(peerService.deactivatePeerOnHostById(id));
     }
 }
