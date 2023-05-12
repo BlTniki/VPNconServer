@@ -63,33 +63,31 @@ public class PeerServiceImpl implements PeerService {
 
     /**
      * Генерирует новый айпи пира на основе списка пиров с одинаковым хостом.
-     * @param peers {@link List}<{@link PeerEntity}> у которых одинаковый хост
+     * @param peerIps {@link List}<{@link String}> Список peerIp с одним хостом.
+     * @param networkPrefix Префикс внутренней сети хоста в виде Х.Х.Х.0
      * @return Новый peerIp
      * @throws PeerValidationFailedException если хост полон и не получается сгенерировать новый peerIp
      */
-    private String getFirstAvailableIpOnHost(List<PeerEntity> peers) throws PeerValidationFailedException {
-        if (peers.size() == 0) {
-            return "10.8.0.2";
-        }
-
+    public String getFirstAvailableIpOnHost(List<String> peerIps, String networkPrefix) throws PeerValidationFailedException {
         //get last dot index in host network prefix
-        int lastDotIndex = peers.get(0).getHost().getHostInternalNetworkPrefix().lastIndexOf('.');
+        int lastDotIndex = networkPrefix.lastIndexOf('.');
 
         // get last octets of existing peerIps on host
-        List<Integer> existingOctets = peers.stream().map(
-                peer -> Integer.valueOf( peer.getPeerIp().substring(lastDotIndex + 1) )
+        List<Integer> existingOctets = peerIps.stream().map(
+                peerIp -> Integer.valueOf( peerIp.substring(lastDotIndex + 1) )
         ).toList();
 
         // get first octet that missing in existingOctets or throw error
-        Integer missingOctet = Stream.iterate(2, i -> i + 1).limit(255)
+        // limit(253) -- last number will be 254 (it's just some joke that im didn't get it)
+        Integer missingOctet = Stream.iterate(2, i -> i + 1).limit(253)
                 .filter(i -> !existingOctets.contains(i))
                 .findFirst()
                 .orElseThrow(
-                        () -> new PeerValidationFailedException("Host named %s is full!".formatted(peers.get(0).getHost().getName()))
+                        () -> new PeerValidationFailedException("Host is full!")
                 );
 
         //return ipaddress like <host network prefix>.<missing octet>
-        return peers.get(0).getHost().getHostInternalNetworkPrefix().substring(0, lastDotIndex + 1) + missingOctet;
+        return networkPrefix.substring(0, lastDotIndex + 1) + missingOctet;
     }
 
     private PeerEntity createPeer(UserEntity user, PeerFromRequest model)
@@ -123,7 +121,11 @@ public class PeerServiceImpl implements PeerService {
         }
         //if peerIp null — generate one
         if (model.getPeerIp() == null) {
-            String newPeerIp = getFirstAvailableIpOnHost(peerRepo.findAllByHostId(model.getHostId()));
+            String newPeerIp = getFirstAvailableIpOnHost(
+                    peerRepo.findAllByHostId(model.getHostId()).stream()
+                            .map(PeerEntity::getPeerIp).toList(),
+                    host.getHostInternalNetworkPrefix()
+            );
             model.setPeerIp(newPeerIp);
         }
 
@@ -186,7 +188,7 @@ public class PeerServiceImpl implements PeerService {
         return deletePeer(peer);
     }
 
-    public PeerEntity delete(@NotNull String login, @NotNull Long id) throws EntityNotFoundException, PeerConnectHandlerException {
+    public PeerEntity deleteByLogin(@NotNull String login, @NotNull Long id) throws EntityNotFoundException, PeerConnectHandlerException {
         //find peer
         PeerEntity peer = peerRepo.findByIdAndUserLogin(id, login)
                 .orElseThrow(
@@ -203,14 +205,14 @@ public class PeerServiceImpl implements PeerService {
         return peerConnectHandlerService.getDownloadConfToken(peer);
     }
 
-    public String getDownloadTokenForPeer(@NotNull Long id) throws PeerNotFoundException, PeerConnectHandlerException {
+    public String getDownloadTokenForPeerById(@NotNull Long id) throws PeerNotFoundException, PeerConnectHandlerException {
         PeerEntity peer = peerRepo.findById(id)
                 .orElseThrow( () -> new PeerNotFoundException("Peer with id %d not found".formatted(id)) );
 
         return makeRequestToHostForDownloadToken(peer);
     }
 
-    public String getDownloadTokenForPeer(@NotNull String login, @NotNull Long id) throws EntityNotFoundException, PeerConnectHandlerException {
+    public String getDownloadTokenForPeerByLoginAndId(@NotNull String login, @NotNull Long id) throws EntityNotFoundException, PeerConnectHandlerException {
         //find peer
         PeerEntity peer = peerRepo.findByIdAndUserLogin(id, login)
                 .orElseThrow(
@@ -222,7 +224,7 @@ public class PeerServiceImpl implements PeerService {
         return makeRequestToHostForDownloadToken(peer);
     }
 
-    public Boolean activatePeerOnHost(@NotNull Long id) throws PeerNotFoundException, PeerConnectHandlerException {
+    public Boolean activatePeerOnHostById(@NotNull Long id) throws PeerNotFoundException, PeerConnectHandlerException {
         //load peer
         PeerEntity entity = peerRepo.findById(id)
                 .orElseThrow(
@@ -238,7 +240,7 @@ public class PeerServiceImpl implements PeerService {
         return true;
     }
 
-    public Boolean deactivatePeerOnHost(@NotNull Long id) throws PeerNotFoundException, PeerConnectHandlerException {
+    public Boolean deactivatePeerOnHostById(@NotNull Long id) throws PeerNotFoundException, PeerConnectHandlerException {
         //load peer
         PeerEntity entity = peerRepo.findById(id)
                 .orElseThrow(
