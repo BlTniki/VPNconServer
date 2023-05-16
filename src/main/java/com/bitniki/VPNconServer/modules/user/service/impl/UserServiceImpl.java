@@ -41,6 +41,11 @@ public class UserServiceImpl implements UserService {
     @Value("${accountant.user.password}")
     String accountantPassword;
 
+    /**
+     *
+     * Создает пользователей по умолчанию, если они не существуют.
+     *
+     */
     @PostConstruct
     public void createDefaultUsersIfNotExist() {
         if(userRepo.findByLogin("telegramBot").isEmpty() && tgPassword != null) {
