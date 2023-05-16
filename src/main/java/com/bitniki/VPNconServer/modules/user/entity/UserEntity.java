@@ -1,5 +1,6 @@
 package com.bitniki.VPNconServer.modules.user.entity;
 
+import com.bitniki.VPNconServer.modules.user.role.Role;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,8 +24,14 @@ public class UserEntity {
     private String login;
     @Column(nullable = false)
     private String password;
-//    @Enumerated(value = EnumType.STRING)
-//    private Role role;
+
+    /**
+     * Роль юзера в сервисе. Определяет доступ к функционалу.
+     */
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private Role role = Role.ACTIVATED_USER;
+
     /**
      * JWT токен, используемый для авторизации.
      */

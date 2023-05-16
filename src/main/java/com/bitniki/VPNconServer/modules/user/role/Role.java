@@ -5,6 +5,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Роль юзера. Роли подразумевают различный набор разрешений для доступа к конечным точкам приложения.
+ */
 public enum Role {
     ADMIN(Set.of(Permission.values())),
     ACTIVATED_CLOSE_USER(Set.of(Permission.Personal,

@@ -8,6 +8,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserFromRequest {
 
     /**
@@ -22,4 +23,14 @@ public class UserFromRequest {
      * Цифры
      */
     private String password;
+
+    /**
+     * Id юзера в Telegram.
+     */
+    private Long telegramId;
+
+    /**
+     * Nickname юзера в Telegram.
+     */
+    private String telegramNickname;
 }

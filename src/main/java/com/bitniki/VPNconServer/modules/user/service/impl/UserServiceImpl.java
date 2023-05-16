@@ -1,22 +1,30 @@
 package com.bitniki.VPNconServer.modules.user.service.impl;
 
+import com.bitniki.VPNconServer.modules.security.jwt.JwtTokenProvider;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
 import com.bitniki.VPNconServer.modules.user.repository.UserRepo;
+import com.bitniki.VPNconServer.modules.user.role.Role;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
 import com.bitniki.VPNconServer.modules.user.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Spliterator;
 
 @Slf4j
@@ -26,29 +34,47 @@ import java.util.Spliterator;
 public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
     @Value("${tg.user.password}")
     String tgPassword;
     @Value("${accountant.user.password}")
     String accountantPassword;
 
     @PostConstruct
-    public void createDefaultUsersIfNotExist()
-            throws UserAlreadyExistException, UserValidationFailedException {
-//        if(userRepo.findByLogin("telegramBot").isEmpty() && tgPassword != null) {
-//            UserEntity bot = UserEntity.builder().login("telegramBot").password(tgPassword).build();
-//            Long botId = create(bot).getId();
-//            //Добавить к верхнему билдеру           !!!!
-//            //Change role
-////            userRepo.findByLogin("telegramBot").map(u -> u.setRole(Role.ADMIN)).map(u -> userRepo.save(u));
-//        }
-//        if(userRepo.findByLogin("telegramBot").isEmpty() && accountantPassword != null) {
-//            UserEntity bot = UserEntity.builder().login("accountant").password(accountantPassword).build();
-//            Long botId = create(bot).getId();
-//
-//            //Добавить к верхнему билдеру           !!!!
-//            //Change role
-////            userRepo.findByLogin("accountant").map(u -> u.setRole(Role.ADMIN)).map(u -> userRepo.save(u));
-//        }
+    public void createDefaultUsersIfNotExist() {
+        if(userRepo.findByLogin("telegramBot").isEmpty() && tgPassword != null) {
+            //Create user for telegram bot
+            UserFromRequest bot = UserFromRequest.builder().login("telegramBot").password(tgPassword).build();
+            UserEntity botEntity;
+            try {
+                botEntity = create(bot);
+            } catch (UserAlreadyExistException | UserValidationFailedException e) {
+                throw new RuntimeException(e);
+            }
+
+            //Change default role
+            botEntity.setRole(Role.ADMIN);
+
+            //save changes
+            userRepo.save(botEntity);
+        }
+        if(userRepo.findByLogin("accountant").isEmpty() && accountantPassword != null) {
+            //Create user for accountant bot
+            UserFromRequest bot = UserFromRequest.builder().login("accountant").password(accountantPassword).build();
+            UserEntity botEntity;
+            try {
+                botEntity = create(bot);
+            } catch (UserAlreadyExistException | UserValidationFailedException e) {
+                throw new RuntimeException(e);
+            }
+
+            //Change default role
+            botEntity.setRole(Role.ADMIN);
+
+            //save changes
+            userRepo.save(botEntity);
+        }
     }
 
     private UserEntity updateUser(@NotNull UserEntity oldUser, @NotNull UserFromRequest newUserModel) throws UserValidationFailedException, UserAlreadyExistException {
@@ -127,7 +153,7 @@ public class UserServiceImpl implements UserService {
         UserEntity entity = UserEntity.builder()
                 .login(model.getLogin())
                 .password(passwordEncoder.encode(model.getPassword())) // encode password
-//                .role(Role.ACTIVATED_USER); // Set default role
+                .role(Role.ACTIVATED_USER) // Set default role
                 .build();
 
         return userRepo.save(entity);
@@ -175,5 +201,79 @@ public class UserServiceImpl implements UserService {
         );
 
         return deleteUser(user);
+    }
+
+    public Map<Object, Object> authAndCreateToken(@NotNull UserFromRequest model) throws UserNotFoundException,
+            UserValidationFailedException, AuthenticationException {
+        // validate model
+        UserValidator userValidator = UserValidator.validateAllFields(model);
+        if(userValidator.hasFails()){
+            throw new UserValidationFailedException(userValidator.toString());
+        }
+
+        // auth user
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(model.getLogin(), model.getPassword())
+        );
+
+        // load user from repo
+        UserEntity user = userRepo.findByLogin(model.getLogin())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        // generate token
+        String token = jwtTokenProvider.createToken(model.getLogin(), user.getRole().name());
+        // set token_expired false and save
+        user.setToken(token);
+        userRepo.save(user);
+
+        // make response
+        Map<Object, Object> response = new HashMap<>();
+        response.put("login", model.getLogin());
+        response.put("token", token);
+        return response;
+    }
+
+    public void logout(@NotNull HttpServletRequest request) throws UserNotFoundException {
+        // load user from repo
+        UserEntity user = userRepo.findByLogin(request.getUserPrincipal().getName())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        // set null and save
+        user.setToken(null);
+        userRepo.save(user);
+    }
+
+    public UserEntity associateTelegram(@NotNull UserFromRequest model) throws UserNotFoundException, UserValidationFailedException {
+        // validate model
+        if(model.getLogin() == null){
+            throw new UserValidationFailedException("No login are given");
+        }
+        if(model.getTelegramId() == null && model.getTelegramNickname() == null)
+            throw new UserValidationFailedException("No telegramId or telegramNickname are given");
+
+        // load user from repo
+        UserEntity user = userRepo.findByLogin(model.getLogin())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        // set telegram id and save
+        user.setTelegramId(model.getTelegramId());
+        user.setTelegramNickname(model.getTelegramNickname());
+        return userRepo.save(user);
+    }
+
+    public UserEntity dissociateTelegram(@NotNull UserFromRequest model) throws UserNotFoundException, UserValidationFailedException {
+        // validate model
+        if(model.getLogin() == null){
+            throw new UserValidationFailedException("No login are given");
+        }
+
+        // load user from repo
+        UserEntity user = userRepo.findByLogin(model.getLogin())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        // del telegram id and save
+        user.setTelegramId(null);
+        user.setTelegramNickname(null);
+        return userRepo.save(user);
     }
 }

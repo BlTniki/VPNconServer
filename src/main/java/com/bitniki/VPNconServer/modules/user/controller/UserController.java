@@ -1,18 +1,21 @@
 package com.bitniki.VPNconServer.modules.user.controller;
 
 import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
+import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.model.User;
-import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -171,5 +174,64 @@ public class UserController {
         );
     }
 
+    /**
+     * Аутентифицирует пользователя и создает токен.
+     *
+     * @param request Запрос с данными пользователя.
+     * @return Карта, содержащая логин авторизированного пользователя и сгенерированный JWT токен.
+     * @throws UserNotFoundException если пользователь не найден.
+     * @throws UserValidationFailedException Если валидация данных пользователя не удалась.
+     * @throws AuthenticationException Если был отправлен неверный пароль.
+     */
+    @PostMapping("/login")
+    public ResponseEntity<Map<Object, Object>> auth(@RequestBody UserFromRequest request)
+            throws UserNotFoundException, UserValidationFailedException, AuthenticationException {
+        return ResponseEntity.ok(userService.authAndCreateToken(request));
+    }
 
+    /**
+     * Выполняет выход пользователя.
+     *
+     * @param request HTTP-запрос, связанный с пользователем.
+     * @return Ответ с сообщением "Success", если выход выполнен успешно.
+     * @throws UserNotFoundException Если пользователь не найден.
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) throws UserNotFoundException {
+        userService.logout(request);
+        return ResponseEntity.ok("Success");
+    }
+
+    /**
+     * Связывает пользователя с Telegram аккаунтом.
+     *
+     * @param user Данные пользователя из запроса.
+     * @return Сущность пользователя, после связывания с Telegram.
+     * @throws UserNotFoundException Если пользователь не найден.
+     * @throws UserValidationFailedException Если валидация полей в user не пройдена.
+     */
+    @PostMapping("/tg")
+    @PreAuthorize("hasAuthority('any')")
+    public ResponseEntity<User> associateTelegramIdWithUser(@RequestBody UserFromRequest user)
+            throws UserNotFoundException, UserValidationFailedException {
+        return ResponseEntity.ok(
+                User.toModel( userService.associateTelegram(user) )
+        );
+    }
+
+    /**
+     * Удаляет связь пользователя с Telegram аккаунтом.
+     * @param user Данные пользователя из запроса. Должен содержать {@link String} login и {@link String} password.
+     * @return Сущность пользователя, после удаления связи с Telegram.
+     * @throws UserNotFoundException Если пользователь не найден.
+     * @throws UserValidationFailedException Если валидация полей в user не пройдена.
+     */
+    @DeleteMapping("/tg")
+    @PreAuthorize("hasAuthority('any')")
+    public ResponseEntity<User> dissociateTelegramIdWithUser(@RequestBody UserFromRequest user)
+            throws UserNotFoundException, UserValidationFailedException {
+        return ResponseEntity.ok(
+                User.toModel( userService.dissociateTelegram(user) )
+        );
+    }
 }

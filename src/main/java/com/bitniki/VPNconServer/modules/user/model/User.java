@@ -1,6 +1,7 @@
 package com.bitniki.VPNconServer.modules.user.model;
 
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
+import com.bitniki.VPNconServer.modules.user.role.Role;
 import lombok.*;
 
 /**
@@ -15,7 +16,11 @@ public class User {
     private Long id;
 
     private String login;
-//    private Role role;
+
+    /**
+     * Роль юзера в сервисе. Определяет доступ к функционалу.
+     */
+    private Role role;
 
     /**
      * Id пользователя в Телеграм
@@ -44,7 +49,7 @@ public class User {
     public User(UserEntity entity) {
         this.setId(entity.getId());
         this.setLogin(entity.getLogin());
-//        this.setRole(entity.getRole());
+        this.setRole(entity.getRole());
         this.setTelegramId(entity.getTelegramId());
         this.setTelegramFirstName(entity.getTelegramFirstName());
         this.setTelegramNickname(entity.getTelegramNickname());

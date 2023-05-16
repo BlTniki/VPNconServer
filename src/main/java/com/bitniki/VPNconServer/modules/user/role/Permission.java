@@ -1,5 +1,8 @@
 package com.bitniki.VPNconServer.modules.user.role;
 
+/**
+ * Разрешения, которые проверяются у пользователя при запросе.
+ */
 public enum Permission {
     GenToken("gen_token"),
     Personal("personal"),

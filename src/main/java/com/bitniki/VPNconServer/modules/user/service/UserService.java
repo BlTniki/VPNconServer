@@ -1,13 +1,16 @@
 package com.bitniki.VPNconServer.modules.user.service;
 
 
+import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
-import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.security.core.AuthenticationException;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 import java.util.Spliterator;
 
 public interface UserService {
@@ -75,7 +78,7 @@ public interface UserService {
     /**
      * Удаляет юзера с данным id.
      * @param id id пользователя.
-     * @return удалённого юзера.
+     * @return Удалённого юзера.
      * @throws UserNotFoundException Если юзер с данным id не найден.
      */
     UserEntity deleteById(@NotNull Long id) throws UserNotFoundException;
@@ -83,8 +86,47 @@ public interface UserService {
     /**
      * удаляет юзера по логину.
      * @param login логин юзера.
-     * @return удалённого юзера.
+     * @return Удалённого юзера.
      * @throws UserNotFoundException Если юзер с данным логином не найден.
      */
     UserEntity deleteByLogin(@NotNull String login) throws UserNotFoundException;
+
+    /**
+     * Авторизует пользователя и создает токен.
+     *
+     * @param model Сущность юзера с указанными полями, которые следует изменить. Должен содержать {@link String} login и {@link String} password.
+     * @return Карта, содержащая логин авторизированного пользователя и сгенерированный JWT токен.
+     * @throws UserNotFoundException Если пользователь не найден.
+     * @throws UserValidationFailedException Если валидация полей в model не пройдена.
+     * @throws AuthenticationException Если был отправлен неверный пароль.
+     */
+    Map<Object, Object> authAndCreateToken(@NotNull UserFromRequest model) throws UserNotFoundException,
+            UserValidationFailedException, AuthenticationException;
+
+    /**
+     * Выполняет выход пользователя.
+     *
+     * @param request HTTP-запрос, связанный с пользователем.
+     * @throws UserNotFoundException Если пользователь не найден.
+     */
+    void logout(@NotNull HttpServletRequest request) throws UserNotFoundException;
+
+    /**
+     * Связывает пользователя с Telegram аккаунтом.
+     *
+     * @param model Данные пользователя из запроса. Должен содержать {@link String} login и {@link String} password.
+     * @return Сущность пользователя, после связывания с Telegram.
+     * @throws UserNotFoundException Если пользователь не найден.
+     * @throws UserValidationFailedException Если валидация полей в model не пройдена.
+     */
+    UserEntity associateTelegram(@NotNull UserFromRequest model) throws UserNotFoundException, UserValidationFailedException;
+
+    /**
+     * Удаляет связь пользователя с Telegram аккаунтом.
+     * @param model Данные пользователя из запроса. Должен содержать {@link String} login и {@link String} password.
+     * @return Сущность пользователя, после удаления связи с Telegram.
+     * @throws UserNotFoundException Если пользователь не найден.
+     * @throws UserValidationFailedException Если валидация полей в model не пройдена.
+     */
+    UserEntity dissociateTelegram(@NotNull UserFromRequest model) throws UserNotFoundException, UserValidationFailedException;
 }
