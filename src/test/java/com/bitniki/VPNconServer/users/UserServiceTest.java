@@ -463,4 +463,16 @@ public class UserServiceTest extends VpNconServerApplicationTests {
 
         assertEquals(model, userService.getValidationRegex());
     }
+
+    @Test
+    public void testUpdateUserRole() throws UserNotFoundException {
+        UserEntity model = new UserEntity(103L, "test", "aA123456", Role.ACTIVATED_CLOSE_USER, null, null, null);
+
+        UserEntity result = userService.updateUserRole(103L, Role.ACTIVATED_CLOSE_USER);
+
+        // Compare
+        assertEquals(model.getId(), result.getId());
+        assertEquals(model.getLogin(), result.getLogin());
+        assertEquals(model.getRole(), result.getRole());
+    }
 }
