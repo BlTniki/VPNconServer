@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -304,5 +306,14 @@ public class HostServiceTest extends VpNconServerApplicationTests {
     public void testDeleteById_Null() {
         //noinspection DataFlowIssue
         assertThrows( IllegalArgumentException.class, () -> hostService.deleteById(null) );
+    }
+
+    @Test
+    public void testGetValidationRegex() {
+        Map<String, String> model = new HashMap<>();
+        model.put("ipaddress", "((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$|^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
+        model.put("networkPrefix", "^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.0$");
+
+        assertEquals(model, hostService.getValidationRegex());
     }
 }

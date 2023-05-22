@@ -25,7 +25,9 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -531,5 +533,14 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
     @Test
     public void testDeactivatePeerOnHost_PeerNotFoundException() {
         assertThrows(PeerNotFoundException.class, () -> peerService.deactivatePeerOnHostById(-4L));
+    }
+
+    @Test
+    public void testGetValidationRegex() {
+        Map<String, String> model = new HashMap<>();
+        model.put("login", "^10\\.8\\.0\\.(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$");
+        model.put("password", "^[A-Za-z0-9]+$");
+
+        assertEquals(model, peerService.getValidationRegex());
     }
 }
