@@ -6,6 +6,7 @@ import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
+import com.bitniki.VPNconServer.modules.user.role.Role;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.AuthenticationException;
 
@@ -136,4 +137,13 @@ public interface UserService {
      * @return Карту в виде {"login": pattern, "password": pattern}.
      */
     Map<String, String> getValidationRegex();
+
+    /**
+     * Изменение роли юзера.
+     *
+     * @param id Идентификатор юзера.
+     * @param newRole Новая роль, которую следует установить юзеру.
+     * @return Сущность юзера с новой ролью.
+     */
+    UserEntity updateUserRole(@NotNull Long id, @NotNull Role newRole) throws UserNotFoundException;
 }

@@ -289,4 +289,19 @@ public class UserServiceImpl implements UserService {
 
         return patterns;
     }
+
+    public UserEntity updateUserRole(@NotNull Long id, @NotNull Role newRole) throws UserNotFoundException {
+        // load user
+        UserEntity user = userRepo.findById(id).orElseThrow(
+                () -> new UserNotFoundException(
+                        "User with id %d not found".formatted(id)
+                )
+        );
+
+        // update role
+        user.setRole(newRole);
+
+        // save and return
+        return userRepo.save(user);
+    }
 }
