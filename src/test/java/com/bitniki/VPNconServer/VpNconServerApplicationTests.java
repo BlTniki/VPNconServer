@@ -8,9 +8,9 @@ import org.springframework.test.context.TestPropertySource;
 @SpringBootTest
 @ActiveProfiles("test")
 @TestPropertySource(locations = "classpath:application-test.yml")
-class VpNconServerApplicationTests {
+public class VpNconServerApplicationTests {
 
 	@Test
-	void contextLoads() throws Exception {
+	void contextLoads() {
 	}
 }
