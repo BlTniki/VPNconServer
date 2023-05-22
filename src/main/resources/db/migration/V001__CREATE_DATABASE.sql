@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS users (
     token varchar(255),
     role varchar(255) NOT NULL DEFAULT 'ACTIVATED_USER',
     telegram_id BIGINT,
-    telegram_first_name varchar(255),
     telegram_nickname varchar(255)
 );
 
