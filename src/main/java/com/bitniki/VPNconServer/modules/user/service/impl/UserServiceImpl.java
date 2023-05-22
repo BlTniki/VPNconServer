@@ -280,4 +280,13 @@ public class UserServiceImpl implements UserService {
         user.setTelegramNickname(null);
         return userRepo.save(user);
     }
+
+    public Map<String, String> getValidationRegex() {
+        //Get regex from validator and cook answer
+        Map<String, String> patterns = new HashMap<>();
+        patterns.put("login", UserValidator.loginPattern.pattern());
+        patterns.put("password", UserValidator.passwordPattern.pattern());
+
+        return patterns;
+    }
 }

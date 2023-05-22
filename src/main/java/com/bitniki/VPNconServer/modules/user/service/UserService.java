@@ -130,4 +130,10 @@ public interface UserService {
      * @throws UserValidationFailedException Если валидация полей в model не пройдена.
      */
     UserEntity dissociateTelegram(@NotNull UserFromRequest model) throws UserNotFoundException, UserValidationFailedException;
+
+    /**
+     * Метод для получения паттернов валидации полей {@link String} login и {@link String} password.
+     * @return Карту в виде {"login": pattern, "password": pattern}.
+     */
+    Map<String, String> getValidationRegex();
 }
