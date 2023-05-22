@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -219,5 +220,18 @@ public class PeerController {
     public ResponseEntity<Boolean> deactivatePeer(@PathVariable Long id)
             throws PeerNotFoundException, PeerConnectHandlerException {
         return ResponseEntity.ok(peerService.deactivatePeerOnHostById(id));
+    }
+
+    /**
+     * Метод для получения паттернов валидации полей {@link String} peerIp и {@link String} peerConfName.
+     * Используется клиентами для получения актуальных правил валидации, чтобы валидировать ввод на месте, не отправляя на сервер.
+     * @return Карту в виде {"ipaddress": pattern, "networkPrefix": pattern}.
+     */
+    @GetMapping("/validator")
+    @PreAuthorize("hasAuthority('any')")
+    public ResponseEntity<Map<String, String>> getValidatorPatterns() {
+        return ResponseEntity.ok(
+                peerService.getValidationRegex()
+        );
     }
 }

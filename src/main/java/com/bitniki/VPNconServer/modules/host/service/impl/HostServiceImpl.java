@@ -14,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Spliterator;
 
 @Slf4j
@@ -127,5 +129,14 @@ public class HostServiceImpl implements HostService {
 
         hostRepo.delete(host);
         return host;
+    }
+
+    public Map<String, String> getValidationRegex() {
+        //Get regex from validator and cook answer
+        Map<String, String> patterns = new HashMap<>();
+        patterns.put("ipaddress", HostValidator.ipaddressPattern.pattern());
+        patterns.put("networkPrefix", HostValidator.hostInternalNetworkPrefixPattern.pattern());
+
+        return patterns;
     }
 }

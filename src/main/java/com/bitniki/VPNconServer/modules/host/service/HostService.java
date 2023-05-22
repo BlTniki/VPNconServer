@@ -7,6 +7,7 @@ import com.bitniki.VPNconServer.modules.host.exception.HostValidationFailedExcep
 import com.bitniki.VPNconServer.modules.host.model.HostFromRequest;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.Spliterator;
 
 public interface HostService {
@@ -53,4 +54,10 @@ public interface HostService {
      * @throws HostNotFoundException если хост не найден.
      */
     HostEntity deleteById(@NotNull Long id) throws HostNotFoundException;
+
+    /**
+     * Метод для получения паттернов валидации полей {@link String} ipaddress и {@link String} networkPrefix.
+     * @return Карту в виде {"ipaddress": pattern, "networkPrefix": pattern}.
+     */
+    Map<String, String> getValidationRegex();
 }

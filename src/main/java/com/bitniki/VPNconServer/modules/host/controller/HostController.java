@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.StreamSupport;
 
 @RestController
@@ -94,6 +95,19 @@ public class HostController {
     public ResponseEntity<Host> deleteHost (@PathVariable Long id) throws HostNotFoundException {
         return ResponseEntity.ok(
                 Host.toModel(hostService.deleteById(id))
+        );
+    }
+
+    /**
+     * Метод для получения паттернов валидации полей {@link String} login и {@link String} password.
+     * Используется клиентами для получения актуальных правил валидации, чтобы валидировать ввод на месте, не отправляя на сервер.
+     * @return Карту в виде {"ipaddress": pattern, "networkPrefix": pattern}.
+     */
+    @GetMapping("/validator")
+    @PreAuthorize("hasAuthority('any')")
+    public ResponseEntity<Map<String, String>> getValidatorPatterns() {
+        return ResponseEntity.ok(
+                hostService.getValidationRegex()
         );
     }
 }

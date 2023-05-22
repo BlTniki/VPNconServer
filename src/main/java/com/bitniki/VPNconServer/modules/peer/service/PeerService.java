@@ -10,6 +10,7 @@ import com.bitniki.VPNconServer.modules.peer.model.PeerFromRequest;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.Spliterator;
 
 public interface PeerService {
@@ -133,4 +134,10 @@ public interface PeerService {
      * @throws PeerConnectHandlerException Если возникли проблемы на стороне хоста.
      */
     Boolean deactivatePeerOnHostById(@NotNull Long id) throws PeerNotFoundException, PeerConnectHandlerException;
+
+    /**
+     * Метод для получения паттернов валидации полей {@link String} peerIp и {@link String} peerConfName.
+     * @return Карту в виде {"peerIp": pattern, "peerConfName": pattern}.
+     */
+    Map<String, String> getValidationRegex();
 }

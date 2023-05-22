@@ -25,7 +25,9 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Spliterator;
 import java.util.stream.Stream;
 
@@ -254,5 +256,14 @@ public class PeerServiceImpl implements PeerService {
         peerRepo.save(entity);
 
         return true;
+    }
+
+    public Map<String, String> getValidationRegex() {
+        //Get regex from validator and cook answer
+        Map<String, String> patterns = new HashMap<>();
+        patterns.put("peerIp", PeerValidator.peerIpPattern.pattern());
+        patterns.put("peerConfName", PeerValidator.peerConfNamePattern.pattern());
+
+        return patterns;
     }
 }
