@@ -208,7 +208,7 @@ public class UserServiceImpl implements UserService {
         return deleteUser(user);
     }
 
-    public Map<Object, Object> authAndCreateToken(@NotNull UserFromRequest model) throws UserNotFoundException,
+    public Map<String, String> authAndCreateToken(@NotNull UserFromRequest model) throws UserNotFoundException,
             UserValidationFailedException, AuthenticationException {
         // validate model
         UserValidator userValidator = UserValidator.validateAllFields(model);
@@ -222,8 +222,7 @@ public class UserServiceImpl implements UserService {
         );
 
         // load user from repo
-        UserEntity user = userRepo.findByLogin(model.getLogin())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        UserEntity user = getOneByLogin(model.getLogin());
 
         // generate token
         String token = jwtTokenProvider.createToken(model.getLogin(), user.getRole().name());
@@ -232,7 +231,7 @@ public class UserServiceImpl implements UserService {
         userRepo.save(user);
 
         // make response
-        Map<Object, Object> response = new HashMap<>();
+        Map<String, String> response = new HashMap<>();
         response.put("login", model.getLogin());
         response.put("token", token);
         return response;
@@ -253,7 +252,7 @@ public class UserServiceImpl implements UserService {
         if(model.getLogin() == null){
             throw new UserValidationFailedException("No login are given");
         }
-        if(model.getTelegramId() == null && model.getTelegramNickname() == null)
+        if(model.getTelegramId() == null || model.getTelegramNickname() == null)
             throw new UserValidationFailedException("No telegramId or telegramNickname are given");
 
         // load user from repo
@@ -274,7 +273,7 @@ public class UserServiceImpl implements UserService {
 
         // load user from repo
         UserEntity user = userRepo.findByLogin(model.getLogin())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User with login %s not found".formatted(model.getLogin())));
 
         // del telegram id and save
         user.setTelegramId(null);
