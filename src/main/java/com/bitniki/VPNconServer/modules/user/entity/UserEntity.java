@@ -43,11 +43,6 @@ public class UserEntity {
     private Long telegramId;
 
     /**
-     * Имя пользователя в Телеграм
-     */
-    private String telegramFirstName;
-
-    /**
      * Ник пользователя в Телеграм
      */
     private String telegramNickname;

@@ -28,11 +28,6 @@ public class User {
     private Long telegramId;
 
     /**
-     * Имя пользователя в Телеграм
-     */
-    private String telegramFirstName;
-
-    /**
      * Ник пользователя в Телеграм
      */
     private String telegramNickname;
@@ -51,7 +46,6 @@ public class User {
         this.setLogin(entity.getLogin());
         this.setRole(entity.getRole());
         this.setTelegramId(entity.getTelegramId());
-        this.setTelegramFirstName(entity.getTelegramFirstName());
         this.setTelegramNickname(entity.getTelegramNickname());
     }
 }
