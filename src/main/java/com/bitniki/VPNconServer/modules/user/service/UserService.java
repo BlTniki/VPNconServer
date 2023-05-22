@@ -100,7 +100,7 @@ public interface UserService {
      * @throws UserValidationFailedException Если валидация полей в model не пройдена.
      * @throws AuthenticationException Если был отправлен неверный пароль.
      */
-    Map<Object, Object> authAndCreateToken(@NotNull UserFromRequest model) throws UserNotFoundException,
+    Map<String, String> authAndCreateToken(@NotNull UserFromRequest model) throws UserNotFoundException,
             UserValidationFailedException, AuthenticationException;
 
     /**
@@ -114,7 +114,8 @@ public interface UserService {
     /**
      * Связывает пользователя с Telegram аккаунтом.
      *
-     * @param model Данные пользователя из запроса. Должен содержать {@link String} login и {@link String} password.
+     * @param model Данные пользователя из запроса.
+     *              Должен содержать {@link String} login, {@link String} telegramId и {@link String} telegramNickname.
      * @return Сущность пользователя, после связывания с Telegram.
      * @throws UserNotFoundException Если пользователь не найден.
      * @throws UserValidationFailedException Если валидация полей в model не пройдена.
@@ -123,7 +124,7 @@ public interface UserService {
 
     /**
      * Удаляет связь пользователя с Telegram аккаунтом.
-     * @param model Данные пользователя из запроса. Должен содержать {@link String} login и {@link String} password.
+     * @param model Данные пользователя из запроса. Должен содержать {@link String} login.
      * @return Сущность пользователя, после удаления связи с Telegram.
      * @throws UserNotFoundException Если пользователь не найден.
      * @throws UserValidationFailedException Если валидация полей в model не пройдена.
