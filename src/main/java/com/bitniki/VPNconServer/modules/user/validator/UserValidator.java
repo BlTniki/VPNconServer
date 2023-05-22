@@ -8,9 +8,9 @@ import java.util.regex.Pattern;
 
 public class UserValidator extends Validator {
     // accepted login: 1-20 length, alphabet and number chars and -_. chars
-    private static final Pattern loginPattern = Pattern.compile("^[a-zA-Z][a-zA-Z0-9-_.]{1,20}$");
+    public static final Pattern loginPattern = Pattern.compile("^[a-zA-Z][a-zA-Z0-9-_.]{1,20}$");
     // accepted password: contains lower and capital letters and numbers
-    private static final Pattern passwordPattern = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\\s).*$");
+    public static final Pattern passwordPattern = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\\s).*$");
 
     private static boolean isLoginNotMatches(String login) {
         return !loginPattern.matcher(login).matches();

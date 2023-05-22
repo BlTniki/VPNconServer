@@ -7,18 +7,18 @@ import com.bitniki.VPNconServer.validator.Validator;
 import java.util.regex.Pattern;
 
 public class PeerValidator extends Validator {
-    private final Pattern peerIpPattern = Pattern.compile("^10\\.8\\.0\\.(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$");
-    private final Pattern peerConfNamePattern = Pattern.compile("^[A-Za-z0-9]+$");
+    public static final Pattern peerIpPattern = Pattern.compile("^10\\.8\\.0\\.(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$");
+    public static final Pattern peerConfNamePattern = Pattern.compile("^[A-Za-z0-9]+$");
 
     public static PeerValidator validateAllFields(PeerEntity peer) {
         PeerValidator peerValidator = new PeerValidator();
 
         //peerIp can be null but if not -- validate
-        if(peer.getPeerIp() != null && !peerValidator.peerIpPattern.matcher(peer.getPeerIp()).matches()) {
+        if(peer.getPeerIp() != null && !PeerValidator.peerIpPattern.matcher(peer.getPeerIp()).matches()) {
             peerValidator.addFail("Wrong peer ip");
         }
         //if field null – addFail, else do match
-        if(peer.getPeerConfName() == null || !peerValidator.peerConfNamePattern.matcher(peer.getPeerConfName()).matches()) {
+        if(peer.getPeerConfName() == null || !PeerValidator.peerConfNamePattern.matcher(peer.getPeerConfName()).matches()) {
             peerValidator.addFail("Wrong peer conf name");
         }
         //check that host is not null
@@ -34,7 +34,7 @@ public class PeerValidator extends Validator {
 
         //peerIp can be null but if not -- validate
         if(peer.getPeerIp() != null) {
-            if (!peerValidator.peerIpPattern.matcher(peer.getPeerIp()).matches()) {
+            if (!PeerValidator.peerIpPattern.matcher(peer.getPeerIp()).matches()) {
                 peerValidator.addFail("Wrong peer ip");
             } else {
                 int lastOctet = Integer.parseInt(peer.getPeerIp().substring(peer.getPeerIp().lastIndexOf(".") + 1));
@@ -44,7 +44,7 @@ public class PeerValidator extends Validator {
             }
         }
         //if field null – addFail, else do match
-        if(peer.getPeerConfName() == null || !peerValidator.peerConfNamePattern.matcher(peer.getPeerConfName()).matches()) {
+        if(peer.getPeerConfName() == null || !PeerValidator.peerConfNamePattern.matcher(peer.getPeerConfName()).matches()) {
             peerValidator.addFail("Wrong peer conf name");
         }
         //check that host_id is not null
@@ -59,7 +59,7 @@ public class PeerValidator extends Validator {
         PeerValidator peerValidator = new PeerValidator();
 
         //if field null – addFail, else do match
-        if(peer.getPeerIp() != null && !peerValidator.peerIpPattern.matcher(peer.getPeerIp()).matches())
+        if(peer.getPeerIp() != null && !PeerValidator.peerIpPattern.matcher(peer.getPeerIp()).matches())
             peerValidator.addFail("Wrong peer ip");
         if(peer.getPeerConfName() != null && !peerValidator.peerConfNamePattern.matcher(peer.getPeerConfName()).matches())
             peerValidator.addFail("Wrong peer conf name");
@@ -71,7 +71,7 @@ public class PeerValidator extends Validator {
         PeerValidator peerValidator = new PeerValidator();
 
         //if field null – addFail, else do match
-        if(peer.getPeerIp() != null && !peerValidator.peerIpPattern.matcher(peer.getPeerIp()).matches())
+        if(peer.getPeerIp() != null && !PeerValidator.peerIpPattern.matcher(peer.getPeerIp()).matches())
             peerValidator.addFail("Wrong peer ip");
         if(peer.getPeerConfName() != null && !peerValidator.peerConfNamePattern.matcher(peer.getPeerConfName()).matches())
             peerValidator.addFail("Wrong peer conf name");
