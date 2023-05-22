@@ -184,7 +184,7 @@ public class UserController {
      * @throws AuthenticationException Если был отправлен неверный пароль.
      */
     @PostMapping("/login")
-    public ResponseEntity<Map<Object, Object>> auth(@RequestBody UserFromRequest request)
+    public ResponseEntity<Map<String, String>> auth(@RequestBody UserFromRequest request)
             throws UserNotFoundException, UserValidationFailedException, AuthenticationException {
         return ResponseEntity.ok(userService.authAndCreateToken(request));
     }
@@ -232,6 +232,19 @@ public class UserController {
             throws UserNotFoundException, UserValidationFailedException {
         return ResponseEntity.ok(
                 User.toModel( userService.dissociateTelegram(user) )
+        );
+    }
+
+    /**
+     * Метод для получения паттернов валидации полей {@link String} ipaddress и {@link String} networkPrefix.
+     * Используется клиентами для получения актуальных правил валидации, чтобы валидировать ввод на месте, не отправляя на сервер.
+     * @return Карту в виде {"login": pattern, "password": pattern}.
+     */
+    @GetMapping("/validator")
+    @PreAuthorize("hasAuthority('any')")
+    public ResponseEntity< Map<String, String> > getValidatorPatterns() {
+        return ResponseEntity.ok(
+                userService.getValidationRegex()
         );
     }
 }
