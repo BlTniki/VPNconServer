@@ -1,5 +1,6 @@
-package com.bitniki.VPNconServer;
+package com.bitniki.VPNconServer.hosts;
 
+import com.bitniki.VPNconServer.VpNconServerApplicationTests;
 import com.bitniki.VPNconServer.modules.host.entity.HostEntity;
 import com.bitniki.VPNconServer.modules.host.exception.HostAlreadyExistException;
 import com.bitniki.VPNconServer.modules.host.exception.HostNotFoundException;
@@ -28,8 +29,8 @@ public class HostServiceTest extends VpNconServerApplicationTests {
     @Test
     public void testGetAll_Valid() {
         List<HostEntity> modelList = List.of(
-                new HostEntity(1L, "test", "127.0.0.1", 1, "127.0.0.0", "123456", "lolkek"),
-                new HostEntity(2L, "test2", "127.0.0.1", 2, "127.0.0.0", "123456", "lolkek")
+                new HostEntity(101L, "test", "127.0.0.1", 1, "127.0.0.0", "123456", "lolkek"),
+                new HostEntity(102L, "test2", "127.0.0.1", 2, "127.0.0.0", "123456", "lolkek")
         );
 
         List<HostEntity> resultList = StreamSupport.stream(hostService.getAll(), false)
@@ -52,9 +53,9 @@ public class HostServiceTest extends VpNconServerApplicationTests {
 
     @Test
     public void testGetOne_Valid() throws HostNotFoundException {
-        HostEntity model = new HostEntity(1L, "test", "127.0.0.1", 1, "127.0.0.0", "123456", "lolkek");
+        HostEntity model = new HostEntity(101L, "test", "127.0.0.1", 1, "127.0.0.0", "123456", "lolkek");
 
-        HostEntity result = hostService.getOneById(1L);
+        HostEntity result = hostService.getOneById(101L);
 
         //Compare
         assertEquals(model.getId(), result.getId());
@@ -167,7 +168,7 @@ public class HostServiceTest extends VpNconServerApplicationTests {
 
     @Test
     public void testUpdateById_Valid() throws HostNotFoundException, HostAlreadyExistException, HostValidationFailedException {
-        HostEntity model = new HostEntity(1L, "newTest", "127.0.0.1", 3, "127.0.1.0", "654321", "keklol");
+        HostEntity model = new HostEntity(101L, "newTest", "127.0.0.1", 3, "127.0.1.0", "654321", "keklol");
 
         HostFromRequest toUpdate = new HostFromRequest(
                 "newTest",
@@ -177,7 +178,7 @@ public class HostServiceTest extends VpNconServerApplicationTests {
                 "654321",
                 "keklol"
         );
-        HostEntity result = hostService.updateById(1L, toUpdate);
+        HostEntity result = hostService.updateById(101L, toUpdate);
 
         //Compare
         assertEquals(model.getId(), result.getId());
@@ -191,7 +192,7 @@ public class HostServiceTest extends VpNconServerApplicationTests {
 
     @Test
     public void testUpdateById_NullField() throws HostNotFoundException, HostAlreadyExistException, HostValidationFailedException {
-        HostEntity model = new HostEntity(1L, "test", "127.0.0.1", 1, "127.0.0.0", "123456", "lolkek");
+        HostEntity model = new HostEntity(101L, "test", "127.0.0.1", 1, "127.0.0.0", "123456", "lolkek");
 
         HostFromRequest toUpdate = new HostFromRequest(
                 null,
@@ -201,7 +202,7 @@ public class HostServiceTest extends VpNconServerApplicationTests {
                 null,
                 null
         );
-        HostEntity result = hostService.updateById(1L, toUpdate);
+        HostEntity result = hostService.updateById(101L, toUpdate);
 
         //Compare
         assertEquals(model.getId(), result.getId());
@@ -230,7 +231,7 @@ public class HostServiceTest extends VpNconServerApplicationTests {
     public void testUpdateById_HostAlreadyExistException() {
         // Name
         Exception exception = assertThrows( HostAlreadyExistException.class, () -> hostService.updateById(
-                1L,
+                101L,
                 new HostFromRequest(
                         "test2",
                         null,
@@ -244,7 +245,7 @@ public class HostServiceTest extends VpNconServerApplicationTests {
 
         // ip and port pair
         Exception exception2 = assertThrows( HostAlreadyExistException.class, () -> hostService.updateById(
-                1L,
+                101L,
                 new HostFromRequest(
                         null,
                         "127.0.0.1",
@@ -260,7 +261,7 @@ public class HostServiceTest extends VpNconServerApplicationTests {
     @Test
     public void testUpdateById_HostValidationFailedException() {
         Exception exception = assertThrows(HostValidationFailedException.class, () -> hostService.updateById(
-                1L,
+                101L,
                 new HostFromRequest(
                         "newTest",
                         "127 0.0.1",
@@ -283,9 +284,9 @@ public class HostServiceTest extends VpNconServerApplicationTests {
 
     @Test
     public void testDeleteById_Valid() throws HostNotFoundException {
-        HostEntity model = new HostEntity(1L, "test", "127.0.0.1", 1, "127.0.0.0", "123456", "lolkek");
+        HostEntity model = new HostEntity(101L, "test", "127.0.0.1", 1, "127.0.0.0", "123456", "lolkek");
 
-        HostEntity result = hostService.deleteById(1L);
+        HostEntity result = hostService.deleteById(101L);
 
         //Compare
         assertEquals(model.getId(), result.getId());

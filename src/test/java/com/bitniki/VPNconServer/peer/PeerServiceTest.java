@@ -1,5 +1,6 @@
-package com.bitniki.VPNconServer;
+package com.bitniki.VPNconServer.peer;
 
+import com.bitniki.VPNconServer.VpNconServerApplicationTests;
 import com.bitniki.VPNconServer.exception.EntityNotFoundException;
 import com.bitniki.VPNconServer.exception.EntityValidationFailedException;
 import com.bitniki.VPNconServer.modules.host.entity.HostEntity;
@@ -59,7 +60,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                         "private",
                         "public",
                         true,
-                        UserEntity.builder().id(1L).build(),
+                        UserEntity.builder().id(103L).build(),
                         HostEntity.builder().id(1L).build()
                 ),
                 new PeerEntity(
@@ -69,7 +70,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                         "private",
                         "public",
                         true,
-                        UserEntity.builder().id(1L).build(),
+                        UserEntity.builder().id(103L).build(),
                         HostEntity.builder().id(1L).build()
                 )
         );
@@ -103,7 +104,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                         "private",
                         "public",
                         true,
-                        UserEntity.builder().id(1L).build(),
+                        UserEntity.builder().id(103L).build(),
                         HostEntity.builder().id(1L).build()
                 ),
                 new PeerEntity(
@@ -113,7 +114,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                         "private",
                         "public",
                         true,
-                        UserEntity.builder().id(1L).build(),
+                        UserEntity.builder().id(103L).build(),
                         HostEntity.builder().id(1L).build()
                 )
         );
@@ -147,7 +148,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                 "private",
                 "public",
                 true,
-                UserEntity.builder().id(1L).build(),
+                UserEntity.builder().id(103L).build(),
                 HostEntity.builder().id(1L).build()
         );
 
@@ -184,7 +185,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                 "private",
                 "public",
                 true,
-                UserEntity.builder().id(1L).login("test").build(),
+                UserEntity.builder().id(103L).login("test").build(),
                 HostEntity.builder().id(1L).build()
         );
 
@@ -257,16 +258,14 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                 null,
                 null,
                 true,
-                UserEntity.builder().id(1L).login("test").build(),
-                HostEntity.builder()
-                        .id(1L)
-                        .build()
+                UserEntity.builder().id(103L).login("test").build(),
+                HostEntity.builder().id(1L).build()
         );
 
         //Configure peerConnectHandlerService mock
         when(peerConnectHandlerService.createPeerOnHost(any())).thenReturn(new PeerFromHost(null, null, "prilol", "pubKek"));
 
-        PeerFromRequest toCreate = new PeerFromRequest("newTest", null, 1L, 1L);
+        PeerFromRequest toCreate = new PeerFromRequest("newTest", null, 103L, 1L);
         PeerEntity result = peerService.create(toCreate);
 
         //Compare
@@ -289,7 +288,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
 
     @Test
     public void testCreate_EntityValidationFailedException() {
-        PeerFromRequest toCreate = new PeerFromRequest("new_123_-eTest", "null", 1L, null);
+        PeerFromRequest toCreate = new PeerFromRequest("new_123_-eTest", "null", 103L, null);
         Exception exception = assertThrows(EntityValidationFailedException.class, () -> peerService.create(toCreate));
         assertTrue(
                 exception.getMessage().contains("host id")
@@ -306,20 +305,20 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
 
     @Test
     public void testCreate_HostNotFoundException() {
-        PeerFromRequest toCreate = new PeerFromRequest("newTest", "10.8.0.2", 1L, -1L);
+        PeerFromRequest toCreate = new PeerFromRequest("newTest", "10.8.0.2", 103L, -1L);
         assertThrows(HostNotFoundException.class, () -> peerService.create(toCreate));
     }
 
     @Test
     public void testCreate_PeerAlreadyExistException_Name() {
-        PeerFromRequest toCreate = new PeerFromRequest("test", "10.8.0.2", 1L, 1L);
+        PeerFromRequest toCreate = new PeerFromRequest("test", "10.8.0.2", 103L, 1L);
         Exception exception = assertThrows(PeerAlreadyExistException.class, () -> peerService.create(toCreate));
         assertTrue(exception.getMessage().contains("conf name"));
     }
 
     @Test
     public void testCreate_PeerAlreadyExistException_peerIp() {
-        PeerFromRequest toCreate = new PeerFromRequest("12test", "10.8.0.10", 1L, 1L);
+        PeerFromRequest toCreate = new PeerFromRequest("12test", "10.8.0.10", 103L, 1L);
         Exception exception = assertThrows(PeerAlreadyExistException.class, () -> peerService.create(toCreate));
         assertTrue(exception.getMessage().contains("Peer ip"));
     }
@@ -333,18 +332,14 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                 null,
                 null,
                 true,
-                UserEntity.builder().id(1L).login("test").build(),
-                HostEntity.builder()
-                        .id(3L)
-                        .name("test3")
-
-                        .build()
+                UserEntity.builder().id(103L).login("test").build(),
+                HostEntity.builder().id(3L).name("test3").build()
         );
 
         //Configure peerConnectHandlerService mock
         when(peerConnectHandlerService.createPeerOnHost(any())).thenReturn(new PeerFromHost(null, null, "prilol", "pubKek"));
 
-        PeerFromRequest toCreate = new PeerFromRequest("newTest", null, 1L, 3L);
+        PeerFromRequest toCreate = new PeerFromRequest("newTest", null, 103L, 3L);
         PeerEntity result = peerService.createByLogin("test", toCreate);
 
         //Compare
@@ -374,7 +369,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                 "private",
                 "public",
                 true,
-                UserEntity.builder().id(1L).login("test").build(),
+                UserEntity.builder().id(103L).login("test").build(),
                 HostEntity.builder().id(1L).build()
         );
 
@@ -405,7 +400,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                 "private",
                 "public",
                 true,
-                UserEntity.builder().id(1L).login("test").build(),
+                UserEntity.builder().id(103L).login("test").build(),
                 HostEntity.builder().id(1L).build()
         );
 
@@ -482,7 +477,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                 "private",
                 "public",
                 true,
-                UserEntity.builder().id(1L).login("test").build(),
+                UserEntity.builder().id(103L).login("test").build(),
                 HostEntity.builder().id(2L).build()
         );
         peerService.activatePeerOnHostById(4L);
@@ -513,7 +508,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                 "private",
                 "public",
                 false,
-                UserEntity.builder().id(1L).login("test").build(),
+                UserEntity.builder().id(103L).login("test").build(),
                 HostEntity.builder().id(2L).build()
         );
         peerService.deactivatePeerOnHostById(4L);
