@@ -4,7 +4,6 @@ package com.bitniki.VPNconServer.modules.user.role;
  * Разрешения, которые проверяются у пользователя при запросе.
  */
 public enum Permission {
-    GenToken("gen_token"),
     Personal("personal"),
     Any("any"),
     User_READ("user:read"),
@@ -13,6 +12,8 @@ public enum Permission {
     Peer_WRITE("peer:write"),
     Host_READ("host:read"),
     Host_WRITE("host:write"),
+    Metacode_USE("metacode:use"),
+    Metacode_GEN("metacode:gen"),
     Subscription_READ("subscription:read"),
     Subscription_WRITE("subscription:write"),
     Mail_READ("mail:read"),

@@ -13,11 +13,13 @@ public enum Role {
     ACTIVATED_CLOSE_USER(Set.of(Permission.Personal,
                                 Permission.User_READ, Permission.User_WRITE,
                                 Permission.Peer_READ, Permission.Peer_WRITE,
-                                Permission.Host_READ)),
+                                Permission.Host_READ,
+                                Permission.Metacode_USE)),
     ACTIVATED_USER(Set.of(  Permission.Personal,
                             Permission.User_READ, Permission.User_WRITE,
                             Permission.Peer_READ, Permission.Peer_WRITE,
-                            Permission.Host_READ)),
+                            Permission.Host_READ,
+                            Permission.Metacode_USE)),
     DISABLED_USER(Set.of(   Permission.Personal,
                             Permission.User_READ, Permission.User_WRITE));
     private final Set<Permission> permissionSet;
