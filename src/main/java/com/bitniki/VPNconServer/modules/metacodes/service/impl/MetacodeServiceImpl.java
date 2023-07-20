@@ -56,9 +56,15 @@ public class MetacodeServiceImpl implements MetacodeService {
             throw new MetacodeValidationException("Failed resolve operation");
         }
 
+        // generate unique code
+        String code;
+        do {
+            code = genRandomString();
+        } while (metacodeRepo.findByCode(code).isPresent());
+
         // make metacode
         MetacodeEntity metacodeEntity = MetacodeEntity.builder()
-                .code(genRandomString())
+                .code(code)
                 .operation(operation)
                 .build();
 
