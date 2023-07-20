@@ -87,9 +87,10 @@ public class MetacodeServiceImpl implements MetacodeService {
     @Override
     public String resolveMetacodeByLogin(@NotNull String login, @NotNull MetacodeToUse metacode) throws EntityNotFoundException {
         // resolve metacode
-        Operation operation = metacodeRepo.findByCode(metacode.getCode())
-                .orElseThrow(() -> new MetacodeNotFoundException("Failed to resolve metacode"))
-                .getOperation();
+        MetacodeEntity entity = metacodeRepo.findByCode(metacode.getCode())
+                .orElseThrow(() -> new MetacodeNotFoundException("Failed to resolve metacode"));
+
+        Operation operation = entity.getOperation();
 
 
         // do operation
@@ -97,6 +98,9 @@ public class MetacodeServiceImpl implements MetacodeService {
             case UPDATE_ROLE_TO_ACTIVATED_CLOSE_USER -> updateRoleForUser(login, Role.ACTIVATED_CLOSE_USER);
             case UPDATE_ROLE_TO_ADMIN -> updateRoleForUser(login, Role.ADMIN);
         }
+
+        // remove code
+        metacodeRepo.delete(entity);
 
         return "Success";
     }
