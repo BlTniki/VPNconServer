@@ -54,24 +54,24 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
     public void testGetAll_Valid() {
         List<PeerEntity> modelList = List.of(
                 new PeerEntity(
-                        1L,
+                        101L,
                         "test",
                         "10.8.0.10",
                         "private",
                         "public",
                         true,
                         UserEntity.builder().id(103L).build(),
-                        HostEntity.builder().id(1L).build()
+                        HostEntity.builder().id(101L).build()
                 ),
                 new PeerEntity(
-                        2L,
+                        102L,
                         "test2",
                         "10.8.0.11",
                         "private",
                         "public",
                         true,
                         UserEntity.builder().id(103L).build(),
-                        HostEntity.builder().id(1L).build()
+                        HostEntity.builder().id(101L).build()
                 )
         );
 
@@ -98,24 +98,24 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
     public void testGetAllByLogin_Valid() {
         List<PeerEntity> modelList = List.of(
                 new PeerEntity(
-                        1L,
+                        101L,
                         "test",
                         "10.8.0.10",
                         "private",
                         "public",
                         true,
                         UserEntity.builder().id(103L).build(),
-                        HostEntity.builder().id(1L).build()
+                        HostEntity.builder().id(101L).build()
                 ),
                 new PeerEntity(
-                        2L,
+                        102L,
                         "test2",
                         "10.8.0.11",
                         "private",
                         "public",
                         true,
                         UserEntity.builder().id(103L).build(),
-                        HostEntity.builder().id(1L).build()
+                        HostEntity.builder().id(101L).build()
                 )
         );
 
@@ -123,7 +123,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                 .toList();
 
         //Compare
-        assertEquals(3, resultList.size());
+        assertEquals(4, resultList.size());
         for (int i = 0; i < modelList.size(); i++) {
             var model = modelList.get(i);
             var result = resultList.get(i);
@@ -142,17 +142,17 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
     @Test
     public void testGetOneById_Valid() throws PeerNotFoundException {
         PeerEntity model = new PeerEntity(
-                1L,
+                101L,
                 "test",
                 "10.8.0.10",
                 "private",
                 "public",
                 true,
                 UserEntity.builder().id(103L).build(),
-                HostEntity.builder().id(1L).build()
+                HostEntity.builder().id(101L).build()
         );
 
-        PeerEntity result = peerService.getOneById(1L);
+        PeerEntity result = peerService.getOneById(101L);
 
         //Compare
         assertEquals(model.getId(), result.getId());
@@ -179,17 +179,17 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
     @Test
     public void testGetOneByLoginAndId_Valid() throws EntityNotFoundException {
         PeerEntity model = new PeerEntity(
-                1L,
+                101L,
                 "test",
                 "10.8.0.10",
                 "private",
                 "public",
                 true,
                 UserEntity.builder().id(103L).login("test").build(),
-                HostEntity.builder().id(1L).build()
+                HostEntity.builder().id(101L).build()
         );
 
-        PeerEntity result = peerService.getOneByLoginAndId( "test", 1L);
+        PeerEntity result = peerService.getOneByLoginAndId( "test", 101L);
 
         //Compare
         assertEquals(model.getId(), result.getId());
@@ -259,13 +259,13 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                 null,
                 true,
                 UserEntity.builder().id(103L).login("test").build(),
-                HostEntity.builder().id(1L).build()
+                HostEntity.builder().id(101L).build()
         );
 
         //Configure peerConnectHandlerService mock
         when(peerConnectHandlerService.createPeerOnHost(any())).thenReturn(new PeerFromHost(null, null, "prilol", "pubKek"));
 
-        PeerFromRequest toCreate = new PeerFromRequest("newTest", null, 103L, 1L);
+        PeerFromRequest toCreate = new PeerFromRequest("newTest", null, 103L, 101L);
         PeerEntity result = peerService.create(toCreate);
 
         //Compare
@@ -311,14 +311,14 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
 
     @Test
     public void testCreate_PeerAlreadyExistException_Name() {
-        PeerFromRequest toCreate = new PeerFromRequest("test", "10.8.0.2", 103L, 1L);
+        PeerFromRequest toCreate = new PeerFromRequest("test", "10.8.0.2", 103L, 101L);
         Exception exception = assertThrows(PeerAlreadyExistException.class, () -> peerService.create(toCreate));
         assertTrue(exception.getMessage().contains("conf name"));
     }
 
     @Test
     public void testCreate_PeerAlreadyExistException_peerIp() {
-        PeerFromRequest toCreate = new PeerFromRequest("12test", "10.8.0.10", 103L, 1L);
+        PeerFromRequest toCreate = new PeerFromRequest("12test", "10.8.0.10", 103L, 101L);
         Exception exception = assertThrows(PeerAlreadyExistException.class, () -> peerService.create(toCreate));
         assertTrue(exception.getMessage().contains("Peer ip"));
     }
@@ -333,13 +333,13 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                 null,
                 true,
                 UserEntity.builder().id(103L).login("test").build(),
-                HostEntity.builder().id(3L).name("test3").build()
+                HostEntity.builder().id(103L).name("test3").build()
         );
 
         //Configure peerConnectHandlerService mock
         when(peerConnectHandlerService.createPeerOnHost(any())).thenReturn(new PeerFromHost(null, null, "prilol", "pubKek"));
 
-        PeerFromRequest toCreate = new PeerFromRequest("newTest", null, 103L, 3L);
+        PeerFromRequest toCreate = new PeerFromRequest("newTest", null, 103L, 103L);
         PeerEntity result = peerService.createByLogin("test", toCreate);
 
         //Compare
@@ -363,17 +363,17 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
     @Test
     public void testDelete_Valid() throws PeerNotFoundException, PeerConnectHandlerException {
         PeerEntity model = new PeerEntity(
-                1L,
+                101L,
                 "test",
                 "10.8.0.10",
                 "private",
                 "public",
                 true,
                 UserEntity.builder().id(103L).login("test").build(),
-                HostEntity.builder().id(1L).build()
+                HostEntity.builder().id(101L).build()
         );
 
-        PeerEntity result = peerService.delete(1L);
+        PeerEntity result = peerService.delete(101L);
 
         //Compare
         assertEquals(model.getId(), result.getId());
@@ -394,17 +394,17 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
     @Test
     public void testDeleteByLogin_Valid() throws EntityNotFoundException, PeerConnectHandlerException {
         PeerEntity model = new PeerEntity(
-                1L,
+                101L,
                 "test",
                 "10.8.0.10",
                 "private",
                 "public",
                 true,
                 UserEntity.builder().id(103L).login("test").build(),
-                HostEntity.builder().id(1L).build()
+                HostEntity.builder().id(101L).build()
         );
 
-        PeerEntity result = peerService.deleteByLogin("test", 1L);
+        PeerEntity result = peerService.deleteByLogin("test", 101L);
 
         //Compare
         assertEquals(model.getId(), result.getId());
@@ -434,7 +434,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
         //Configure peerConnectHandlerService mock
         when(peerConnectHandlerService.getDownloadConfToken(any())).thenReturn(model);
 
-        String result = peerService.getDownloadTokenForPeerById(1L);
+        String result = peerService.getDownloadTokenForPeerById(101L);
 
         //Compare
         assertEquals(model, result);
@@ -452,7 +452,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
         //Configure peerConnectHandlerService mock
         when(peerConnectHandlerService.getDownloadConfToken(any())).thenReturn(model);
 
-        String result = peerService.getDownloadTokenForPeerByLoginAndId("test", 1L);
+        String result = peerService.getDownloadTokenForPeerByLoginAndId("test", 101L);
 
         //Compare
         assertEquals(model, result);
@@ -471,17 +471,17 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
     @Test
     public void testActivatePeerOnHost_Valid() throws PeerNotFoundException, PeerConnectHandlerException {
         PeerEntity model = new PeerEntity(
-                4L,
+                104L,
                 "test",
                 "10.8.0.10",
                 "private",
                 "public",
                 true,
                 UserEntity.builder().id(103L).login("test").build(),
-                HostEntity.builder().id(2L).build()
+                HostEntity.builder().id(102L).build()
         );
-        peerService.activatePeerOnHostById(4L);
-        PeerEntity result = peerService.getOneById(4L);
+        peerService.activatePeerOnHostById(104L);
+        PeerEntity result = peerService.getOneById(104L);
 
         //Compare
         assertEquals(model.getId(), result.getId());
@@ -502,17 +502,17 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
     @Test
     public void testDeactivatePeerOnHost_Valid() throws PeerNotFoundException, PeerConnectHandlerException {
         PeerEntity model = new PeerEntity(
-                4L,
-                "test",
-                "10.8.0.10",
+                105L,
+                "test123",
+                "10.8.0.14",
                 "private",
                 "public",
                 false,
                 UserEntity.builder().id(103L).login("test").build(),
-                HostEntity.builder().id(2L).build()
+                HostEntity.builder().id(102L).build()
         );
-        peerService.deactivatePeerOnHostById(4L);
-        PeerEntity result = peerService.getOneById(4L);
+        peerService.deactivatePeerOnHostById(105L);
+        PeerEntity result = peerService.getOneById(105L);
 
         //Compare
         assertEquals(model.getId(), result.getId());
@@ -533,8 +533,8 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
     @Test
     public void testGetValidationRegex() {
         Map<String, String> model = new HashMap<>();
-        model.put("login", "^10\\.8\\.0\\.(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$");
-        model.put("password", "^[A-Za-z0-9]+$");
+        model.put("peerIp", "^10\\.8\\.0\\.(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$");
+        model.put("peerConfName", "^[A-Za-z0-9]+$");
 
         assertEquals(model, peerService.getValidationRegex());
     }
