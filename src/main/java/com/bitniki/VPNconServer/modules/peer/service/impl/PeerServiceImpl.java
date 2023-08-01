@@ -45,6 +45,11 @@ public class PeerServiceImpl implements PeerService {
         return peerRepo.findAll().spliterator();
     }
 
+    @Override
+    public List<PeerEntity> getAllByUserId(@NotNull Long userId) {
+        return peerRepo.findAllWithUserId(userId);
+    }
+
     public Spliterator<PeerEntity> getAllByLogin(@NotNull String login) {
         return peerRepo.findAllWithUserLogin(login).spliterator();
     }

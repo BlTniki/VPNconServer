@@ -10,6 +10,7 @@ import com.bitniki.VPNconServer.modules.peer.model.PeerFromRequest;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Spliterator;
 
@@ -18,6 +19,14 @@ public interface PeerService {
      * @return Итератор, содержащий объекты PeerEntity
      */
     Spliterator<PeerEntity> getAll();
+
+    /**
+     * Возвращает список всех объектов PeerEntity, у которых юзер с указанным Id.
+     *
+     * @param userId Id {@link UserEntity} для поиска объектов PeerEntity
+     * @return Список, содержащий объекты PeerEntity
+     */
+    List<PeerEntity> getAllByUserId(@NotNull Long userId);
 
     /**
      * Возвращает итератор для получения всех объектов PeerEntity, у которых юзер с указанным логином.
