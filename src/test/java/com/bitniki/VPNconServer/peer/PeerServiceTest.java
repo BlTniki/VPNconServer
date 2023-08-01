@@ -189,7 +189,7 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
                 HostEntity.builder().id(101L).build()
         );
 
-        PeerEntity result = peerService.getOneByLoginAndId( "test", 101L);
+        PeerEntity result = peerService.getOneByLoginAndPeerId( "test", 101L);
 
         //Compare
         assertEquals(model.getId(), result.getId());
@@ -205,19 +205,19 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
 
     @Test
     public void testGetOneByLoginAndId_PeerNotFoundException() {
-        assertThrows(PeerNotFoundException.class, () -> peerService.getOneByLoginAndId("test", -1L));
+        assertThrows(PeerNotFoundException.class, () -> peerService.getOneByLoginAndPeerId("test", -1L));
     }
 
     @Test
     public void testGetOneByLoginAndId_PeerNotFoundException_NoPermission() {
-        Exception exception = assertThrows(PeerNotFoundException.class, () -> peerService.getOneByLoginAndId("test3", 1L));
+        Exception exception = assertThrows(PeerNotFoundException.class, () -> peerService.getOneByLoginAndPeerId("test3", 1L));
         assertTrue(exception.getMessage().contains("no permission"));
     }
 
     @Test
     public void testGetOneByLoginAndId_Null() {
         //noinspection DataFlowIssue
-        assertThrows(IllegalArgumentException.class, () -> peerService.getOneByLoginAndId(null, null));
+        assertThrows(IllegalArgumentException.class, () -> peerService.getOneByLoginAndPeerId(null, null));
     }
 
     @Test
