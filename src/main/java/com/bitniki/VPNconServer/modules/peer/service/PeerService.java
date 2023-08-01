@@ -44,7 +44,7 @@ public interface PeerService {
      * @return Объект PeerEntity
      * @throws EntityNotFoundException Если объект не найден по указанным логину и идентификатору
      */
-    PeerEntity getOneByLoginAndId(@NotNull String login, @NotNull Long id) throws EntityNotFoundException;
+    PeerEntity getOneByLoginAndPeerId(@NotNull String login, @NotNull Long id) throws EntityNotFoundException;
 
     /**
      * Создает новый объект PeerEntity на основе переданной модели {@link PeerFromRequest}.

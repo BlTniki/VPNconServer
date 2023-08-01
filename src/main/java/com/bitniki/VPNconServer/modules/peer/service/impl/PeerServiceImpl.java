@@ -56,7 +56,7 @@ public class PeerServiceImpl implements PeerService {
                 );
     }
 
-    public PeerEntity getOneByLoginAndId(@NotNull String login, @NotNull Long id) throws EntityNotFoundException {
+    public PeerEntity getOneByLoginAndPeerId(@NotNull String login, @NotNull Long id) throws EntityNotFoundException {
         return peerRepo.findByIdAndUserLogin(id, login)
                 .orElseThrow(
                         () -> new PeerNotFoundException("Peer with id %d not exist or you have no permission for this peer".formatted(id))

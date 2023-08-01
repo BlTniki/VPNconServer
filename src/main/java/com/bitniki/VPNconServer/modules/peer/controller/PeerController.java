@@ -84,7 +84,7 @@ public class PeerController {
     public ResponseEntity<Peer> getOneMinePeer(@PathVariable Long id, Principal principal)
             throws EntityNotFoundException {
         return ResponseEntity.ok(
-                Peer.toModel(peerService.getOneByLoginAndId(principal.getName(), id))
+                Peer.toModel(peerService.getOneByLoginAndPeerId(principal.getName(), id))
         );
     }
 
