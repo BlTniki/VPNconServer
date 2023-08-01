@@ -51,5 +51,4 @@ public class SubscriptionEntity {
     public void setRole(String role) {
         this.role = Role.valueOf(role);
     }
-
 }
