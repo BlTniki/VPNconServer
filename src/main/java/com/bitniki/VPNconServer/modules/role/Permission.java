@@ -1,4 +1,4 @@
-package com.bitniki.VPNconServer.modules.user.role;
+package com.bitniki.VPNconServer.modules.role;
 
 /**
  * Разрешения, которые проверяются у пользователя при запросе.

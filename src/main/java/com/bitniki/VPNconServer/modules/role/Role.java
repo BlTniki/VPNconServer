@@ -1,4 +1,4 @@
-package com.bitniki.VPNconServer.modules.user.role;
+package com.bitniki.VPNconServer.modules.role;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 /**
  * Роль юзера. Роли подразумевают различный набор разрешений для доступа к конечным точкам приложения.
  */
+@SuppressWarnings("unused")
 public enum Role {
     ADMIN(Set.of(Permission.values())),
     ACTIVATED_CLOSE_USER(Set.of(Permission.Personal,

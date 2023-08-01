@@ -7,7 +7,7 @@ import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
 import com.bitniki.VPNconServer.modules.user.repository.UserRepo;
-import com.bitniki.VPNconServer.modules.user.role.Role;
+import com.bitniki.VPNconServer.modules.role.Role;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
 import com.bitniki.VPNconServer.modules.user.validator.UserValidator;
 import lombok.RequiredArgsConstructor;

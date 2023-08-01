@@ -6,7 +6,7 @@ import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
-import com.bitniki.VPNconServer.modules.user.role.Role;
+import com.bitniki.VPNconServer.modules.role.Role;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -5,7 +5,7 @@ import com.bitniki.VPNconServer.exception.EntityNotFoundException;
 import com.bitniki.VPNconServer.modules.metacodes.model.MetacodeToUse;
 import com.bitniki.VPNconServer.modules.metacodes.service.MetacodeService;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
-import com.bitniki.VPNconServer.modules.user.role.Role;
+import com.bitniki.VPNconServer.modules.role.Role;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

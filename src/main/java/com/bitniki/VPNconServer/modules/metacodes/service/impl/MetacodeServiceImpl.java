@@ -11,7 +11,7 @@ import com.bitniki.VPNconServer.modules.metacodes.repository.MetacodeRepo;
 import com.bitniki.VPNconServer.modules.metacodes.service.MetacodeService;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
-import com.bitniki.VPNconServer.modules.user.role.Role;
+import com.bitniki.VPNconServer.modules.role.Role;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

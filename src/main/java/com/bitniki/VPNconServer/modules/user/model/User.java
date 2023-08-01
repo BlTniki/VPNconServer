@@ -1,7 +1,7 @@
 package com.bitniki.VPNconServer.modules.user.model;
 
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
-import com.bitniki.VPNconServer.modules.user.role.Role;
+import com.bitniki.VPNconServer.modules.role.Role;
 import lombok.*;
 
 /**

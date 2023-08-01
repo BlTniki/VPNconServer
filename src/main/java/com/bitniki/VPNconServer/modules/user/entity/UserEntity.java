@@ -1,6 +1,6 @@
 package com.bitniki.VPNconServer.modules.user.entity;
 
-import com.bitniki.VPNconServer.modules.user.role.Role;
+import com.bitniki.VPNconServer.modules.role.Role;
 import lombok.*;
 
 import javax.persistence.*;
