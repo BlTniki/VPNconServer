@@ -27,7 +27,7 @@ public class MetacodeController {
      * @throws MetacodeValidationException неудача с определением необходимой операцией.
      */
     @PostMapping("/gen")
-    @PreAuthorize("hasAuthority('metacode:gen')")
+    @PreAuthorize("hasAuthority('any') && hasAuthority('metacode:gen')")
     ResponseEntity<Metacode> generateNewCode(@RequestBody MetacodeToCreate metacodeToCreate)
             throws MetacodeValidationException {
         return ResponseEntity.ok(
