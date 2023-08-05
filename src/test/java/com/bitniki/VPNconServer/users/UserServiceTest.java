@@ -1,12 +1,12 @@
 package com.bitniki.VPNconServer.users;
 
 import com.bitniki.VPNconServer.VpNconServerApplicationTests;
+import com.bitniki.VPNconServer.modules.role.Role;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
-import com.bitniki.VPNconServer.modules.role.Role;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +15,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @Transactional
 @Rollback
@@ -363,11 +359,7 @@ public class UserServiceTest extends VpNconServerApplicationTests {
         UserEntity authenticatedUser = userService.getOneByLogin(toAuth.getLogin());
 
         //logout
-        Principal mockPrincipal = mock(Principal.class);
-        when(mockPrincipal.getName()).thenReturn(toAuth.getLogin());
-        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        when(mockRequest.getUserPrincipal()).thenReturn(mockPrincipal);
-        userService.logout(mockRequest);
+        userService.logout(toAuth.getLogin());
 
         //check is token null
         assertNull(authenticatedUser.getToken());
@@ -376,12 +368,8 @@ public class UserServiceTest extends VpNconServerApplicationTests {
     @Test
     public void testLogout_UserNotFoundException() {
         UserFromRequest toAuth = new UserFromRequest("re2./.!#$$%^^", "a", null, null);
-        Principal mockPrincipal = mock(Principal.class);
-        when(mockPrincipal.getName()).thenReturn(toAuth.getLogin());
-        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        when(mockRequest.getUserPrincipal()).thenReturn(mockPrincipal);
 
-        assertThrows( UserNotFoundException.class, () -> userService.logout(mockRequest) );
+        assertThrows( UserNotFoundException.class, () -> userService.logout(toAuth.getLogin()) );
     }
 
     @Test

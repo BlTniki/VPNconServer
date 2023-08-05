@@ -1,5 +1,6 @@
 package com.bitniki.VPNconServer.modules.user.service.impl;
 
+import com.bitniki.VPNconServer.modules.role.Role;
 import com.bitniki.VPNconServer.modules.security.jwt.JwtTokenProvider;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
@@ -7,7 +8,6 @@ import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
 import com.bitniki.VPNconServer.modules.user.repository.UserRepo;
-import com.bitniki.VPNconServer.modules.role.Role;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
 import com.bitniki.VPNconServer.modules.user.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Spliterator;
@@ -237,10 +236,10 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
-    public void logout(@NotNull HttpServletRequest request) throws UserNotFoundException {
+    public void logout(@NotNull String login) throws UserNotFoundException {
         // load user from repo
-        UserEntity user = userRepo.findByLogin(request.getUserPrincipal().getName())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        UserEntity user = userRepo.findByLogin(login)
+                .orElseThrow(() -> new UserNotFoundException("User with login %s not found".formatted(login)));
 
         // set null and save
         user.setToken(null);

@@ -198,7 +198,7 @@ public class UserController {
      */
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request) throws UserNotFoundException {
-        userService.logout(request);
+        userService.logout(request.getUserPrincipal().getName());
         return ResponseEntity.ok("Success");
     }
 

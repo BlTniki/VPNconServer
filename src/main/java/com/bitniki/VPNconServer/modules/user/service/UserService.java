@@ -1,16 +1,15 @@
 package com.bitniki.VPNconServer.modules.user.service;
 
 
+import com.bitniki.VPNconServer.modules.role.Role;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
-import com.bitniki.VPNconServer.modules.role.Role;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.AuthenticationException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Spliterator;
 
@@ -107,10 +106,10 @@ public interface UserService {
     /**
      * Выполняет выход пользователя.
      *
-     * @param request HTTP-запрос, связанный с пользователем.
+     * @param login Логин юзера.
      * @throws UserNotFoundException Если пользователь не найден.
      */
-    void logout(@NotNull HttpServletRequest request) throws UserNotFoundException;
+    void logout(@NotNull String login) throws UserNotFoundException;
 
     /**
      * Связывает пользователя с Telegram аккаунтом.
