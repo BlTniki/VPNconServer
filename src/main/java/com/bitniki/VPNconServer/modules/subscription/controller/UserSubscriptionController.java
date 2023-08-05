@@ -7,6 +7,7 @@ import com.bitniki.VPNconServer.modules.subscription.model.UserSubscription;
 import com.bitniki.VPNconServer.modules.subscription.model.UserSubscriptionFromRequest;
 import com.bitniki.VPNconServer.modules.subscription.service.UserSubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,7 @@ public class UserSubscriptionController {
      */
     @GetMapping("/byExpirationDay/{expirationDay}")
     @PreAuthorize("hasAuthority('any') && hasAuthority('user_subscription:read')")
-    public ResponseEntity<List<UserSubscription>> getAllByExpirationDay(LocalDate expirationDay) {
+    public ResponseEntity<List<UserSubscription>> getAllByExpirationDay(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate expirationDay) {
         return ResponseEntity.ok(
                 userSubscriptionService.getAllByExpirationDay(expirationDay).stream()
                         .map(UserSubscription::toModel)
