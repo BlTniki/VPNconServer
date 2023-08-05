@@ -66,7 +66,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
-    public SubscriptionEntity updateById(@NotNull Long id, @NotNull SubscriptionFromRequest model) throws SubscriptionNotFoundException, SubscriptionAlreadyExistException, SubscriptionValidationFailedException {
+    public SubscriptionEntity updateById(@NotNull Long id, @NotNull SubscriptionFromRequest model)
+            throws SubscriptionNotFoundException{
         // load entity
         SubscriptionEntity entity = subscriptionRepo.findById(id)
                 .orElseThrow(
