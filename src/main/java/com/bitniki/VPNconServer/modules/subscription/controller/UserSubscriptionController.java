@@ -28,7 +28,7 @@ public class UserSubscriptionController {
      */
     @GetMapping
     @PreAuthorize("hasAuthority('any') && hasAuthority('user_subscription:read')")
-    private ResponseEntity<List<UserSubscription>> getAll() {
+    public ResponseEntity<List<UserSubscription>> getAll() {
         return ResponseEntity.ok(
                 StreamSupport.stream(userSubscriptionService.getAll(), false)
                         .map(UserSubscription::toModel)
@@ -43,7 +43,7 @@ public class UserSubscriptionController {
      */
     @GetMapping("/byExpirationDay/{expirationDay}")
     @PreAuthorize("hasAuthority('any') && hasAuthority('user_subscription:read')")
-    private ResponseEntity<List<UserSubscription>> getAllByExpirationDay(LocalDate expirationDay) {
+    public ResponseEntity<List<UserSubscription>> getAllByExpirationDay(LocalDate expirationDay) {
         return ResponseEntity.ok(
                 userSubscriptionService.getAllByExpirationDay(expirationDay).stream()
                         .map(UserSubscription::toModel)
@@ -61,7 +61,7 @@ public class UserSubscriptionController {
     // TODO: На этой задачи лежит технический долг. Проверь записи.
     @GetMapping("/{userId}")
     @PreAuthorize("hasAuthority('any') && hasAuthority('user_subscription:read')")
-    private ResponseEntity<UserSubscription> getOneByUserId(@PathVariable Long userId)
+    public ResponseEntity<UserSubscription> getOneByUserId(@PathVariable Long userId)
             throws UserSubscriptionNotFoundException {
         return ResponseEntity.ok(
                 UserSubscription.toModel(userSubscriptionService.getOneByUserId(userId))
@@ -78,7 +78,7 @@ public class UserSubscriptionController {
      */
     @PostMapping
     @PreAuthorize("hasAuthority('any') && hasAuthority('user_subscription:write')")
-    private ResponseEntity<UserSubscription> addSubscriptionToUser(@RequestBody UserSubscriptionFromRequest model)
+    public ResponseEntity<UserSubscription> addSubscriptionToUser(@RequestBody UserSubscriptionFromRequest model)
             throws UserSubscriptionValidationFailedException, EntityNotFoundException {
         return ResponseEntity.ok(
                 UserSubscription.toModel(userSubscriptionService.addSubscriptionToUser(model))
@@ -94,7 +94,7 @@ public class UserSubscriptionController {
      */
     @DeleteMapping("/userId")
     @PreAuthorize("hasAuthority('any') && hasAuthority('user_subscription:write')")
-    private ResponseEntity<UserSubscription> deleteByUserId(@PathVariable Long userId)
+    public ResponseEntity<UserSubscription> deleteByUserId(@PathVariable Long userId)
             throws UserSubscriptionNotFoundException {
         return ResponseEntity.ok(
                 UserSubscription.toModel(userSubscriptionService.deleteByUserId(userId))
