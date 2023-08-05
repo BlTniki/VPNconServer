@@ -36,7 +36,7 @@ public class JwtTokenFilter extends GenericFilterBean {
      */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
+        String token = jwtTokenProvider.extractToken((HttpServletRequest) request);
         try {
             if(token != null) {
                 if(!jwtTokenProvider.validateToken(token)){
@@ -54,14 +54,15 @@ public class JwtTokenFilter extends GenericFilterBean {
                     }
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
-
             }
         } catch (JwtAuthException e) {
             SecurityContextHolder.clearContext();
-            ((HttpServletResponse) response).sendError(e.getHttpStatus().value());
+            ((HttpServletResponse) response).sendError(e.getHttpStatus().value(), e.getMessage());
+            return;
         } catch (UsernameNotFoundException e) {
             SecurityContextHolder.clearContext();
-            ((HttpServletResponse) response).sendError(HttpStatus.UNAUTHORIZED.value());
+            ((HttpServletResponse) response).sendError(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+            return;
         }
         chain.doFilter(request, response);
     }

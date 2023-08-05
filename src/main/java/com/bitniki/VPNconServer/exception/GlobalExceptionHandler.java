@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<String> catchAccessDeniedException(AccessDeniedException e) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You have no authorization");
     }
 
     @ExceptionHandler

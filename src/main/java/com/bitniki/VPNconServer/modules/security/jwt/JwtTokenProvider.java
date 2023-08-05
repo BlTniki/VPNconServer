@@ -111,7 +111,7 @@ public class JwtTokenProvider{
      * @return Токен в виде строки.
      * @throws AuthenticationCredentialsNotFoundException Если тип аутентификации неверен.
      */
-    public String resolveToken(HttpServletRequest request) {
+    public String extractToken(HttpServletRequest request) {
         String requestAuthHeader = request.getHeader(authHeader);
         //check for null, if it null -- return;
         if(requestAuthHeader == null) {
