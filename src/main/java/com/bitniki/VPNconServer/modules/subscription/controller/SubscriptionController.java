@@ -43,7 +43,7 @@ public class SubscriptionController {
      */
     @GetMapping("/byRole/{role}")
     @PreAuthorize("hasAuthority('subscription:read')")
-    public ResponseEntity<List<Subscription>> getByRole(@PathVariable Role role) {
+    public ResponseEntity<List<Subscription>> getAllByRole(@PathVariable Role role) {
         return ResponseEntity.ok(
                 subscriptionService.getAllByRole(role).stream()
                         .map(Subscription::toModel)
