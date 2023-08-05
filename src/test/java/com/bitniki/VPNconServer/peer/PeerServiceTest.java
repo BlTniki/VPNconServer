@@ -16,6 +16,7 @@ import com.bitniki.VPNconServer.modules.peer.exception.PeerValidationFailedExcep
 import com.bitniki.VPNconServer.modules.peer.model.PeerFromRequest;
 import com.bitniki.VPNconServer.modules.peer.repository.PeerRepo;
 import com.bitniki.VPNconServer.modules.peer.service.impl.PeerServiceImpl;
+import com.bitniki.VPNconServer.modules.subscription.service.UserSubscriptionService;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
@@ -44,10 +45,11 @@ public class PeerServiceTest extends VpNconServerApplicationTests {
 
     public PeerServiceTest(@Autowired PeerRepo peerRepo,
                            @Autowired UserService userService,
-                           @Autowired HostService hostService) {
+                           @Autowired HostService hostService,
+                           @Autowired UserSubscriptionService userSubscriptionService) {
 
         peerConnectHandlerService = mock(PeerConnectHandlerService.class);
-        this.peerService = new PeerServiceImpl(peerRepo, userService, hostService, peerConnectHandlerService);
+        this.peerService = new PeerServiceImpl(peerRepo, userService, hostService, userSubscriptionService, peerConnectHandlerService);
     }
 
     @Test
