@@ -16,6 +16,8 @@ import com.bitniki.VPNconServer.modules.peer.model.PeerFromRequest;
 import com.bitniki.VPNconServer.modules.peer.repository.PeerRepo;
 import com.bitniki.VPNconServer.modules.peer.service.PeerService;
 import com.bitniki.VPNconServer.modules.peer.validator.PeerValidator;
+import com.bitniki.VPNconServer.modules.subscription.exception.UserSubscriptionValidationFailedException;
+import com.bitniki.VPNconServer.modules.subscription.service.UserSubscriptionService;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
@@ -39,6 +41,7 @@ public class PeerServiceImpl implements PeerService {
     private final PeerRepo peerRepo;
     private final UserService userService;
     private final HostService hostService;
+    private final UserSubscriptionService userSubscriptionService;
     private final PeerConnectHandlerService peerConnectHandlerService;
 
     public Spliterator<PeerEntity> getAll() {
@@ -99,13 +102,13 @@ public class PeerServiceImpl implements PeerService {
 
     private PeerEntity createPeer(UserEntity user, PeerFromRequest model)
             throws PeerAlreadyExistException, EntityValidationFailedException, HostNotFoundException, PeerConnectHandlerException {
-//        //validate user subscription
-//        if(user.getSubscription() == null
-//                || user.getPeers().size() >= user.getSubscription().getPeersAvailable()) {
-//            throw new SubscriptionValidationFailedException(
-//                    "Your subscription does not allow the creation of a new peer"
-//            );
-//        }
+        //validate user subscription
+        int existingPeerNumber = peerRepo.findAllWithUserId(user.getId()).size();
+        if(!userSubscriptionService.isUserCanCreatePeer(user.getId(), existingPeerNumber)) {
+            throw new UserSubscriptionValidationFailedException(
+                    "Subscription does not allow the creation of a new peer for user with id %d".formatted(user.getId())
+            );
+        }
 
         // validate peer
         PeerValidator peerValidator = PeerValidator.validateAllFields(model);
