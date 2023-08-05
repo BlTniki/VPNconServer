@@ -35,7 +35,6 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
 
     @Autowired
     private UserSubscriptionRepo userSubscriptionRepo;
-
     @Autowired
     private UserService userService;
     @Autowired
