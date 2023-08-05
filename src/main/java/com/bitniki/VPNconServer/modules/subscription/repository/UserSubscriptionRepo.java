@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface UserSubscriptionRepo extends CrudRepository<UserSubscriptionEntity, Long> {
     Optional<UserSubscriptionEntity> findByUserId(Long userId);
-    List<UserSubscriptionEntity> findBySubscriptionId(Long subscriptionId);
+
     List<UserSubscriptionEntity> findByExpirationDay(LocalDate expirationDay);
 }

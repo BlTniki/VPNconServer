@@ -16,6 +16,8 @@ public enum Permission {
     Metacode_GEN("metacode:gen"),
     Subscription_READ("subscription:read"),
     Subscription_WRITE("subscription:write"),
+    UserSubscription_READ("user_subscription:read"),
+    UserSubscription_WRITE("user_subscription:write"),
     Mail_READ("mail:read"),
     Mail_WRITE("mail:write");
 
