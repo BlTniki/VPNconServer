@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 @RestController
-@RequestMapping("/user_subs")
+@RequestMapping("/userSubs")
 public class UserSubscriptionController {
     @Autowired
     private UserSubscriptionService userSubscriptionService;
