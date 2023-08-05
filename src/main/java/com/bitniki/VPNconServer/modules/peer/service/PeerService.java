@@ -16,7 +16,7 @@ import java.util.Spliterator;
 
 public interface PeerService {
     /**
-     * @return Итератор, содержащий объекты PeerEntity
+     * @return Итератор, содержащий объекты {@link PeerEntity}
      */
     Spliterator<PeerEntity> getAll();
 
