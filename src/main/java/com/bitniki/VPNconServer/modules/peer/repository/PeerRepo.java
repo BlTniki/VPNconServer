@@ -11,7 +11,7 @@ public interface PeerRepo extends CrudRepository<PeerEntity, Long> {
     @Query("SELECT p FROM PeerEntity p WHERE p.peerConfName = :peerConfName AND p.user.id = :userId AND p.host.id = :hostId")
     Optional<PeerEntity> findByPeerConfNameAndUserIdAndHostId(String peerConfName, Long userId, Long hostId);
 
-    @Query("SELECT p FROM PeerEntity p JOIN p.user u WHERE u.id = :id")
+    @Query("SELECT p FROM PeerEntity p JOIN p.user u WHERE u.id = :userId")
     List<PeerEntity> findAllWithUserId(Long userId);
 
     @Query("SELECT p FROM PeerEntity p JOIN p.user u WHERE u.login = :login")

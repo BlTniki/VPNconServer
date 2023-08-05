@@ -3,7 +3,6 @@ package com.bitniki.VPNconServer.modules.subscription.service.impl;
 
 import com.bitniki.VPNconServer.modules.role.Role;
 import com.bitniki.VPNconServer.modules.subscription.entity.SubscriptionEntity;
-import com.bitniki.VPNconServer.modules.subscription.exception.SubscriptionAlreadyExistException;
 import com.bitniki.VPNconServer.modules.subscription.exception.SubscriptionNotFoundException;
 import com.bitniki.VPNconServer.modules.subscription.exception.SubscriptionValidationFailedException;
 import com.bitniki.VPNconServer.modules.subscription.model.SubscriptionFromRequest;
