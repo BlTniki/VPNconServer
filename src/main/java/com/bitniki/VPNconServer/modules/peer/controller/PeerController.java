@@ -40,7 +40,23 @@ public class PeerController {
     }
 
     /**
-     * Получение списка всех пиров текущего пользователя. Для использования требуется авторизация с ролью "user:read" и "any".
+     * Получение списка всех пиров по Id юзера. Для использования требуется авторизация с ролью "user:read" и "any".
+     * @param userId Id юзера.
+     * @return ResponseEntity со списком пиров и статусом ответа.
+     */
+    @GetMapping("/byUser/{userId}")
+    @PreAuthorize("hasAuthority('any')" +
+            "&& hasAuthority('peer:read')")
+    public ResponseEntity<List<Peer>> getAllByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(
+                peerService.getAllByUserId(userId).stream()
+                        .map(Peer::toModel)
+                        .toList()
+        );
+    }
+
+    /**
+     * Получение списка всех пиров текущего пользователя. Для использования требуется авторизация с ролью "user:read" и "personal".
      * @param principal Принципал текущего пользователя.
      * @return ResponseEntity со списком пиров и статусом ответа.
      */
