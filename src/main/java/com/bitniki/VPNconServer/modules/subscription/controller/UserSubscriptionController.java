@@ -93,7 +93,7 @@ public class UserSubscriptionController {
      * @return Ответ с информацией об удаленной подписке пользователя
      * @throws UserSubscriptionNotFoundException если подписка пользователя не найдена
      */
-    @DeleteMapping("/userId")
+    @DeleteMapping("/byUserId/{userId}")
     @PreAuthorize("hasAuthority('any') && hasAuthority('user_subscription:write')")
     public ResponseEntity<UserSubscription> deleteByUserId(@PathVariable Long userId)
             throws UserSubscriptionNotFoundException {
