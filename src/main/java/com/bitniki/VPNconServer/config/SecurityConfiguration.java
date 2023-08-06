@@ -61,6 +61,7 @@ public class SecurityConfiguration {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/users").permitAll()
                 .antMatchers(HttpMethod.POST, "/users/login").permitAll()
+                .antMatchers("/payment/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .cors()
