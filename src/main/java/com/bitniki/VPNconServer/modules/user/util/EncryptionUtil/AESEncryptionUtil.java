@@ -15,8 +15,10 @@ public class AESEncryptionUtil implements EncryptionUtil {
             SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+
             byte[] encryptedBytes = cipher.doFinal(originalString.getBytes());
-            return Base64.getEncoder().encodeToString(encryptedBytes);
+            byte[] urlSafeEncodedBytes = Base64.getUrlEncoder().encode(encryptedBytes);
+            return new String(urlSafeEncodedBytes);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -27,7 +29,9 @@ public class AESEncryptionUtil implements EncryptionUtil {
             SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, keySpec);
-            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedString));
+
+            byte[] urlSafeDecodedBytes = Base64.getUrlDecoder().decode(encryptedString);
+            byte[] decryptedBytes = cipher.doFinal(urlSafeDecodedBytes);
             return new String(decryptedBytes);
         } catch (Exception e) {
             throw new RuntimeException(e);
