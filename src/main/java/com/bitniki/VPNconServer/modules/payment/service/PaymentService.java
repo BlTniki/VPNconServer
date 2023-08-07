@@ -3,6 +3,7 @@ package com.bitniki.VPNconServer.modules.payment.service;
 import com.bitniki.VPNconServer.exception.EntityNotFoundException;
 import com.bitniki.VPNconServer.modules.payment.entity.PaymentEntity;
 import com.bitniki.VPNconServer.modules.payment.exception.PaymentNotFoundException;
+import com.bitniki.VPNconServer.modules.payment.exception.PaymentValidationFailedException;
 import com.bitniki.VPNconServer.modules.payment.model.PaymentToCreate;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +24,7 @@ public interface PaymentService {
      * @return Сущность платежа.
      * @throws PaymentNotFoundException Если сущность не найдена по-данному uuid.
      */
-    PaymentEntity getOneByUuid(@NotNull Long uuid) throws PaymentNotFoundException;
+    PaymentEntity getOneByUuid(@NotNull String uuid) throws PaymentNotFoundException;
 
     /**
      * Создаёт новую сущность платежа и возвращает HTML страницу в виде строки для оплаты подписки.
@@ -31,7 +32,7 @@ public interface PaymentService {
      * @return HTML страницу в виде строки.
      * @throws EntityNotFoundException Если юзер или подписка не найдена.
      */
-    String createPaymentAndRenderHTML(@NotNull PaymentToCreate model) throws EntityNotFoundException;
+    String createPaymentAndRenderHTML(@NotNull PaymentToCreate model) throws EntityNotFoundException, PaymentValidationFailedException;
 
     /**
      * Метод для обработки уведомлений об оплате от платёжного провайдера и завершении платежа.
@@ -46,5 +47,6 @@ public interface PaymentService {
      * При нахождении оных, метод завершит платёж.
      * Предполагается автоматический запуск раз в n минут при помощи планировщика.
      */
+    @SuppressWarnings("unused")
     void checkForMissedPayments();
 }
