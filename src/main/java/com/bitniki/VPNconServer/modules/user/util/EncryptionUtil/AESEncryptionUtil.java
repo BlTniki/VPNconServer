@@ -10,6 +10,7 @@ import java.util.Base64;
 public class AESEncryptionUtil implements EncryptionUtil {
     private final String SECRET_KEY;
 
+    @Override
     public String encode(String originalString) {
         try {
             SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
@@ -24,6 +25,8 @@ public class AESEncryptionUtil implements EncryptionUtil {
         }
 
     }
+
+    @Override
     public String decode(String encryptedString) {
         try {
             SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
