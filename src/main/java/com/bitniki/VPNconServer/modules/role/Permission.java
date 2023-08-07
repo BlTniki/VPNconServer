@@ -19,7 +19,9 @@ public enum Permission {
     UserSubscription_READ("user_subscription:read"),
     UserSubscription_WRITE("user_subscription:write"),
     Mail_READ("mail:read"),
-    Mail_WRITE("mail:write");
+    Mail_WRITE("mail:write"),
+    PAYMENT_READ("payment:read"),
+    PAYMENT_WRITE("payment:write");
 
     private final String permission;
 
