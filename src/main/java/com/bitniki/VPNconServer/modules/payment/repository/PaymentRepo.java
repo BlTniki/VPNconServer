@@ -12,6 +12,6 @@ import java.util.Set;
 public interface PaymentRepo extends CrudRepository<PaymentEntity, String> {
     Optional<PaymentEntity> findByUuid(String uuid);
 
-    @Query("SELECT p.uuid FROM PaymentEntity p WHERE p.status = :status AND p.time_stamp >= :timeStamp")
+    @Query("SELECT p.uuid FROM PaymentEntity p WHERE p.status = :status AND p.timeStamp >= :timeStamp")
     Set<String> findUuidsByStatusAndMinTimestamp(PaymentStatus status, LocalDateTime timeStamp);
 }
