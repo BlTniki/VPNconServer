@@ -8,4 +8,9 @@ import java.math.BigDecimal;
 public abstract class Notification {
     public abstract BigDecimal getAmount();
     public abstract String getUuid();
+
+    @Override
+    public String toString() {
+        return "Notification{\n%s\n%s\n}".formatted(getAmount().toString(), getAmount().toString());
+    }
 }
