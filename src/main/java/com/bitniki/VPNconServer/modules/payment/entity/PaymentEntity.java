@@ -3,10 +3,7 @@ package com.bitniki.VPNconServer.modules.payment.entity;
 import com.bitniki.VPNconServer.modules.payment.status.PaymentStatus;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -31,10 +28,11 @@ public class PaymentEntity {
     /**
      * Сумма к оплате
      */
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR")
     private BigDecimal toPay;
     @Column(nullable = false)
     private LocalDateTime timeStamp;
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private PaymentStatus status;
 }
