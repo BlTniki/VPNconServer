@@ -1,4 +1,4 @@
-package com.bitniki.VPNconServer.modules.payment.provider;
+package com.bitniki.VPNconServer.modules.payment.provider.provider;
 
 import com.bitniki.VPNconServer.modules.payment.provider.model.Notification;
 
@@ -11,10 +11,11 @@ public abstract class Provider {
     /**
      * Генерирует HTML страницу с формой оплаты.
      * @param body Текст, который важно сообщить покупателю.
-     * @param uuid идентификатор платежа, по которому устанавливается факт платежа.
+     * @param uuid Идентификатор платежа, по которому устанавливается факт платежа.
+     * @param amount сумма к оплате.
      * @return HTML страницу в виде строки.
      */
-    public abstract String renderHtml(String body, String uuid);
+    public abstract String renderHtml(String body, String uuid, String amount);
 
     /**
      * Создаёт {@link Notification} на основе уведомления от платёжного провайдера.

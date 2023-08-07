@@ -172,7 +172,7 @@ public class PaymentServiceImpl implements PaymentService {
                 subscription.getDurationDays().toString(),
                 subscription.getDurationDays().toString()
         );
-        return provider.renderHtml(msg, uuid);
+        return provider.renderHtml(msg, uuid, subscription.getPriceInRub().toString());
     }
 
     @Override
