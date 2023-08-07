@@ -7,6 +7,7 @@ import com.bitniki.VPNconServer.modules.payment.exception.PaymentValidationFaile
 import com.bitniki.VPNconServer.modules.payment.model.PaymentToCreate;
 import com.bitniki.VPNconServer.modules.payment.provider.Provider;
 import com.bitniki.VPNconServer.modules.payment.provider.model.Notification;
+import com.bitniki.VPNconServer.modules.payment.provider.provider.Provider;
 import com.bitniki.VPNconServer.modules.payment.repository.PaymentRepo;
 import com.bitniki.VPNconServer.modules.payment.service.PaymentService;
 import com.bitniki.VPNconServer.modules.payment.status.PaymentStatus;
@@ -178,9 +179,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void processNotification(@NotNull Map<String, String> map) {
         // do with notification
-        provider.makeNotification(map).ifPresent(notification -> {
-
-        });
+        provider.makeNotification(map).ifPresent(this::processPayment);
     }
 
     @Override
