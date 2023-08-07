@@ -11,6 +11,6 @@ public abstract class Notification {
 
     @Override
     public String toString() {
-        return "Notification{\n%s\n%s\n}".formatted(getAmount().toString(), getAmount().toString());
+        return "Notification{\namount=%s\nuuid=%s\n}".formatted(getAmount().toString(), getUuid());
     }
 }
