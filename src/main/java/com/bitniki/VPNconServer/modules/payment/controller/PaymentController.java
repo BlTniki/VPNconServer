@@ -26,7 +26,7 @@ public class PaymentController {
      * @return Список всех платежей.
      */
     @GetMapping
-    @PreAuthorize("hasAuthority('any') & hasAuthority('payment:read')")
+    @PreAuthorize("hasAuthority('any') && hasAuthority('payment:read')")
     public ResponseEntity<List<PaymentEntity>> getAll() {
         return ResponseEntity.ok(
                 StreamSupport.stream(paymentService.getAll(), false)
@@ -40,8 +40,8 @@ public class PaymentController {
      * @return Платёж по-данному uuid.
      * @throws PaymentNotFoundException Если платёж с данным uuid не найден.
      */
-    @GetMapping("/{uuid}")
-    @PreAuthorize("hasAuthority('any') & hasAuthority('payment:read')")
+    @GetMapping("/byUuid/{uuid}")
+    @PreAuthorize("hasAuthority('any') && hasAuthority('payment:read')")
     public ResponseEntity<PaymentEntity> getOneByUuid(@PathVariable String uuid)
             throws PaymentNotFoundException {
         return ResponseEntity.ok(paymentService.getOneByUuid(uuid));
@@ -73,6 +73,20 @@ public class PaymentController {
     public ResponseEntity<String> processNotification(@RequestBody Map<String, String> map) {
         paymentService.processNotification(map);
         return ResponseEntity.ok("Success");
+    }
+
+    /**
+     * Эндпоинт для отображения статуса платежа.
+     * @param uuid
+     * @return
+     * @throws PaymentNotFoundException
+     */
+    @GetMapping("/check/{uuid}")
+    public RedirectView checkPayment(@PathVariable String uuid) throws PaymentNotFoundException {
+        //Get status page name
+        String statusPage = paymentService.getOneByUuid(uuid).getStatus().getStatusPageName();
+        //Redirect to status page
+        return new RedirectView("/payments/status/" + statusPage);
     }
 
 }
