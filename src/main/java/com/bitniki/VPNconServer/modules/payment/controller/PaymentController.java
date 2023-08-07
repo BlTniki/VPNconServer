@@ -7,9 +7,11 @@ import com.bitniki.VPNconServer.modules.payment.exception.PaymentValidationFaile
 import com.bitniki.VPNconServer.modules.payment.model.PaymentToCreate;
 import com.bitniki.VPNconServer.modules.payment.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 import java.util.Map;
@@ -77,9 +79,9 @@ public class PaymentController {
 
     /**
      * Эндпоинт для отображения статуса платежа.
-     * @param uuid
-     * @return
-     * @throws PaymentNotFoundException
+     * @param uuid Идентификатор платежа.
+     * @return Редирект на страницу со статусом.
+     * @throws PaymentNotFoundException Если платёж с данным uuid не найден.
      */
     @GetMapping("/check/{uuid}")
     public RedirectView checkPayment(@PathVariable String uuid) throws PaymentNotFoundException {
