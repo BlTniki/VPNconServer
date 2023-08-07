@@ -69,8 +69,8 @@ public class PaymentController {
      * @param map Тело уведомления.
      * @return "Success" и код 200 вне зависимости от обработки уведомления.
      */
-    @PostMapping("/notification")
-    public ResponseEntity<String> processNotification(@RequestBody Map<String, String> map) {
+    @PostMapping(value = "/notification", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<String> processNotification(@RequestParam Map<String, String> map) {
         paymentService.processNotification(map);
         return ResponseEntity.ok("Success");
     }
