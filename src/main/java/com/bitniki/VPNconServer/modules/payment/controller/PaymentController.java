@@ -7,21 +7,27 @@ import com.bitniki.VPNconServer.modules.payment.exception.PaymentValidationFaile
 import com.bitniki.VPNconServer.modules.payment.model.PaymentToCreate;
 import com.bitniki.VPNconServer.modules.payment.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
 @RestController
-@RequestMapping("/payment")
+@RequestMapping("/payments")
 public class PaymentController {
     @Autowired
     private PaymentService paymentService;
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     /**
      * Выгрузка всех платежей из БД.
@@ -84,11 +90,14 @@ public class PaymentController {
      * @throws PaymentNotFoundException Если платёж с данным uuid не найден.
      */
     @GetMapping("/check/{uuid}")
-    public RedirectView checkPayment(@PathVariable String uuid) throws PaymentNotFoundException {
+    public String checkPayment(@PathVariable String uuid) throws PaymentNotFoundException, IOException {
         //Get status page name
         String statusPage = paymentService.getOneByUuid(uuid).getStatus().getStatusPageName();
-        //Redirect to status page
-        return new RedirectView("/payments/status/" + statusPage);
+        //load page
+        Resource resource = resourceLoader.getResource("classpath:" + "static/payments/status/" + statusPage + ".html");
+        try (InputStream inputStream = resource.getInputStream()) {
+            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        }
     }
 
 }
