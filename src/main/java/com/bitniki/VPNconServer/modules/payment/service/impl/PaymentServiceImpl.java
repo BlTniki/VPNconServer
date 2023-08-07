@@ -5,7 +5,6 @@ import com.bitniki.VPNconServer.modules.payment.entity.PaymentEntity;
 import com.bitniki.VPNconServer.modules.payment.exception.PaymentNotFoundException;
 import com.bitniki.VPNconServer.modules.payment.exception.PaymentValidationFailedException;
 import com.bitniki.VPNconServer.modules.payment.model.PaymentToCreate;
-import com.bitniki.VPNconServer.modules.payment.provider.Provider;
 import com.bitniki.VPNconServer.modules.payment.provider.model.Notification;
 import com.bitniki.VPNconServer.modules.payment.provider.provider.Provider;
 import com.bitniki.VPNconServer.modules.payment.repository.PaymentRepo;
@@ -24,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
