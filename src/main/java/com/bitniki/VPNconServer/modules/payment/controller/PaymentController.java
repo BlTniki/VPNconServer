@@ -1,19 +1,51 @@
 package com.bitniki.VPNconServer.modules.payment.controller;
 
 import com.bitniki.VPNconServer.exception.EntityNotFoundException;
+import com.bitniki.VPNconServer.modules.payment.entity.PaymentEntity;
+import com.bitniki.VPNconServer.modules.payment.exception.PaymentNotFoundException;
+import com.bitniki.VPNconServer.modules.payment.exception.PaymentValidationFailedException;
 import com.bitniki.VPNconServer.modules.payment.model.PaymentToCreate;
 import com.bitniki.VPNconServer.modules.payment.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/payment")
 public class PaymentController {
     @Autowired
     private PaymentService paymentService;
+
+    /**
+     * Выгрузка всех платежей из БД.
+     * @return Список всех платежей.
+     */
+    @GetMapping
+    @PreAuthorize("hasAuthority('any') & hasAuthority('payment:read')")
+    public ResponseEntity<List<PaymentEntity>> getAll() {
+        return ResponseEntity.ok(
+                StreamSupport.stream(paymentService.getAll(), false)
+                        .toList()
+        );
+    }
+
+    /**
+     * Получение платежа по его uuid.
+     * @param uuid Идентификатор платежа.
+     * @return Платёж по-данному uuid.
+     * @throws PaymentNotFoundException Если платёж с данным uuid не найден.
+     */
+    @GetMapping("/{uuid}")
+    @PreAuthorize("hasAuthority('any') & hasAuthority('payment:read')")
+    public ResponseEntity<PaymentEntity> getOneByUuid(@PathVariable String uuid)
+            throws PaymentNotFoundException {
+        return ResponseEntity.ok(paymentService.getOneByUuid(uuid));
+    }
 
     /**
      * Ендпоинт для создания платежа и получения формы оплаты.
@@ -25,7 +57,7 @@ public class PaymentController {
      */
     @GetMapping("/create")
     public ResponseEntity<String> createPaymentAndGetPaymentForm(@RequestParam Long userId, @RequestParam Long subscriptionId)
-            throws EntityNotFoundException {
+            throws EntityNotFoundException, PaymentValidationFailedException {
         PaymentToCreate model = new PaymentToCreate(userId, subscriptionId);
         return ResponseEntity.ok(
                 paymentService.createPaymentAndRenderHTML(model)
