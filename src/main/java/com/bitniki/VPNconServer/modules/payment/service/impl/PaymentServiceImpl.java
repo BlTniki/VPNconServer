@@ -183,7 +183,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    @Scheduled(cron = "0 0/5 * ? * * *")
+//    @Scheduled(cron = "0 0/5 * ? * * *")
     public void checkForMissedPayments() {
         // set day before that we don't watch payments
         final LocalDateTime FROM_DAY = LocalDateTime.now().minusDays(5);
