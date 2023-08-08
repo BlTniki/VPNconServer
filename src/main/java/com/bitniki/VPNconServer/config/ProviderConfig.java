@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class ProviderConfig {
     @Value("${yoomoney.secretKey}")
     private String YOOMONEY_SECRET_KEY;
-    @Value("${yoomoney.account")
+    @Value("${yoomoney.account}")
     private String YOOMONEY_ACCOUNT;
     @Value("${yoomoney.successUrl}")
     private String SUCCESS_URL;
