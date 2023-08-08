@@ -1,4 +1,4 @@
-package com.bitniki.VPNconServer.modules.user.util.EncryptionUtil;
+package com.bitniki.VPNconServer.modules.payment.EncryptionUtil;
 
 /**
  * Утилита для кодирования и декодирования строки.
