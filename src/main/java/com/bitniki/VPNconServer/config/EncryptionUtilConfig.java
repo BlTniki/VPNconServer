@@ -1,7 +1,7 @@
 package com.bitniki.VPNconServer.config;
 
-import com.bitniki.VPNconServer.modules.user.util.EncryptionUtil.AESEncryptionUtil;
-import com.bitniki.VPNconServer.modules.user.util.EncryptionUtil.EncryptionUtil;
+import com.bitniki.VPNconServer.modules.payment.EncryptionUtil.AESEncryptionUtil;
+import com.bitniki.VPNconServer.modules.payment.EncryptionUtil.EncryptionUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
