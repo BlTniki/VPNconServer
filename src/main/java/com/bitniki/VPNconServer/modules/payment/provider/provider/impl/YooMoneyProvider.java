@@ -84,6 +84,7 @@ public class YooMoneyProvider extends Provider {
         <input type="hidden" name="quickpay-form" value="button"/>
         <input type="hidden" name="sum" value="%s" data-type="number"/>
         <input type="hidden" name="successURL" value="%s"/>
+        <input type="hidden" name="paymentType" value="AC"/>
         <input type="submit" value="Оплатить"/>
     </form>
 </div>
@@ -130,7 +131,7 @@ public class YooMoneyProvider extends Provider {
                                     formatter
                             )
                     )
-                    .sender(map.get("sender"))
+                    .sender(map.getOrDefault("sender", ""))
                     .codepro(Boolean.valueOf(map.get("codepro")))
                     .sha1_hash(map.get("sha1_hash"))
                     .label(map.getOrDefault("label", ""))
