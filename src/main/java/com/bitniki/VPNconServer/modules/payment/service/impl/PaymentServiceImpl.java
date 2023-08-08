@@ -17,7 +17,7 @@ import com.bitniki.VPNconServer.modules.subscription.service.SubscriptionService
 import com.bitniki.VPNconServer.modules.subscription.service.UserSubscriptionService;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
-import com.bitniki.VPNconServer.modules.user.util.EncryptionUtil.EncryptionUtil;
+import com.bitniki.VPNconServer.modules.payment.EncryptionUtil.EncryptionUtil;
 import com.bitniki.VPNconServer.validator.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +70,7 @@ public class PaymentServiceImpl implements PaymentService {
      * @return uuid.
      */
     private String generateUuid(Long userId, Long subscriptionId, BigDecimal toPay, LocalDateTime timeStamp) {
-        String toEncode = "%d&%d&%s&%s".formatted(userId, subscriptionId, toPay.toString(), timeStamp.toString());
+        String toEncode = "%s&%d&%d&%s".formatted(timeStamp.toString(), userId, subscriptionId, toPay.toString());
 
         return encryptor.encode(toEncode);
     }
