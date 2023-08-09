@@ -21,7 +21,9 @@ public enum Permission {
     Mail_READ("mail:read"),
     Mail_WRITE("mail:write"),
     PAYMENT_READ("payment:read"),
-    PAYMENT_WRITE("payment:write");
+    PAYMENT_WRITE("payment:write"),
+    REMINDER_READ("reminder:read"),
+    REMINDER_write("reminder:write");
 
     private final String permission;
 
