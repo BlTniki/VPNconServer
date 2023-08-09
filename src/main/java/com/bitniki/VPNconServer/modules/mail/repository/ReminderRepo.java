@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface ReminderRepo extends CrudRepository<ReminderEntity, Long> {
     Optional<ReminderEntity> findByUserIdAndReminderTypeAndDayStamp(Long userId, ReminderType reminderType, LocalDate dayStamp);
 
-    @Query("SELECT r FROM ReminderEntity r RIGHT OUTER JOIN UserEntity u ON u.userId = r.userId WHERE r.isChecked = false AND u.telegramId IS NOT NULL")
+    @Query("SELECT r FROM ReminderEntity r RIGHT OUTER JOIN UserEntity u ON u.id = r.user.id WHERE r.isChecked = false AND u.telegramId IS NOT NULL")
     List<ReminderEntity> findAllWhereUncheckedAndUserWithTelegram();
 }

@@ -14,5 +14,5 @@ CREATE TABLE reminders (
     day_stamp DATE NOT NULL,
     user_id BIGINT,
     payload text,
-    CONSTRAINT user_id_reminder_type_time_stamp UNIQUE (user_id, reminder_type, time_stamp)
+    CONSTRAINT user_id_reminder_type_time_stamp UNIQUE (user_id, reminder_type, day_stamp)
 );
