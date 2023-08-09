@@ -1,10 +1,12 @@
 package com.bitniki.VPNconServer.modules.subscription.service;
 
 import com.bitniki.VPNconServer.exception.EntityNotFoundException;
+import com.bitniki.VPNconServer.modules.mail.exception.ReminderValidationFailedException;
 import com.bitniki.VPNconServer.modules.subscription.entity.UserSubscriptionEntity;
 import com.bitniki.VPNconServer.modules.subscription.exception.UserSubscriptionNotFoundException;
 import com.bitniki.VPNconServer.modules.subscription.exception.UserSubscriptionValidationFailedException;
 import com.bitniki.VPNconServer.modules.subscription.model.UserSubscriptionFromRequest;
+import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -71,5 +73,5 @@ public interface UserSubscriptionService {
      * Предполагается автоматический запуск метода.
      */
     @SuppressWarnings("unused")
-    void checkExpirationDay();
+    void checkExpirationDay() throws UserNotFoundException, ReminderValidationFailedException;
 }

@@ -1,6 +1,10 @@
 package com.bitniki.VPNconServer.modules.subscription.service.impl;
 
 import com.bitniki.VPNconServer.exception.EntityNotFoundException;
+import com.bitniki.VPNconServer.modules.mail.exception.ReminderValidationFailedException;
+import com.bitniki.VPNconServer.modules.mail.model.ReminderToCreate;
+import com.bitniki.VPNconServer.modules.mail.service.ReminderService;
+import com.bitniki.VPNconServer.modules.mail.type.ReminderType;
 import com.bitniki.VPNconServer.modules.subscription.entity.SubscriptionEntity;
 import com.bitniki.VPNconServer.modules.subscription.entity.UserSubscriptionEntity;
 import com.bitniki.VPNconServer.modules.subscription.exception.SubscriptionNotFoundException;
@@ -12,12 +16,14 @@ import com.bitniki.VPNconServer.modules.subscription.service.SubscriptionService
 import com.bitniki.VPNconServer.modules.subscription.service.UserSubscriptionService;
 import com.bitniki.VPNconServer.modules.subscription.validator.UserSubscriptionValidator;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
+import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
 import com.bitniki.VPNconServer.validator.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,10 +41,13 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
 
     @Autowired
     private UserSubscriptionRepo userSubscriptionRepo;
+
     @Autowired
     private UserService userService;
     @Autowired
     private SubscriptionService subscriptionService;
+    @Autowired
+    private ReminderService reminderService;
 
     @Override
     public Spliterator<UserSubscriptionEntity> getAll() {
@@ -201,5 +210,46 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
         int maxPeerNumber = entity.getSubscription().getPeersAvailable();
 
         return userExistingPeersNumber < maxPeerNumber;
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 10-20 ? * * *")
+    public void checkExpirationDay() throws UserNotFoundException, ReminderValidationFailedException {
+        final LocalDate TODAY = LocalDate.now();
+        final String TODAY_REMINDER_TEXT = "Твоя подписка сгорела :(\n\nЕсли желаешь продолжить пользоваться сервисом, то стоит оплатить подписку";
+        final String TOMORROW_REMINDER_TEXT = "Хей! Завтра сгорает твоя подписка!\n\nЕсли желаешь продолжить пользоваться сервисом, то стоит оплатить подписку";
+
+        // load entities that expire tomorrow
+        List<UserSubscriptionEntity> expireTomorrow = userSubscriptionRepo.findByExpirationDay(
+                TODAY.plusDays(1)
+        );
+
+        // notify users in list
+        for(UserSubscriptionEntity entity: expireTomorrow) {
+            reminderService.create(
+                    ReminderToCreate.builder()
+                            .reminderType(ReminderType.EXPIRE_TOMORROW)
+                            .userId(entity.getUser().getId())
+                            .payload(TOMORROW_REMINDER_TEXT)
+                            .build()
+            );
+        }
+
+        // load entities that expire today
+        List<UserSubscriptionEntity> expireToday = userSubscriptionRepo.findAllFromExpirationDay(
+                TODAY
+        );
+
+        // notify users in list and delete entities
+        for(UserSubscriptionEntity entity: expireToday) {
+            reminderService.create(
+                    ReminderToCreate.builder()
+                            .reminderType(ReminderType.EXPIRE_TOMORROW)
+                            .userId(entity.getUser().getId())
+                            .payload(TODAY_REMINDER_TEXT)
+                            .build()
+            );
+            userSubscriptionRepo.delete(entity);
+        }
     }
 }
