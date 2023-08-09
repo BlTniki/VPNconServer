@@ -64,4 +64,12 @@ public interface UserSubscriptionService {
      * @return Значение True, если юзер может создать ещё одного пира.
      */
     Boolean isUserCanCreatePeer(@NotNull Long userId, int userExistingPeersNumber);
+
+    /**
+     * Проверяет день сгорания подписки и удаляет её, если это сегодняшний день,
+     * или уведомляет пользователя, если день сгорания завтра.
+     * Предполагается автоматический запуск метода.
+     */
+    @SuppressWarnings("unused")
+    void checkExpirationDay();
 }
