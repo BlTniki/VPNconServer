@@ -1,6 +1,7 @@
 package com.bitniki.VPNconServer.modules.subscription.repository;
 
 import com.bitniki.VPNconServer.modules.subscription.entity.UserSubscriptionEntity;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.time.LocalDate;
@@ -11,4 +12,12 @@ public interface UserSubscriptionRepo extends CrudRepository<UserSubscriptionEnt
     Optional<UserSubscriptionEntity> findByUserId(Long userId);
 
     List<UserSubscriptionEntity> findByExpirationDay(LocalDate expirationDay);
+
+    /**
+     * Возвращает записи, у которых день сгорания раньше или равен данному.
+     * @param expirationDay День, до которого должен быть день сгорания. Включительно.
+     * @return Записи {@link UserSubscriptionEntity}.
+     */
+    @Query("SELECT us FROM UserSubscriptionEntity us WHERE us.expirationDay = :expirationDay")
+    List<UserSubscriptionEntity> findAllFromExpirationDay(LocalDate expirationDay);
 }
