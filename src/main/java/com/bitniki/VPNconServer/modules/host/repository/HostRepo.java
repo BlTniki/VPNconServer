@@ -10,6 +10,6 @@ public interface HostRepo extends CrudRepository<HostEntity, Long> {
     Optional<HostEntity> findByIpaddressAndPort(String ipaddress, Integer port);
     Optional<HostEntity> findByName(String name);
 
-    @Query("SELECT COUNT(*) FROM PeerEntity p WHERE p.hostId = :id")
+    @Query("SELECT COUNT(*) FROM PeerEntity p WHERE p.host.id = :id")
     Optional<Integer> countPeersOnHost(Long id);
 }
