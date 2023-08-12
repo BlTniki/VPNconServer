@@ -125,12 +125,11 @@ public interface UserService {
 
     /**
      * Удаляет связь пользователя с Telegram аккаунтом.
-     * @param model Данные пользователя из запроса. Должен содержать {@link String} login.
+     * @param login Логин юзера.
      * @return Сущность пользователя, после удаления связи с Telegram.
      * @throws UserNotFoundException Если пользователь не найден.
-     * @throws UserValidationFailedException Если валидация полей в model не пройдена.
      */
-    UserEntity dissociateTelegram(@NotNull UserFromRequest model) throws UserNotFoundException, UserValidationFailedException;
+    UserEntity dissociateTelegram(@NotNull String login) throws UserNotFoundException;
 
     /**
      * Метод для получения паттернов валидации полей {@link String} login и {@link String} password.

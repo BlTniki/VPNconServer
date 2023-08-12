@@ -265,15 +265,11 @@ public class UserServiceImpl implements UserService {
         return userRepo.save(user);
     }
 
-    public UserEntity dissociateTelegram(@NotNull UserFromRequest model) throws UserNotFoundException, UserValidationFailedException {
-        // validate model
-        if(model.getLogin() == null){
-            throw new UserValidationFailedException("No login are given");
-        }
+    public UserEntity dissociateTelegram(@NotNull String login) throws UserNotFoundException {
 
         // load user from repo
-        UserEntity user = userRepo.findByLogin(model.getLogin())
-                .orElseThrow(() -> new UserNotFoundException("User with login %s not found".formatted(model.getLogin())));
+        UserEntity user = userRepo.findByLogin(login)
+                .orElseThrow(() -> new UserNotFoundException("User with login %s not found".formatted(login)));
 
         // del telegram id and save
         user.setTelegramId(null);

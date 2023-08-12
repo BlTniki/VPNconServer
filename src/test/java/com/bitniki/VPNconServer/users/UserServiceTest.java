@@ -6,6 +6,7 @@ import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
+import com.bitniki.VPNconServer.modules.user.model.Token;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -328,12 +329,12 @@ public class UserServiceTest extends VpNconServerApplicationTests {
         model.put("token", null);
 
         UserFromRequest toAuth = UserFromRequest.builder().login("telegramBot").password(tgBotPassword).build();
-        Map<String, String> result = userService.authAndCreateToken(toAuth);
+        Token result = userService.authAndCreateToken(toAuth);
 
         //Compare
-        assertEquals(model.get("login"), result.get("login"));
-        assertNotEquals(model.get("token"), result.get("token"));
-        assertEquals(result.get("token"), userService.getOneByLogin("telegramBot").getToken());
+        assertEquals(model.get("login"), result.getLogin());
+        assertNotEquals(model.get("token"), result.getToken());
+        assertEquals(result.getToken(), userService.getOneByLogin("telegramBot").getToken());
     }
 
     @Test
@@ -415,8 +416,7 @@ public class UserServiceTest extends VpNconServerApplicationTests {
     public void testDissociateTelegram_Valid() throws UserNotFoundException, UserValidationFailedException {
         UserEntity model = new UserEntity(103L, "test", "aA123456", Role.ACTIVATED_USER, null, null, null);
 
-        UserFromRequest toAssociate = UserFromRequest.builder().login("test").build();
-        UserEntity result = userService.dissociateTelegram(toAssociate);
+        UserEntity result = userService.dissociateTelegram("test");
 
         // Compare
         assertEquals(model.getId(), result.getId());
@@ -428,19 +428,8 @@ public class UserServiceTest extends VpNconServerApplicationTests {
     }
 
     @Test
-    public void testDissociateTelegram_UserValidationFailedException_Null() {
-        UserFromRequest toAssociate = UserFromRequest.builder().login(null).build();
-        Exception exception = assertThrows(
-                UserValidationFailedException.class,
-                () -> userService.dissociateTelegram(toAssociate)
-        );
-        assertTrue(exception.getMessage().contains("No login"));
-    }
-
-    @Test
     public void testDissociateTelegram_UserNotFoundException() {
-        UserFromRequest toAssociate = UserFromRequest.builder().login("test312frwp").build();
-        assertThrows( UserNotFoundException.class, () -> userService.dissociateTelegram(toAssociate) );
+        assertThrows( UserNotFoundException.class, () -> userService.dissociateTelegram("test312frwp") );
     }
 
     @Test

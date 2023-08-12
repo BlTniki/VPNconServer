@@ -222,7 +222,7 @@ public class UserController {
     /**
      * Связывает пользователя с Telegram аккаунтом.
      *
-     * @param user Данные пользователя из запроса.
+     * @param user Данные пользователя из запроса. Указать login, telegramId и telegramNickname.
      * @return Сущность пользователя, после связывания с Telegram.
      * @throws UserNotFoundException Если пользователь не найден.
      * @throws UserValidationFailedException Если валидация полей в user не пройдена.
@@ -238,17 +238,16 @@ public class UserController {
 
     /**
      * Удаляет связь пользователя с Telegram аккаунтом.
-     * @param user Данные пользователя из запроса. Должен содержать {@link String} login и {@link String} password.
+     * @param login Логин юзера.
      * @return Сущность пользователя, после удаления связи с Telegram.
      * @throws UserNotFoundException Если пользователь не найден.
-     * @throws UserValidationFailedException Если валидация полей в user не пройдена.
      */
-    @DeleteMapping("/tg")
+    @DeleteMapping("/tg/{login}")
     @PreAuthorize("hasAuthority('any')")
-    public ResponseEntity<User> dissociateTelegramIdWithUser(@RequestBody UserFromRequest user)
-            throws UserNotFoundException, UserValidationFailedException {
+    public ResponseEntity<User> dissociateTelegramIdWithUser(@PathVariable String login)
+            throws UserNotFoundException{
         return ResponseEntity.ok(
-                User.toModel( userService.dissociateTelegram(user) )
+                User.toModel( userService.dissociateTelegram(login) )
         );
     }
 
