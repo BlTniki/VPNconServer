@@ -249,16 +249,19 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
                 TODAY
         );
 
-        // notify users in list and delete entities
-        for(UserSubscriptionEntity entity: expireToday) {
+        // notify users in list, delete entities, and deactivate peers for this users
+        for(UserSubscriptionEntity user: expireToday) {
             reminderService.create(
                     ReminderToCreate.builder()
                             .reminderType(ReminderType.EXPIRE_TOMORROW)
-                            .userId(entity.getUser().getId())
+                            .userId(user.getUser().getId())
                             .payload(TODAY_REMINDER_TEXT)
                             .build()
             );
-            userSubscriptionRepo.delete(entity);
+            userSubscriptionRepo.delete(user);
+            for(PeerEntity peer: peerService.getAllByUserId(user.getId())) {
+                peerService.deactivatePeerOnHostById(peer.getId());
+            }
         }
     }
 }
