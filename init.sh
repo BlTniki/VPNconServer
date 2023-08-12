@@ -1,21 +1,60 @@
 #!/bin/sh
 mkdir BOOT-INF
 mkdir BOOT-INF/classes
-echo "server.port = ${SERVER_PORT}" >> BOOT-INF/classes/application.properties
-echo "server.use-forward-headers=true" >> BOOT-INF/classes/application.properties
-echo "server.forward-headers-strategy=native" >> BOOT-INF/classes/application.properties
-echo "spring.jpa.hibernate.ddl-auto=update" >> BOOT-INF/classes/application.properties
-echo "spring.datasource.url=jdbc:mysql://db:${DB_PORT}/VPNconServer?useSSL=false" >> BOOT-INF/classes/application.properties
-echo "spring.datasource.username=${ROOT_NAME}" >> BOOT-INF/classes/application.properties
-echo "spring.datasource.password=${ROOT_PASSWORD}" >> BOOT-INF/classes/application.properties
-echo "spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver" >> BOOT-INF/classes/application.properties
-echo "jwt.header=Authorization" >> BOOT-INF/classes/application.properties
-echo "jwt.secret=\"${TOKEN_SECRET_KEY}\"" >> BOOT-INF/classes/application.properties
-echo "jwt.expiration=604800" >> BOOT-INF/classes/application.properties
-echo "cors.allowedOrigins=${CORS_ALLOWED_ORIGINS}" >> BOOT-INF/classes/application.properties
-echo "tg.user.password = ${TG_USER_PASSWORD}" >> BOOT-INF/classes/application.properties
-echo "accountant.user.password = ${ACCOUNTANT_USER_PASSWORD}" >> BOOT-INF/classes/application.properties
-echo "qiwi.secretKey = ${QIWI_SECRET_KEY}" >> BOOT-INF/classes/application.properties
-echo "qiwi.publicKey = ${QIWI_PUBLIC_KEY}" >> BOOT-INF/classes/application.properties
+echo "
+server:
+  url: ${SERVER_URL}
+  port: ${SERVER_PORT}
+  use-forward-headers: true
+  forward-headers-strategy: native
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+  datasource:
+    url: jdbc:postgresql://db:${DB_PORT}/VPNconServer?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: ${ROOT_NAME}
+    password: ${ROOT_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://db:${DB_PORT}/VPNconServer?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    user: ${ROOT_NAME}
+    password: ${ROOT_PASSWORD}
+    locations: classpath:db/migration
+
+jwt:
+  header: Authorization
+  secret: \"${TOKEN_SECRET_KEY}\"
+  expiration: 604800
+
+cors:
+  allowedOrigins: ${CORS_ALLOWED_ORIGINS}
+
+tg:
+  user:
+    password: ${TG_USER_PASSWORD}
+accountant:
+  user:
+    password: ${ACCOUNTANT_USER_PASSWORD}
+
+logging:
+  level:
+    org.springframework: INFO
+  file:
+    path: ./logs
+
+payment:
+  uuidEncryption:
+    secretKey: ${UUID_SECRET_KEY}
+
+yoomoney:
+  secretKey: ${YOO_SECRET_KEY}
+  account: ${YOO_ACCOUNT}
+  successUrl: ${YOO_SUCCESS_URL}
+"
 jar uf vpncon.jar BOOT-INF/classes/application.properties
 exec java -jar vpncon.jar
