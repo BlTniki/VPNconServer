@@ -74,6 +74,22 @@ public class UserController {
     }
 
     /**
+     * Получение пользователя по его логину.
+     * @param login Логин юзера.
+     * @return ResponseEntity с найденным пользователем и статусом ответа
+     * @throws UserNotFoundException если текущий пользователь не найден в базе данных
+     */
+    @GetMapping("/byLogin/{login}")
+    @PreAuthorize("hasAuthority('any')" +
+            "&& hasAuthority('user:read')")
+    public ResponseEntity<User> getUserByLogin(@PathVariable String login)
+            throws UserNotFoundException {
+        return ResponseEntity.ok(
+                User.toModel(userService.getOneByLogin(login))
+        );
+    }
+
+    /**
      * Получение текущего пользователя. Для использования требуется авторизация с ролью "user:read" и "personal".
      * @param principal объект Principal, содержащий информацию о текущем пользователе
      * @return ResponseEntity с найденным пользователем и статусом ответа
