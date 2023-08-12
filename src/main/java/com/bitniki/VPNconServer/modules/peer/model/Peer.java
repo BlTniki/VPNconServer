@@ -30,5 +30,7 @@ public class Peer {
         this.setPeerIp(entity.getPeerIp());
         this.setPeerConfName(entity.getPeerConfName());
         this.setIsActivated(entity.getIsActivated());
+        this.setUser(User.toModel(entity.getUser()));
+        this.setHost(Host.toModel(entity.getHost()));
     }
 }
