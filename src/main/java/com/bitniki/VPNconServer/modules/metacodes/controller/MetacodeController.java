@@ -51,4 +51,21 @@ public class MetacodeController {
                 metacodeService.resolveMetacodeByLogin(principal.getName(), metacodeToUse)
         );
     }
+
+    /**
+     * Применение метакодом юзеру по его логину.
+     * При применении выполняется ассоциированная операция.
+     * @param login Логин юзера.
+     * @param metacodeToUse Тело запроса с метакодом.
+     * @return Строку "Success".
+     * @throws EntityNotFoundException Если метакод или юзер не найден.
+     */
+    @PostMapping("/use/{login}")
+    @PreAuthorize("hasAuthority('metacode:use')")
+    ResponseEntity<String> useCode(@PathVariable String login, @RequestBody MetacodeToUse metacodeToUse)
+            throws EntityNotFoundException {
+        return ResponseEntity.ok(
+                metacodeService.resolveMetacodeByLogin(login, metacodeToUse)
+        );
+    }
 }
