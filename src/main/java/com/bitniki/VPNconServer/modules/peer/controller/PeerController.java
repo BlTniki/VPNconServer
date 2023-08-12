@@ -105,6 +105,23 @@ public class PeerController {
     }
 
     /**
+     * Возвращает пира по его peerIp и hostIp.
+     * @param peerIp Ip адрес пира.
+     * @param hostId Id хоста.
+     * @return ResponseEntity с найденным пиром и статусом ответа.
+     * @throws EntityNotFoundException Если данный пир не найден.
+     */
+    @GetMapping("/byField")
+    @PreAuthorize("hasAuthority('any')" +
+            "&& hasAuthority('peer:read')")
+    public ResponseEntity<Peer> getOneByPeerIpAndHostId(@RequestParam String peerIp, @RequestParam Long hostId)
+            throws EntityNotFoundException {
+        return ResponseEntity.ok(
+                Peer.toModel(peerService.getOneByPeerIpAndHostId(peerIp, hostId))
+        );
+    }
+
+    /**
      * Создание нового пира.
      * В {@link PeerFromRequest} должны быть указанны все поля. Ограничения на поля можно найти в самом {@link PeerFromRequest}.
      * @param model объект {@link PeerFromRequest}.
