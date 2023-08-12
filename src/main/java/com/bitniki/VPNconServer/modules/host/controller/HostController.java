@@ -99,6 +99,20 @@ public class HostController {
     }
 
     /**
+     * Выдача кол-ва доступных пиров на хосте.
+     * @param id Id хоста.
+     * @return Число доступных пиров.
+     * @throws HostNotFoundException Если хост не найден.
+     */
+    @GetMapping("/count/{id}")
+    @PreAuthorize("hasAuthority('any')")
+    public ResponseEntity<Integer> countAvailablePeersOnHost(@PathVariable Long id) throws HostNotFoundException {
+        return ResponseEntity.ok(
+                hostService.countAvailablePeersOnHost(id)
+        );
+    }
+
+    /**
      * Метод для получения паттернов валидации полей {@link String} login и {@link String} password.
      * Используется клиентами для получения актуальных правил валидации, чтобы валидировать ввод на месте, не отправляя на сервер.
      * @return Карту в виде {"ipaddress": pattern, "networkPrefix": pattern}.

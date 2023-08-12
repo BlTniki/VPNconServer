@@ -56,6 +56,14 @@ public interface HostService {
     HostEntity deleteById(@NotNull Long id) throws HostNotFoundException;
 
     /**
+     * Подсчёт кол-ва доступных пиров на хосте.
+     * @param id Id хоста.
+     * @return Число доступных пиров.
+     * @throws HostNotFoundException Если хост не найден.
+     */
+    Integer countAvailablePeersOnHost(@NotNull Long id) throws HostNotFoundException;
+
+    /**
      * Метод для получения паттернов валидации полей {@link String} ipaddress и {@link String} networkPrefix.
      * @return Карту в виде {"ipaddress": pattern, "networkPrefix": pattern}.
      */

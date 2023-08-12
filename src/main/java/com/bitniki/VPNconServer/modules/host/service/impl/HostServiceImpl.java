@@ -131,6 +131,19 @@ public class HostServiceImpl implements HostService {
         return host;
     }
 
+    @Override
+    public Integer countAvailablePeersOnHost(@NotNull Long id) throws HostNotFoundException {
+        // check host existing
+        hostRepo.findById(id).orElseThrow(
+                () -> new HostNotFoundException("Host with id %d not found".formatted(id))
+        );
+
+        // count peers
+        Integer count = hostRepo.countPeersOnHost(id).orElse(0);
+
+        return 254 - count;
+    }
+
     public Map<String, String> getValidationRegex() {
         //Get regex from validator and cook answer
         Map<String, String> patterns = new HashMap<>();
