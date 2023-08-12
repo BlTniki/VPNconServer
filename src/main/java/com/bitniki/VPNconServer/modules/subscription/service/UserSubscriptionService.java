@@ -2,11 +2,12 @@ package com.bitniki.VPNconServer.modules.subscription.service;
 
 import com.bitniki.VPNconServer.exception.EntityNotFoundException;
 import com.bitniki.VPNconServer.modules.mail.exception.ReminderValidationFailedException;
+import com.bitniki.VPNconServer.modules.peer.connectHandler.exception.PeerConnectHandlerException;
+import com.bitniki.VPNconServer.modules.peer.service.PeerService;
 import com.bitniki.VPNconServer.modules.subscription.entity.UserSubscriptionEntity;
 import com.bitniki.VPNconServer.modules.subscription.exception.UserSubscriptionNotFoundException;
 import com.bitniki.VPNconServer.modules.subscription.exception.UserSubscriptionValidationFailedException;
 import com.bitniki.VPNconServer.modules.subscription.model.UserSubscriptionFromRequest;
-import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -18,6 +19,13 @@ import java.util.Spliterator;
  * Далее эти связи будут называться ассоциациями юзера и подписки или просто подпиской юзера.
  */
 public interface UserSubscriptionService {
+
+    /**
+     * Обход циклических ссылок между UserSubscriptionService и PeerService
+     * @param peerService {@link PeerService} который должен инжекнуть себя в своём конструкторе.
+     */
+    void setPeerService(PeerService peerService);
+
     /**
      * Возвращает список всех ассоциаций юзеров и подписок.
      * @return {@link Spliterator}, содержащий объекты {@link UserSubscriptionEntity}.
@@ -73,5 +81,5 @@ public interface UserSubscriptionService {
      * Предполагается автоматический запуск метода.
      */
     @SuppressWarnings("unused")
-    void checkExpirationDay() throws UserNotFoundException, ReminderValidationFailedException;
+    void checkExpirationDay() throws EntityNotFoundException, ReminderValidationFailedException, PeerConnectHandlerException;
 }

@@ -5,6 +5,9 @@ import com.bitniki.VPNconServer.modules.mail.exception.ReminderValidationFailedE
 import com.bitniki.VPNconServer.modules.mail.model.ReminderToCreate;
 import com.bitniki.VPNconServer.modules.mail.service.ReminderService;
 import com.bitniki.VPNconServer.modules.mail.type.ReminderType;
+import com.bitniki.VPNconServer.modules.peer.connectHandler.exception.PeerConnectHandlerException;
+import com.bitniki.VPNconServer.modules.peer.entity.PeerEntity;
+import com.bitniki.VPNconServer.modules.peer.service.PeerService;
 import com.bitniki.VPNconServer.modules.subscription.entity.SubscriptionEntity;
 import com.bitniki.VPNconServer.modules.subscription.entity.UserSubscriptionEntity;
 import com.bitniki.VPNconServer.modules.subscription.exception.SubscriptionNotFoundException;
@@ -16,7 +19,6 @@ import com.bitniki.VPNconServer.modules.subscription.service.SubscriptionService
 import com.bitniki.VPNconServer.modules.subscription.service.UserSubscriptionService;
 import com.bitniki.VPNconServer.modules.subscription.validator.UserSubscriptionValidator;
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
-import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
 import com.bitniki.VPNconServer.validator.Validator;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +50,13 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     private SubscriptionService subscriptionService;
     @Autowired
     private ReminderService reminderService;
+
+    private PeerService peerService;
+
+    @Override
+    public void setPeerService(PeerService peerService) {
+        this.peerService = peerService;
+    }
 
     @Override
     public Spliterator<UserSubscriptionEntity> getAll() {
@@ -214,7 +223,7 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
 
     @Override
     @Scheduled(cron = "0 0 10-20 ? * * *")
-    public void checkExpirationDay() throws UserNotFoundException, ReminderValidationFailedException {
+    public void checkExpirationDay() throws EntityNotFoundException, ReminderValidationFailedException, PeerConnectHandlerException {
         final LocalDate TODAY = LocalDate.now();
         final String TODAY_REMINDER_TEXT = "Твоя подписка сгорела :(\n\nЕсли желаешь продолжить пользоваться сервисом, то стоит оплатить подписку";
         final String TOMORROW_REMINDER_TEXT = "Хей! Завтра сгорает твоя подписка!\n\nЕсли желаешь продолжить пользоваться сервисом, то стоит оплатить подписку";

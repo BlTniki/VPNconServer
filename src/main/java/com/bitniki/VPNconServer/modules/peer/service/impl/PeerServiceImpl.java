@@ -21,7 +21,6 @@ import com.bitniki.VPNconServer.modules.subscription.service.UserSubscriptionSer
 import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +42,19 @@ public class PeerServiceImpl implements PeerService {
     private final HostService hostService;
     private final UserSubscriptionService userSubscriptionService;
     private final PeerConnectHandlerService peerConnectHandlerService;
+
+    @Autowired
+    public PeerServiceImpl(PeerRepo peerRepo, UserService userService, HostService hostService, UserSubscriptionService userSubscriptionService, PeerConnectHandlerService peerConnectHandlerService) {
+        this.peerRepo = peerRepo;
+        this.userService = userService;
+        this.hostService = hostService;
+
+        this.userSubscriptionService = userSubscriptionService;
+        // inject yourself into PeerService
+        this.userSubscriptionService.setPeerService(this);
+
+        this.peerConnectHandlerService = peerConnectHandlerService;
+    }
 
     public Spliterator<PeerEntity> getAll() {
         return peerRepo.findAll().spliterator();
