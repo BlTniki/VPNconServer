@@ -24,6 +24,7 @@ import com.bitniki.VPNconServer.modules.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,6 @@ import java.util.stream.Stream;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class PeerServiceImpl implements PeerService {
     private final PeerRepo peerRepo;
@@ -68,6 +68,17 @@ public class PeerServiceImpl implements PeerService {
         return peerRepo.findByIdAndUserLogin(id, login)
                 .orElseThrow(
                         () -> new PeerNotFoundException("Peer with id %d not exist or you have no permission for this peer".formatted(id))
+                );
+    }
+
+    @Override
+    public PeerEntity getOneByPeerIpAndHostId(@NotNull String peerIp, @NotNull Long hostId) throws EntityNotFoundException {
+        return peerRepo.findByPeerIpAndHostId(peerIp, hostId)
+                .orElseThrow(
+                        () -> new PeerNotFoundException(
+                                "Peer with ip %s and host id %d not exist or you have no permission for this peer"
+                                        .formatted(peerIp, hostId)
+                        )
                 );
     }
 
