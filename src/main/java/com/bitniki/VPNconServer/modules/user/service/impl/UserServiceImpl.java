@@ -6,6 +6,7 @@ import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
+import com.bitniki.VPNconServer.modules.user.model.Token;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
 import com.bitniki.VPNconServer.modules.user.repository.UserRepo;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
@@ -207,7 +208,7 @@ public class UserServiceImpl implements UserService {
         return deleteUser(user);
     }
 
-    public Map<String, String> authAndCreateToken(@NotNull UserFromRequest model) throws UserNotFoundException,
+    public Token authAndCreateToken(@NotNull UserFromRequest model) throws UserNotFoundException,
             UserValidationFailedException, AuthenticationException {
         // validate model
         UserValidator userValidator = UserValidator.validateAllFields(model);
@@ -230,10 +231,10 @@ public class UserServiceImpl implements UserService {
         userRepo.save(user);
 
         // make response
-        Map<String, String> response = new HashMap<>();
-        response.put("login", model.getLogin());
-        response.put("token", token);
-        return response;
+        return Token.builder()
+                .login(user.getLogin())
+                .token(user.getToken())
+                .build();
     }
 
     public void logout(@NotNull String login) throws UserNotFoundException {

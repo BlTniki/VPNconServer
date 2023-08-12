@@ -3,6 +3,7 @@ package com.bitniki.VPNconServer.modules.user.controller;
 import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
+import com.bitniki.VPNconServer.modules.user.model.Token;
 import com.bitniki.VPNconServer.modules.user.model.User;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
 import com.bitniki.VPNconServer.modules.user.service.UserService;
@@ -178,13 +179,13 @@ public class UserController {
      * Аутентифицирует пользователя и создает токен.
      *
      * @param request Запрос с данными пользователя.
-     * @return Карта, содержащая логин авторизированного пользователя и сгенерированный JWT токен.
+     * @return Модель, содержащая логин авторизированного пользователя и сгенерированный JWT токен.
      * @throws UserNotFoundException если пользователь не найден.
      * @throws UserValidationFailedException Если валидация данных пользователя не удалась.
      * @throws AuthenticationException Если был отправлен неверный пароль.
      */
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> auth(@RequestBody UserFromRequest request)
+    public ResponseEntity<Token> auth(@RequestBody UserFromRequest request)
             throws UserNotFoundException, UserValidationFailedException, AuthenticationException {
         return ResponseEntity.ok(userService.authAndCreateToken(request));
     }

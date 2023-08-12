@@ -6,6 +6,7 @@ import com.bitniki.VPNconServer.modules.user.entity.UserEntity;
 import com.bitniki.VPNconServer.modules.user.exception.UserAlreadyExistException;
 import com.bitniki.VPNconServer.modules.user.exception.UserNotFoundException;
 import com.bitniki.VPNconServer.modules.user.exception.UserValidationFailedException;
+import com.bitniki.VPNconServer.modules.user.model.Token;
 import com.bitniki.VPNconServer.modules.user.model.UserFromRequest;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.AuthenticationException;
@@ -95,12 +96,12 @@ public interface UserService {
      * Авторизует пользователя и создает токен.
      *
      * @param model Сущность юзера с указанными полями, которые следует изменить. Должен содержать {@link String} login и {@link String} password.
-     * @return Карта, содержащая логин авторизированного пользователя и сгенерированный JWT токен.
+     * @return Модель, содержащая логин авторизированного пользователя и сгенерированный JWT токен.
      * @throws UserNotFoundException Если пользователь не найден.
      * @throws UserValidationFailedException Если валидация полей в model не пройдена.
      * @throws AuthenticationException Если был отправлен неверный пароль.
      */
-    Map<String, String> authAndCreateToken(@NotNull UserFromRequest model) throws UserNotFoundException,
+    Token authAndCreateToken(@NotNull UserFromRequest model) throws UserNotFoundException,
             UserValidationFailedException, AuthenticationException;
 
     /**
