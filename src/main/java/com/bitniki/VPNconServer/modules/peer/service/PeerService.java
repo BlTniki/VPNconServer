@@ -56,6 +56,15 @@ public interface PeerService {
     PeerEntity getOneByLoginAndPeerId(@NotNull String login, @NotNull Long id) throws EntityNotFoundException;
 
     /**
+     * Возвращает сущность пира по его peerIp и hostIp.
+     * @param peerIp Ip адрес пира.
+     * @param hostId Id хоста.
+     * @return Сущность пира.
+     * @throws EntityNotFoundException Если данный пир не найден.
+     */
+    PeerEntity getOneByPeerIpAndHostId(@NotNull String peerIp, @NotNull Long hostId) throws EntityNotFoundException;
+
+    /**
      * Создает новый объект PeerEntity на основе переданной модели {@link PeerFromRequest}.
      * Необходимые поля в {@link PeerFromRequest} можно посмотреть внутри класса.
      *
