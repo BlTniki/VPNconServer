@@ -117,6 +117,11 @@ public class YooMoneyProvider extends Provider {
     public Optional<Notification> makeNotification(Map<String, String> map) {
         // try to make notification
         try {
+            // check for test notification
+            if (map.getOrDefault("operation_id", "test-notification").equals("test-notification")) {
+                throw new NotificationValidationFailedException("Got a test notification!");
+            }
+
             // extruding needed fields
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
             YooMoneyNotification notification = YooMoneyNotification.builder()
