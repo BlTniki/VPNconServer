@@ -1,7 +1,4 @@
 FROM openjdk:17-jdk-alpine
-COPY build/libs/VPNconServer*SNAPSHOT.jar vpncon.jar
-COPY ./init.sh init.sh
-RUN chmod 777 init.sh
 ENV SERVER_URL ${SERVER_URL}
 ENV SERVER_PORT ${SERVER_PORT}
 ENV DB_PORT ${DB_PORT}
@@ -15,4 +12,9 @@ ENV UUID_SECRET_KEY ${UUID_SECRET_KEY}
 ENV YOO_SECRET_KEY ${YOO_SECRET_KEY}
 ENV YOO_ACCOUNT ${YOO_ACCOUNT}
 ENV YOO_SUCCESS_URL ${YOO_SUCCESS_URL}
+
+COPY target/VPNconServer*SNAPSHOT.jar vpncon.jar
+COPY ./init.sh init.sh
+RUN chmod 777 init.sh
+
 ENTRYPOINT ["./init.sh"]
