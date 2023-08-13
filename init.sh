@@ -55,6 +55,6 @@ yoomoney:
   secretKey: ${YOO_SECRET_KEY}
   account: ${YOO_ACCOUNT}
   successUrl: ${YOO_SUCCESS_URL}
-" >> BOOT-INF/classes/application.yml
+" > BOOT-INF/classes/application.yml
 jar uf vpncon.jar BOOT-INF/classes/application.yml
 exec java -jar vpncon.jar
