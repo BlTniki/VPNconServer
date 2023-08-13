@@ -98,7 +98,7 @@ public class YooMoneyProvider extends Provider {
                 YOOMONEY_ACCOUNT,
                 uuid,
                 amount,
-                SUCCESS_URL
+                SUCCESS_URL + "/" + uuid
         );
     }
 
