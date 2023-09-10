@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,7 @@ import java.util.Spliterator;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@EnableScheduling
 public class UserSubscriptionServiceImpl implements UserSubscriptionService {
 
     @Autowired
@@ -222,7 +224,7 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     }
 
     @Override
-    @Scheduled(cron = "0 35 22 * * *")
+    @Scheduled(cron = "0 0 10-20 * * *")
     public void checkExpirationDay() throws EntityNotFoundException, ReminderValidationFailedException, PeerConnectHandlerException {
         final LocalDate TODAY = LocalDate.now();
         final String TODAY_REMINDER_TEXT = "Твоя подписка сгорела :(\n\nЕсли желаешь продолжить пользоваться сервисом, то стоит оплатить подписку";
