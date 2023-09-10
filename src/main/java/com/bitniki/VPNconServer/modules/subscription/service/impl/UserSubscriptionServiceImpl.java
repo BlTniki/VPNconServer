@@ -222,7 +222,7 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     }
 
     @Override
-    @Scheduled(cron = "0 30 22 * * *")
+    @Scheduled(cron = "0 35 22 * * *")
     public void checkExpirationDay() throws EntityNotFoundException, ReminderValidationFailedException, PeerConnectHandlerException {
         final LocalDate TODAY = LocalDate.now();
         final String TODAY_REMINDER_TEXT = "Твоя подписка сгорела :(\n\nЕсли желаешь продолжить пользоваться сервисом, то стоит оплатить подписку";
