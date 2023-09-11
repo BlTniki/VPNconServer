@@ -249,7 +249,7 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
         }
 
         // load entities that expire today
-        List<UserSubscriptionEntity> expireToday = userSubscriptionRepo.findAllFromExpirationDay(
+        List<UserSubscriptionEntity> expireToday = userSubscriptionRepo.findAllByFromExpirationDay(
                 TODAY
         );
 

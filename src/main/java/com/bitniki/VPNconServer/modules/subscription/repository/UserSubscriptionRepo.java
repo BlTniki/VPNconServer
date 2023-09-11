@@ -11,6 +11,11 @@ import java.util.Optional;
 public interface UserSubscriptionRepo extends CrudRepository<UserSubscriptionEntity, Long> {
     Optional<UserSubscriptionEntity> findByUserId(Long userId);
 
+    /**
+     * Возвращает записи, у которых день сгорания равен данному.
+     * @param expirationDay Искомый день сгорания.
+     * @return Записи {@link UserSubscriptionEntity}.
+     */
     List<UserSubscriptionEntity> findByExpirationDay(LocalDate expirationDay);
 
     /**
@@ -18,6 +23,6 @@ public interface UserSubscriptionRepo extends CrudRepository<UserSubscriptionEnt
      * @param expirationDay День, до которого должен быть день сгорания. Включительно.
      * @return Записи {@link UserSubscriptionEntity}.
      */
-    @Query("SELECT us FROM UserSubscriptionEntity us WHERE us.expirationDay = :expirationDay")
-    List<UserSubscriptionEntity> findAllFromExpirationDay(LocalDate expirationDay);
+    @Query("SELECT us FROM UserSubscriptionEntity us WHERE us.expirationDay <= :expirationDay")
+    List<UserSubscriptionEntity> findAllByFromExpirationDay(LocalDate expirationDay);
 }
