@@ -1,6 +1,8 @@
 package com.bitniki.VPNconServer.modules.subscription.controller;
 
 import com.bitniki.VPNconServer.exception.EntityNotFoundException;
+import com.bitniki.VPNconServer.modules.mail.exception.ReminderValidationFailedException;
+import com.bitniki.VPNconServer.modules.peer.connectHandler.exception.PeerConnectHandlerException;
 import com.bitniki.VPNconServer.modules.subscription.exception.UserSubscriptionNotFoundException;
 import com.bitniki.VPNconServer.modules.subscription.exception.UserSubscriptionValidationFailedException;
 import com.bitniki.VPNconServer.modules.subscription.model.UserSubscription;
@@ -100,5 +102,12 @@ public class UserSubscriptionController {
         return ResponseEntity.ok(
                 UserSubscription.toModel(userSubscriptionService.deleteByUserId(userId))
         );
+    }
+
+    @PostMapping("/check")
+    @PreAuthorize("hasAuthority('any') && hasAuthority('user_subscription:write')")
+    public ResponseEntity<String> checkExpire() throws ReminderValidationFailedException, EntityNotFoundException, PeerConnectHandlerException {
+        userSubscriptionService.checkExpirationDay();
+        return ResponseEntity.ok("Success");
     }
 }
