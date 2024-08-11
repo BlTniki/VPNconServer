@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: sms
+  jackson:
+    time-zone: UTC
+    property-naming-strategy: SNAKE_CASE
+  kafka:
+    bootstrap-servers: ${BOOTSTRAP_SERVERS}
+
+
+springdoc:
+  swagger-ui:
+    path: "/swagger-ui"
+
+server:
+  port: ${SERVER_PORT}
+
+logging:
+  config: classpath:log4j2-plain.xml
+
+
+management:
+  endpoints:
+    web:
+      base-path: "/"
+      exposure:
+        include: info, health, prometheus
+      path-mapping:
+        prometheus: "metrics"
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  server:
+    port: ${MANAGEMENT_PORT}

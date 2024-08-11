@@ -1,0 +1,62 @@
+name: CMS Build
+
+on:
+  workflow_dispatch:
+    pull_request:
+      paths:
+        - .github/workflows/cms.yml
+        - cms/**
+    push:
+      branches:
+        - main
+        - release
+      paths:
+        - .github/workflows/cms.yml
+        - cms/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+    permissions:
+      packages: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: maven build
+        run: mvn -pl cms -am package
+
+  checkstyle:
+    name: checkstyle
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - run: mvn -pl cms -am checkstyle:check
+
+    integration-test:
+      name: integration tests
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-java@v4
+          with:
+            java-version: '21'
+            distribution: 'temurin'
+            cache: maven
+
+        - run: mvn -pl cms -am verify -Dskip.unit.tests=true
