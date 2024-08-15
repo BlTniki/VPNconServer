@@ -25,6 +25,7 @@
 		<lombok.version>1.18.34</lombok.version>
 		<jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
 		<kafka.version>3.2.2</kafka.version>
+		<jakarta-validation.version>3.1.0</jakarta-validation.version>
 
 		<!-- Spring -->
 		<spring-boot.version>3.3.2</spring-boot.version>
@@ -85,6 +86,11 @@
 				<groupId>me.paulschwarz</groupId>
 				<artifactId>spring-dotenv</artifactId>
 				<version>${spring-dotenv.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>jakarta.validation</groupId>
+				<artifactId>jakarta.validation-api</artifactId>
+				<version>${jakarta-validation.version}</version>
 			</dependency>
 
 			<!-- WEB -->
