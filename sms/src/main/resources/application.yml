@@ -1,6 +1,10 @@
 spring:
   application:
     name: sms
+  r2dbc:
+    url: r2dbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jackson:
     time-zone: UTC
     property-naming-strategy: SNAKE_CASE
