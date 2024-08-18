@@ -4,7 +4,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: scrapper
+      POSTGRES_DB: vpncon3
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
@@ -19,7 +19,7 @@ services:
     command:
       - --changelog-file=master.xml
       - --driver=org.postgresql.Driver
-      - --url=jdbc:postgresql://postgresql:5432/scrapper
+      - --url=jdbc:postgresql://postgresql:5432/vpncon3
       - --username=postgres
       - --password=postgres
       - update
