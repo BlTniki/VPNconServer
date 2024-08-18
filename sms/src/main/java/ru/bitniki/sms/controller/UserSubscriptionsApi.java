@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import reactor.core.publisher.Mono;
 import ru.bitniki.sms.controller.model.AddSubscriptionToUserRequest;
 import ru.bitniki.sms.controller.model.ErrorResponse;
 import ru.bitniki.sms.controller.model.UserSubscriptionResponse;
@@ -30,7 +31,7 @@ public interface UserSubscriptionsApi {
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @RequestMapping(value = "/user_subscriptions", produces = { "application/json" }, method = RequestMethod.GET)
-    ResponseEntity<UserSubscriptionResponse> userSubscriptionsGet(@NotNull @Parameter(in = ParameterIn.QUERY, description = "user telegram id", required = true, schema = @Schema()) @Valid @RequestParam(value = "user_id", required = true) Long userId);
+    Mono<ResponseEntity<UserSubscriptionResponse>> userSubscriptionsGet(@NotNull @Parameter(in = ParameterIn.QUERY, description = "user telegram id", required = true, schema = @Schema()) @Valid @RequestParam(value = "user_id", required = true) Long userId);
 
 
     @Operation(summary = "Add subscription to user", description = "", tags = { "user_subscriptions" })
@@ -39,6 +40,6 @@ public interface UserSubscriptionsApi {
         @ApiResponse(responseCode = "404", description = "User or subscription not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @RequestMapping(value = "/user_subscriptions", produces = { "application/json" }, consumes = { "application/json" }, method = RequestMethod.POST)
-    ResponseEntity<UserSubscriptionResponse> userSubscriptionsPost(@Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema()) @Valid @RequestBody AddSubscriptionToUserRequest body);
+    Mono<ResponseEntity<UserSubscriptionResponse>> userSubscriptionsPost(@Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema()) @Valid @RequestBody AddSubscriptionToUserRequest body);
 }
 

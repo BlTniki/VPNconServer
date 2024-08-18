@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import reactor.core.publisher.Mono;
 import ru.bitniki.sms.controller.model.ErrorResponse;
 import ru.bitniki.sms.controller.model.SubscriptionResponse;
 
@@ -28,7 +29,7 @@ public interface SubscriptionsApi {
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @RequestMapping(value = "/subscriptions", produces = { "application/json" }, method = RequestMethod.GET)
-    ResponseEntity<List<SubscriptionResponse>> subscriptionsGet(@Parameter(in = ParameterIn.QUERY, description = "Role filter for subscriptions. May be null", schema = @Schema()) @Valid @RequestParam(value = "role", required = false) String role);
+    Mono<ResponseEntity<List<SubscriptionResponse>>> subscriptionsGet(@Parameter(in = ParameterIn.QUERY, description = "Role filter for subscriptions. May be null", schema = @Schema()) @Valid @RequestParam(value = "role", required = false) String role);
 
     @Operation(summary = "Get subscription", description = "", tags = { "subscriptions" })
     @ApiResponses(value = {
@@ -37,7 +38,7 @@ public interface SubscriptionsApi {
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @RequestMapping(value = "/subscriptions/{id}", produces = { "application/json" }, method = RequestMethod.GET)
-    ResponseEntity<SubscriptionResponse> subscriptionsIdGet(@Parameter(in = ParameterIn.PATH, description = "subscription id", required = true, schema = @Schema()) @PathVariable("id") Long id);
+    Mono<ResponseEntity<SubscriptionResponse>> subscriptionsIdGet(@Parameter(in = ParameterIn.PATH, description = "subscription id", required = true, schema = @Schema()) @PathVariable("id") Long id);
 
 }
 

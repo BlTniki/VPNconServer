@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import reactor.core.publisher.Mono;
 import ru.bitniki.sms.controller.model.AddUserRequest;
 import ru.bitniki.sms.controller.model.ErrorResponse;
 import ru.bitniki.sms.controller.model.UserResponse;
@@ -28,7 +29,7 @@ public interface UsersApi {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @RequestMapping(value = "/users/{id}", produces = { "application/json" }, method = RequestMethod.GET)
-    ResponseEntity<UserResponse> usersIdGet(@Parameter(in = ParameterIn.PATH, description = "User telegram id", required = true, schema = @Schema()) @PathVariable("id") Long id);
+    Mono<ResponseEntity<UserResponse>> usersIdGet(@Parameter(in = ParameterIn.PATH, description = "User telegram id", required = true, schema = @Schema()) @PathVariable("id") Long id);
 
     @Operation(summary = "Add user", description = "", tags = { "users" })
     @ApiResponses(value = {
@@ -37,6 +38,6 @@ public interface UsersApi {
         @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @RequestMapping(value = "/users", produces = { "application/json" }, consumes = { "application/json" }, method = RequestMethod.POST)
-    ResponseEntity<UserResponse> usersPost(@Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema()) @Valid @RequestBody AddUserRequest body);
+    Mono<ResponseEntity<UserResponse>> usersPost(@Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema()) @Valid @RequestBody AddUserRequest body);
 }
 
