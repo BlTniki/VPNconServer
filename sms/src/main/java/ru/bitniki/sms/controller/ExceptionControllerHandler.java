@@ -20,6 +20,7 @@ public class ExceptionControllerHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Mono<ResponseEntity<ErrorResponse>> entityNotFound(EntityNotFoundException e) {
+        LOGGER.warn(e);
         return Mono.just(ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(new ErrorResponse(
@@ -33,6 +34,7 @@ public class ExceptionControllerHandler {
 
     @ExceptionHandler(BadRequestException.class)
     public Mono<ResponseEntity<ErrorResponse>> badRequest(BadRequestException e) {
+        LOGGER.warn(e);
         return Mono.just(ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(new ErrorResponse(
