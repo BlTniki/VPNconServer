@@ -125,11 +125,6 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			<dependency>
-				<groupId>org.springdoc</groupId>
-				<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-				<version>${openapi.version}</version>
-			</dependency>
 
 			<!-- ORM -->
 			<dependency>
@@ -253,7 +248,11 @@
 	</dependencyManagement>
 
 	<dependencies>
-
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+			<version>${openapi.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
