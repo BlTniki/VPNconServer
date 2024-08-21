@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import ru.bitniki.sms.domen.exception.EntityAlreadyExistException;
 import ru.bitniki.sms.domen.exception.EntityNotFoundException;
-import ru.bitniki.sms.domen.roles.dao.R2dbcRolesDao;
 import ru.bitniki.sms.domen.users.dao.R2dbcUsersDao;
 import ru.bitniki.sms.domen.users.dto.R2dbcUserEntity;
 import ru.bitniki.sms.domen.users.dto.User;
@@ -22,7 +21,7 @@ public class R2dbcUsersService implements UsersService {
     private final R2dbcUsersDao usersDao;
 
     @Autowired
-    public R2dbcUsersService(R2dbcUsersDao usersDao, R2dbcRolesDao rolesDao) {
+    public R2dbcUsersService(R2dbcUsersDao usersDao) {
         this.usersDao = usersDao;
     }
 
@@ -46,9 +45,10 @@ public class R2dbcUsersService implements UsersService {
         LOGGER.debug("Creating user with telegram id `{}` and username `{}`", id, username);
         return usersDao.findByTelegramId(id)
                 .flatMap(entity -> Mono.error(
-                        new EntityAlreadyExistException("User with id telegram `%d` already exists".formatted(id))
-                )).then(usersDao.save(new R2dbcUserEntity(null, id, username, DEFAULT_USER_ROLE)))
-                .doOnNext(entity -> LOGGER.debug("Created user `{}`", entity))
+                        new EntityAlreadyExistException("User with telegram id `%d` already exists".formatted(id))
+                ))
+                .then(usersDao.save(new R2dbcUserEntity(null, id, username, DEFAULT_USER_ROLE)))
+                .doOnNext(entity -> LOGGER.info("Created user `{}`", entity))
                 .doOnError(
                     error -> LOGGER.debug("Failed to create user with telegram id `{}` due to uniqueness violation", id)
                 )

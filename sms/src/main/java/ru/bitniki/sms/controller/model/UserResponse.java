@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
+import lombok.Builder;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 
@@ -14,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
  */
 @Validated
 @Setter
+@Builder
 public class UserResponse   {
     @JsonProperty("telegram_id")
     private Long telegramId;
