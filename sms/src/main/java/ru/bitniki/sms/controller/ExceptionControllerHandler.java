@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import ru.bitniki.sms.controller.model.ErrorResponse;
 import ru.bitniki.sms.domen.exception.BadRequestException;
@@ -30,6 +31,23 @@ public class ExceptionControllerHandler {
                 e.getMessage(),
                 Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).toList()
         )));
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public Mono<ResponseEntity<ErrorResponse>> entityNotFound(ResponseStatusException e) {
+        if (e.getStatusCode() != HttpStatus.NOT_FOUND) {
+            throw e;
+        }
+        LOGGER.warn(e);
+        return Mono.just(ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(
+                        HttpStatus.NOT_FOUND.value(),
+                        "Resource is not exists",
+                        EntityNotFoundException.class.getName(),
+                        e.getMessage(),
+                        Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).toList()
+                )));
     }
 
     @ExceptionHandler(BadRequestException.class)
