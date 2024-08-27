@@ -7,7 +7,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.Period;
 import java.util.Objects;
+import lombok.Builder;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 
@@ -16,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
  */
 @Validated
 @Setter
+@Builder
 public class SubscriptionResponse   {
     @JsonProperty("id")
     private Long id;
@@ -61,6 +64,9 @@ public class SubscriptionResponse   {
     @JsonProperty("allowed_active_peers_count")
     private Integer allowedActivePeersCount;
 
+    @JsonProperty("period")
+    private Period period;
+
     /**
      * Get id
      * @return id
@@ -102,6 +108,15 @@ public class SubscriptionResponse   {
         return allowedActivePeersCount;
     }
 
+    /**
+     * Get duration
+     * @return duration
+     **/
+    @Schema()
+    @NotNull
+    public Period getPeriod() {
+        return period;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -115,7 +130,8 @@ public class SubscriptionResponse   {
         return Objects.equals(this.id, subscriptionResponse.id)
                 && Objects.equals(this.role, subscriptionResponse.role)
                 && Objects.equals(this.priceInRubles, subscriptionResponse.priceInRubles)
-                && Objects.equals(this.allowedActivePeersCount, subscriptionResponse.allowedActivePeersCount);
+                && Objects.equals(this.allowedActivePeersCount, subscriptionResponse.allowedActivePeersCount)
+                && Objects.equals(this.period, subscriptionResponse.period);
     }
 
     @Override
