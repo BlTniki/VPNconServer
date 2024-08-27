@@ -31,7 +31,6 @@ public class UsersApiController implements UsersApi {
 
     @Override
     public Mono<ResponseEntity<UserResponse>> usersIdGet(Long id) {
-        LOGGER.info("Received GET request at /users/{}", id);
         return usersService.getById(id)
                 .map(this::toUserResponse)
                 .map(ResponseEntity::ok)
@@ -40,7 +39,6 @@ public class UsersApiController implements UsersApi {
 
     @Override
     public Mono<ResponseEntity<UserResponse>> usersPost(AddUserRequest body) {
-        LOGGER.info("Received POST request at /users with body {}", body);
         return usersService.createUser(body.getTelegramId(), body.getUsername())
                 .map(this::toUserResponse)
                 .map(ResponseEntity::ok)
