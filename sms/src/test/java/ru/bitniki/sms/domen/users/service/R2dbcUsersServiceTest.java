@@ -4,8 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
-import org.springframework.web.reactive.config.EnableWebFlux;
 import ru.bitniki.sms.IntegrationTest;
 import ru.bitniki.sms.domen.exception.EntityAlreadyExistException;
 import ru.bitniki.sms.domen.exception.EntityNotFoundException;
@@ -15,8 +13,6 @@ import ru.bitniki.sms.utils.rollback.TrxStepVerifier;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@EnableWebFlux
-@EnableR2dbcRepositories
 class R2dbcUsersServiceTest extends IntegrationTest {
     private final User newUser = new User(123L, "foo", "ACTIVATED_USER");
     @Autowired
