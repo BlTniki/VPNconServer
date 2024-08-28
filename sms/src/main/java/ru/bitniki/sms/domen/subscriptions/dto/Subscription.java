@@ -1,4 +1,4 @@
-package ru.bitniki.sms.domen.users.dto;
+package ru.bitniki.sms.domen.subscriptions.dto;
 
 import java.math.BigDecimal;
 import java.time.Period;

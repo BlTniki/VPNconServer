@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 import ru.bitniki.sms.domen.exception.EntityNotFoundException;
 import ru.bitniki.sms.domen.subscriptions.dao.R2dbcSubscriptionsDao;
 import ru.bitniki.sms.domen.subscriptions.dto.R2dbcSubscriptionEntity;
-import ru.bitniki.sms.domen.users.dto.Subscription;
+import ru.bitniki.sms.domen.subscriptions.dto.Subscription;
 
 @Service
 @Transactional

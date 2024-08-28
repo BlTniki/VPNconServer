@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 import ru.bitniki.sms.controller.model.SubscriptionResponse;
+import ru.bitniki.sms.domen.subscriptions.dto.Subscription;
 import ru.bitniki.sms.domen.subscriptions.service.SubscriptionsService;
-import ru.bitniki.sms.domen.users.dto.Subscription;
 
 @RestController
 public class SubscriptionsApiController implements SubscriptionsApi {
