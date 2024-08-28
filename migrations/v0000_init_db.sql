@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS subscriptions (
     role VARCHAR(255) NOT NULL REFERENCES roles (role),
     price_in_rubles NUMERIC NOT NULL,
     allowed_active_peers_count INT NOT NULL,
-    duration INTERVAL NOT NULL
+    period INTERVAL NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS users_subscriptions (
