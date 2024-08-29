@@ -10,6 +10,7 @@ public interface SubscriptionsService {
      * Return subscription by given id.
      * @param id subscription id
      * @return subscription
+     * @throws ru.bitniki.sms.domen.exception.EntityNotFoundException if a subscription with this id not exists
      */
     Mono<Subscription> getById(long id);
 

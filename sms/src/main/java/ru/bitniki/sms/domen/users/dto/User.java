@@ -6,5 +6,4 @@ public record User(
     @NotNull Long telegramId,
     @NotNull String username,
     @NotNull String role
-) {
-}
+) {}
