@@ -20,7 +20,11 @@ public class R2dbcUsersSubscriptionsService implements UsersSubscriptionsService
     private final SubscriptionsService subscriptionsService;
     private final UsersSubscriptionsService usersSubscriptionsService;
 
-    public R2dbcUsersSubscriptionsService(UsersService usersService, SubscriptionsService subscriptionsService, UsersSubscriptionsService usersSubscriptionsService) {
+    public R2dbcUsersSubscriptionsService(
+            UsersService usersService,
+            SubscriptionsService subscriptionsService,
+            UsersSubscriptionsService usersSubscriptionsService
+    ) {
         this.usersService = usersService;
         this.subscriptionsService = subscriptionsService;
         this.usersSubscriptionsService = usersSubscriptionsService;
