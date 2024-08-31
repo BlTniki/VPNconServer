@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import ru.bitniki.sms.controller.model.ErrorResponse;
-import ru.bitniki.sms.domen.exception.BadRequestException;
-import ru.bitniki.sms.domen.exception.EntityNotFoundException;
+import ru.bitniki.sms.domain.exception.BadRequestException;
+import ru.bitniki.sms.domain.exception.EntityNotFoundException;
 
 @RestControllerAdvice
 public class ExceptionControllerHandler {

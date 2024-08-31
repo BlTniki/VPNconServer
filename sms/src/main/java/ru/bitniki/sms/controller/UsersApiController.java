@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 import ru.bitniki.sms.controller.model.AddUserRequest;
 import ru.bitniki.sms.controller.model.UserResponse;
-import ru.bitniki.sms.domen.users.service.UsersService;
+import ru.bitniki.sms.domain.users.service.UsersService;
 
 @RestController
 public class UsersApiController implements UsersApi {

@@ -3,9 +3,9 @@ package ru.bitniki.sms.controller;
 import ru.bitniki.sms.controller.model.SubscriptionResponse;
 import ru.bitniki.sms.controller.model.UserResponse;
 import ru.bitniki.sms.controller.model.UserSubscriptionResponse;
-import ru.bitniki.sms.domen.subscriptions.dto.Subscription;
-import ru.bitniki.sms.domen.subscriptions.dto.UserSubscription;
-import ru.bitniki.sms.domen.users.dto.User;
+import ru.bitniki.sms.domain.subscriptions.dto.Subscription;
+import ru.bitniki.sms.domain.subscriptions.dto.UserSubscription;
+import ru.bitniki.sms.domain.users.dto.User;
 
 /**
  * Utils class for mapping domain models to response models.

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 import ru.bitniki.sms.controller.model.AddSubscriptionToUserRequest;
 import ru.bitniki.sms.controller.model.UserSubscriptionResponse;
-import ru.bitniki.sms.domen.subscriptions.service.UsersSubscriptionsService;
+import ru.bitniki.sms.domain.subscriptions.service.UsersSubscriptionsService;
 
 @RestController
 public class UserSubscriptionsApiController implements UserSubscriptionsApi {
