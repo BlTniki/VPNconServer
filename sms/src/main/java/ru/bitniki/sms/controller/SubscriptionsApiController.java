@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 import ru.bitniki.sms.controller.model.SubscriptionResponse;
-import ru.bitniki.sms.domen.subscriptions.dto.Subscription;
 import ru.bitniki.sms.domen.subscriptions.service.SubscriptionsService;
 
 @RestController
@@ -22,20 +21,10 @@ public class SubscriptionsApiController implements SubscriptionsApi {
         this.subscriptionsService = subscriptionsService;
     }
 
-    private SubscriptionResponse toSubscriptionResponse(Subscription subscription) {
-        return SubscriptionResponse.builder()
-                .id(subscription.id())
-                .role(SubscriptionResponse.RoleEnum.fromValue(subscription.role()))
-                .priceInRubles(subscription.priceInRubles())
-                .allowedActivePeersCount(subscription.allowedActivePeersCount())
-                .period(subscription.period())
-                .build();
-    }
-
     @Override
     public Mono<ResponseEntity<List<SubscriptionResponse>>> subscriptionsGet(String role) {
         return subscriptionsService.getByRole(role)
-                .map(this::toSubscriptionResponse)
+                .map(ResponseMapper::toSubscriptionResponse)
                 .collectList()
                 .doOnNext(
                         list -> LOGGER.info("Response successfully with subscriptions with role `{}` `{}` ", role, list)
@@ -46,7 +35,7 @@ public class SubscriptionsApiController implements SubscriptionsApi {
     @Override
     public Mono<ResponseEntity<SubscriptionResponse>> subscriptionsIdGet(Long id) {
         return subscriptionsService.getById(id)
-                .map(this::toSubscriptionResponse)
+                .map(ResponseMapper::toSubscriptionResponse)
                 .map(ResponseEntity::ok)
                 .doOnNext(response -> LOGGER.info("Response successfully to GET request at /subscriptions/{}", id));
     }

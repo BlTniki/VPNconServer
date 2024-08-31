@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 import ru.bitniki.sms.controller.model.AddUserRequest;
 import ru.bitniki.sms.controller.model.UserResponse;
-import ru.bitniki.sms.domen.users.dto.User;
 import ru.bitniki.sms.domen.users.service.UsersService;
 
 @RestController
@@ -21,18 +20,10 @@ public class UsersApiController implements UsersApi {
         this.usersService = usersService;
     }
 
-    private UserResponse toUserResponse(User dto) {
-        return UserResponse.builder()
-                .telegramId(dto.telegramId())
-                .username(dto.username())
-                .role(UserResponse.RoleEnum.valueOf(dto.role()))
-                .build();
-    }
-
     @Override
     public Mono<ResponseEntity<UserResponse>> usersIdGet(Long id) {
         return usersService.getById(id)
-                .map(this::toUserResponse)
+                .map(ResponseMapper::toUserResponse)
                 .map(ResponseEntity::ok)
                 .doOnNext(response -> LOGGER.info("Response successfully to GET request at /users/{}", id));
     }
@@ -40,10 +31,10 @@ public class UsersApiController implements UsersApi {
     @Override
     public Mono<ResponseEntity<UserResponse>> usersPost(AddUserRequest body) {
         return usersService.createUser(body.getTelegramId(), body.getUsername())
-                .map(this::toUserResponse)
+                .map(ResponseMapper::toUserResponse)
                 .map(ResponseEntity::ok)
                 .doOnNext(
-                        response -> LOGGER.info("Response successfully to POST request at /users with body {}", body)
+                    response -> LOGGER.info("Response successfully to POST request at /users with body {}", body)
                 );
     }
 }
