@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
+import lombok.Builder;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 
@@ -14,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
  */
 @Validated
 @Setter
+@Builder
 public class UserSubscriptionResponse   {
     @JsonProperty("id")
     private Long id;
