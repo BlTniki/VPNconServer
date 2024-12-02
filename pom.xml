@@ -33,6 +33,7 @@
 		<spring-dotenv.version>4.0.0</spring-dotenv.version>
 		<openapi.version>2.6.0</openapi.version>
 		<spring-jdbc.version>6.1.11</spring-jdbc.version>
+		<spring-validation.version>3.3.3</spring-validation.version>
 
 		<!-- ORM -->
 		<liquidbase.version>4.27.0</liquidbase.version>
@@ -107,6 +108,18 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-log4j2</artifactId>
 				<version>${spring-boot.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-validation</artifactId>
+				<version>${spring-validation.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter-logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<!-- WEB -->
