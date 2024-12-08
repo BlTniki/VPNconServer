@@ -5,9 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.web.reactive.config.EnableWebFlux;
+import ru.bitniki.sms.configuration.KafkaConfiguration;
 
 @SpringBootApplication
-@EnableConfigurationProperties
+@EnableConfigurationProperties(KafkaConfiguration.class)
 @EnableR2dbcRepositories
 @EnableWebFlux
 public class SmsApplication {

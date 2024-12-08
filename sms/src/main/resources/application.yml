@@ -1,3 +1,20 @@
+app:
+  kafka:
+    enable: false
+    bootstrapServers: ${BOOTSTRAP_SERVERS}
+    clientId: sms
+    acksMode: all
+    deliveryTimeout: 60s
+    lingerMs: 12_000
+    batchSize: 100_000
+    maxInFlightPerConnection: 5
+    enableIdempotence: true
+    topic:
+      name: subscription_updates
+      partitions: 1
+      replicas: 1
+
+
 spring:
   application:
     name: sms
