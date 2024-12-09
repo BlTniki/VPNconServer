@@ -22,7 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import ru.bitniki.sms.domain.subscriptions.dto.UserSubscriptionEvent;
 
 @Validated
-@ConditionalOnProperty(prefix = "kafka", name = "enable", havingValue = "true")
+@ConditionalOnProperty(prefix = "kafka.producer", name = "enable", havingValue = "true")
 @EnableKafka
 @ConfigurationProperties(prefix = "kafka")
 public record KafkaConfiguration(@NotNull Producer producer) {

@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.validation.annotation.Validated;
+import ru.bitniki.sms.domain.subscriptions.dto.UserSubscription;
 import ru.bitniki.sms.domain.subscriptions.dto.UserSubscriptionEvent;
 import ru.bitniki.sms.domain.subscriptions.service.event.KafkaUserSubscriptionEventProducer;
 import ru.bitniki.sms.domain.subscriptions.service.event.UserSubscriptionEventProducer;
@@ -19,10 +20,11 @@ public record AppConfiguration(
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Bean
-    @ConditionalOnProperty(prefix = "kafka", name = "enable", havingValue = "true")
+    @ConditionalOnProperty(prefix = "kafka.producer", name = "enable", havingValue = "true")
     public UserSubscriptionEventProducer userSubscriptionEventProducer(
             KafkaTemplate<String, UserSubscriptionEvent> template
     ) {
+        LOGGER.info("Kafka event producer is on. Using KafkaUserSubscriptionEventProducer...");
         return new KafkaUserSubscriptionEventProducer(kafka.topic, template);
     }
 
@@ -30,10 +32,37 @@ public record AppConfiguration(
      * Этот бин существует на случай, если работа с kafka выключена в проекте и нужно забить чем-то зависимости
      */
     @Bean
-    @ConditionalOnProperty(prefix = "kafka", name = "enable", havingValue = "false")
+    @ConditionalOnProperty(prefix = "kafka.producer", name = "enable", havingValue = "false", matchIfMissing = true)
     public UserSubscriptionEventProducer userSubscriptionEventProducerStab(
     ) {
-        return new KafkaUserSubscriptionEventProducer(kafka.topic, template);
+        LOGGER.info("Kafka event producer is off. Using UserSubscriptionEventProducer...");
+        return new UserSubscriptionEventProducer() {
+            private static final Logger LOGGER = LogManager.getLogger();
+
+            @Override
+            public void createPaidEvent(UserSubscription userSubscription) {
+                LOGGER.debug(
+                        "UserSubscriptionEventProducer stab was called by method `createPaidEvent` with entity {}",
+                        userSubscription
+                );
+            }
+
+            @Override
+            public void createBurnSoonEvent(UserSubscription userSubscription) {
+                LOGGER.debug(
+                        "UserSubscriptionEventProducer stab was called by method `createBurnSoonEvent` with entity {}",
+                        userSubscription
+                );
+            }
+
+            @Override
+            public void createBurnedEvent(UserSubscription userSubscription) {
+                LOGGER.debug(
+                        "UserSubscriptionEventProducer stab was called by method `createBurnedEvent` with entity {}",
+                        userSubscription
+                );
+            }
+        };
     }
 
     record Kafka(
