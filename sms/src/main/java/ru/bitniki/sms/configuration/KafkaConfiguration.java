@@ -22,9 +22,9 @@ import org.springframework.validation.annotation.Validated;
 import ru.bitniki.sms.domain.subscriptions.dto.UserSubscriptionEvent;
 
 @Validated
-@ConditionalOnProperty(prefix = "app.kafka", name = "enable", havingValue = "true")
+@ConditionalOnProperty(prefix = "kafka", name = "enable", havingValue = "true")
 @EnableKafka
-@ConfigurationProperties(prefix = "app.kafka")
+@ConfigurationProperties(prefix = "kafka")
 public record KafkaConfiguration(@NotNull Producer producer) {
 
     @Bean
@@ -61,20 +61,20 @@ public record KafkaConfiguration(@NotNull Producer producer) {
     }
 
     @Bean
-    public KafkaTemplate<String, UserSubscriptionEvent> linkUpdatesProducer(
+    public KafkaTemplate<String, UserSubscriptionEvent> userSubscriptionProducer(
             ProducerFactory<String, UserSubscriptionEvent> producerFactory
     ) {
         return new KafkaTemplate<>(producerFactory);
     }
 
 
-    public record Topic(
+    record Topic(
             String name,
             Integer partitions,
             Integer replicas
     ) {}
 
-    public record Producer(
+    record Producer(
             String bootstrapServers,
             String clientId,
             String acksMode,

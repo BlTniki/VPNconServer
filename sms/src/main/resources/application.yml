@@ -1,19 +1,6 @@
 app:
   kafka:
-    enable: false
-    bootstrapServers: ${BOOTSTRAP_SERVERS}
-    clientId: sms
-    acksMode: all
-    deliveryTimeout: 60s
-    lingerMs: 12_000
-    batchSize: 100_000
-    maxInFlightPerConnection: 5
-    enableIdempotence: true
-    topic:
-      name: subscription_updates
-      partitions: 1
-      replicas: 1
-
+    topic: subscription_updates
 
 spring:
   application:
@@ -25,9 +12,22 @@ spring:
   jackson:
     time-zone: UTC
     property-naming-strategy: SNAKE_CASE
-  kafka:
-    bootstrap-servers: ${BOOTSTRAP_SERVERS}
 
+
+kafka:
+  enable: false
+  bootstrapServers: ${BOOTSTRAP_SERVERS}
+  clientId: sms
+  acksMode: all
+  deliveryTimeout: 60s
+  lingerMs: 12_000
+  batchSize: 100_000
+  maxInFlightPerConnection: 5
+  enableIdempotence: true
+  topic:
+    name: subscription_updates
+    partitions: 1
+    replicas: 1
 
 springdoc:
   swagger-ui:

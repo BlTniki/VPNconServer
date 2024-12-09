@@ -5,13 +5,13 @@ public record UserSubscriptionEvent(
     Type type,
     UserSubscriptionEvent.Subscription subscription
 ) {
-    enum Type {
+    public enum Type {
         PAID,
         BURN_SOON,
         BURNED
     }
 
-    record Subscription(
+    public record Subscription(
         int allowedActivePeersCount
     ) {}
 }
