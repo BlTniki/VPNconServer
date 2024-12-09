@@ -9,16 +9,21 @@ import reactor.core.publisher.Mono;
 import ru.bitniki.sms.controller.model.AddSubscriptionToUserRequest;
 import ru.bitniki.sms.controller.model.UserSubscriptionResponse;
 import ru.bitniki.sms.domain.subscriptions.service.UsersSubscriptionsService;
+import ru.bitniki.sms.domain.subscriptions.service.event.UserSubscriptionEventProducer;
 
 @RestController
 public class UserSubscriptionsApiController implements UserSubscriptionsApi {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final UsersSubscriptionsService usersSubscriptionsService;
+    private final UserSubscriptionEventProducer userSubscriptionEventProducer;
 
     @Autowired
-    public UserSubscriptionsApiController(UsersSubscriptionsService usersSubscriptionsService) {
+    public UserSubscriptionsApiController(
+            UsersSubscriptionsService usersSubscriptionsService,
+            UserSubscriptionEventProducer userSubscriptionEventProducer) {
         this.usersSubscriptionsService = usersSubscriptionsService;
+        this.userSubscriptionEventProducer = userSubscriptionEventProducer;
     }
 
     public Mono<ResponseEntity<UserSubscriptionResponse>> userSubscriptionsGet(Long userId) {
@@ -31,18 +36,22 @@ public class UserSubscriptionsApiController implements UserSubscriptionsApi {
     }
 
     public Mono<ResponseEntity<UserSubscriptionResponse>> userSubscriptionsPost(AddSubscriptionToUserRequest body) {
+        LOGGER.info(Thread.currentThread().getName());
         return usersSubscriptionsService
                 .addUserSubscription(body.getUserId(), body.getSubscriptionId(), body.getTimes())
+                .doOnNext(userSubscriptionEventProducer::createPaidEvent)
                 .map(ResponseMapper::toUserSubscriptionResponse)
                 .map(ResponseEntity::ok)
                 .doOnNext(response -> LOGGER.info(
                         "Response successfully to POST request at /user_subscriptions with body `{}`", body
-                ));
+                ))
+                .doOnNext(response -> LOGGER.info(Thread.currentThread().getName()));
     }
 
     @Override
     public Mono<ResponseEntity<UserSubscriptionResponse>> userSubscriptionsDelete(Long userId) {
         return usersSubscriptionsService.removeUserSubscription(userId)
+                .doOnNext(userSubscriptionEventProducer::createBurnedEvent)
                 .map(ResponseMapper::toUserSubscriptionResponse)
                 .map(ResponseEntity::ok)
                 .doOnNext(response -> LOGGER.info(
