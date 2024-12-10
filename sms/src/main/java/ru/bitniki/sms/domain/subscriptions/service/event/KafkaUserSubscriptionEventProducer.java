@@ -10,13 +10,13 @@ public class KafkaUserSubscriptionEventProducer implements UserSubscriptionEvent
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final String topic;
-    private final KafkaTemplate<String, UserSubscriptionEvent> userSubscriptionProducer;
+    private final KafkaTemplate<String, UserSubscriptionEvent> userSubscriptionEventKafkaTemplate;
 
     public KafkaUserSubscriptionEventProducer(
             String topic,
-            KafkaTemplate<String, UserSubscriptionEvent> userSubscriptionProducer) {
+            KafkaTemplate<String, UserSubscriptionEvent> userSubscriptionEventKafkaTemplate) {
         this.topic = topic;
-        this.userSubscriptionProducer = userSubscriptionProducer;
+        this.userSubscriptionEventKafkaTemplate = userSubscriptionEventKafkaTemplate;
     }
 
     private UserSubscriptionEvent createEvent(UserSubscription userSubscription, UserSubscriptionEvent.Type type) {
@@ -53,21 +53,23 @@ public class KafkaUserSubscriptionEventProducer implements UserSubscriptionEvent
     @Override
     public void createPaidEvent(UserSubscription userSubscription) {
         logInit(UserSubscriptionEvent.Type.PAID, userSubscription);
-        userSubscriptionProducer.send(topic, createEvent(userSubscription, UserSubscriptionEvent.Type.PAID))
+        userSubscriptionEventKafkaTemplate.send(topic, createEvent(userSubscription, UserSubscriptionEvent.Type.PAID))
             .whenComplete((result, error) -> logResult(UserSubscriptionEvent.Type.PAID, userSubscription, error));
     }
 
     @Override
     public void createBurnSoonEvent(UserSubscription userSubscription) {
         logInit(UserSubscriptionEvent.Type.BURN_SOON, userSubscription);
-        userSubscriptionProducer.send(topic, createEvent(userSubscription, UserSubscriptionEvent.Type.BURN_SOON))
-            .whenComplete((result, error) -> logResult(UserSubscriptionEvent.Type.BURN_SOON, userSubscription, error));
+        userSubscriptionEventKafkaTemplate.send(
+                topic,
+                createEvent(userSubscription, UserSubscriptionEvent.Type.BURN_SOON)
+            ).whenComplete((result, error) -> logResult(UserSubscriptionEvent.Type.BURN_SOON, userSubscription, error));
     }
 
     @Override
     public void createBurnedEvent(UserSubscription userSubscription) {
         logInit(UserSubscriptionEvent.Type.BURNED, userSubscription);
-        userSubscriptionProducer.send(topic, createEvent(userSubscription, UserSubscriptionEvent.Type.BURNED))
+        userSubscriptionEventKafkaTemplate.send(topic, createEvent(userSubscription, UserSubscriptionEvent.Type.BURNED))
             .whenComplete((result, error) -> logResult(UserSubscriptionEvent.Type.BURNED, userSubscription, error));
     }
 }
