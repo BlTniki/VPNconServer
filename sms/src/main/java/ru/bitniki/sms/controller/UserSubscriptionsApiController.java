@@ -3,6 +3,7 @@ package ru.bitniki.sms.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
@@ -12,6 +13,7 @@ import ru.bitniki.sms.domain.subscriptions.service.UsersSubscriptionsService;
 import ru.bitniki.sms.domain.subscriptions.service.event.UserSubscriptionEventProducer;
 
 @RestController
+@Profile("prod")
 public class UserSubscriptionsApiController implements UserSubscriptionsApi {
     private static final Logger LOGGER = LogManager.getLogger();
 

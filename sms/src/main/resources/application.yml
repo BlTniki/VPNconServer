@@ -3,6 +3,10 @@ app:
     topic: subscription_updates
 
 spring:
+  profiles:
+    active:
+      - "prod"
+      - "default"
   application:
     name: sms
   r2dbc:

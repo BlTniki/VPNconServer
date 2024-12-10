@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import ru.bitniki.sms.IntegrationTest;
 import ru.bitniki.sms.domain.exception.EntityNotFoundException;
 import ru.bitniki.sms.domain.subscriptions.dto.Subscription;
@@ -14,6 +15,7 @@ import java.time.Period;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 @SpringBootTest
 class R2dbcSubscriptionsServiceTest extends IntegrationTest {
     @Autowired

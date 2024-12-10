@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import ru.bitniki.sms.IntegrationTest;
 import ru.bitniki.sms.domain.exception.EntityAlreadyExistException;
 import ru.bitniki.sms.domain.exception.EntityNotFoundException;
@@ -12,6 +13,7 @@ import ru.bitniki.sms.utils.rollback.TrxStepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 @SpringBootTest
 class R2dbcUsersServiceTest extends IntegrationTest {
     private final User newUser = new User(123L, "foo", "ACTIVATED_USER");

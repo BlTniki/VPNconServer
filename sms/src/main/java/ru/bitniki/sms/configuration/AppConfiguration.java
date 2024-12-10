@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.validation.annotation.Validated;
 import ru.bitniki.sms.domain.subscriptions.dto.UserSubscription;
@@ -14,6 +15,7 @@ import ru.bitniki.sms.domain.subscriptions.service.event.UserSubscriptionEventPr
 
 @Validated
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
+@Profile("prod")
 public record AppConfiguration(
     Kafka kafka
 ) {
@@ -35,7 +37,7 @@ public record AppConfiguration(
     @ConditionalOnProperty(prefix = "kafka.producer", name = "enable", havingValue = "false", matchIfMissing = true)
     public UserSubscriptionEventProducer userSubscriptionEventProducerStab(
     ) {
-        LOGGER.info("Kafka event producer is off. Using UserSubscriptionEventProducer...");
+        LOGGER.info("Kafka event producer is off. Using UserSubscriptionEventProducer Stab...");
         return new UserSubscriptionEventProducer() {
             private static final Logger LOGGER = LogManager.getLogger();
 

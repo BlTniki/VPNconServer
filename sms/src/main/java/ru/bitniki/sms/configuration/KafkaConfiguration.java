@@ -11,6 +11,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -25,6 +26,7 @@ import ru.bitniki.sms.domain.subscriptions.dto.UserSubscriptionEvent;
 @ConditionalOnProperty(prefix = "kafka.producer", name = "enable", havingValue = "true")
 @EnableKafka
 @ConfigurationProperties(prefix = "kafka")
+@Profile("prod")
 public record KafkaConfiguration(@NotNull Producer producer) {
 
     @Bean
@@ -86,3 +88,4 @@ public record KafkaConfiguration(@NotNull Producer producer) {
             Topic topic
     ) {}
 }
+
