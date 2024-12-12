@@ -199,4 +199,59 @@ class R2dbcUsersSubscriptionsServiceTest extends IntegrationTest {
                 )
                 .verify();
     }
+
+    @Test
+    @DisplayName("Check that we can find subscriptions by expiration date")
+    void getByExpirationDate_success() {
+        var expirationDate = LocalDate.now().plus(Period.ofMonths(1));
+        usersService.createUser(123L, "wololo")
+                .then(usersSubscriptionsService.addUserSubscription(123L, 3L, 1))
+                .then(usersSubscriptionsService.getByExpirationDate(expirationDate).next())
+                .as(stepVerifier::create)
+                .assertNext(dto -> {
+                    assertThat(dto.user().telegramId()).isEqualTo(123L);
+                    assertThat(dto.subscription().id()).isEqualTo(3L);
+                    assertThat(dto.expirationDate()).isEqualTo(expirationDate);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("Check that we return empty if no subscriptions with given expiration date")
+    void getByExpirationDate_no_results() {
+        var expirationDate = LocalDate.now();
+        usersService.createUser(123L, "wololo")
+                .then(usersSubscriptionsService.addUserSubscription(123L, 3L, 1))
+                .then(usersSubscriptionsService.getByExpirationDate(expirationDate).next())
+                .as(stepVerifier::create)
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("Check that we can find expired subscriptions by reference date day before")
+    void getExpired_success_day_before() {
+        usersService.createUser(123L, "wololo")
+                .then(usersSubscriptionsService.addUserSubscription(123L, 3L, 1))
+                .flatMap(userSubscription -> usersSubscriptionsService
+                                .getExpired(userSubscription.expirationDate().plusDays(1))
+                                .next()
+                )
+                .as(stepVerifier::create)
+                .assertNext(dto -> {
+                    assertThat(dto.user().telegramId()).isEqualTo(123L);
+                    assertThat(dto.subscription().id()).isEqualTo(3L);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("Check that we return empty if no subscriptions are expired")
+    void getExpired_no_results() {
+        var referenceDate = LocalDate.now();
+        usersService.createUser(123L, "wololo")
+                .then(usersSubscriptionsService.addUserSubscription(123L, 3L, 1))
+                .then(usersSubscriptionsService.getExpired(referenceDate).next())
+                .as(stepVerifier::create)
+                .verifyComplete();
+    }
 }

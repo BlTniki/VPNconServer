@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.bitniki.sms.domain.exception.BadRequestException;
 import ru.bitniki.sms.domain.exception.EntityNotFoundException;
@@ -40,6 +41,10 @@ public class R2dbcUsersSubscriptionsService implements UsersSubscriptionsService
         this.usersSubscriptionsDao = usersSubscriptionsDao;
     }
 
+    private static void logEntityRetrieving(UserSubscription dto) {
+        LOGGER.debug("Found user subscription `{}`", dto);
+    }
+
     @Override
     public Mono<UserSubscription> getByUserId(long userId) {
         LOGGER.debug("Getting user subscription with userId `{}`", userId);
@@ -69,7 +74,49 @@ public class R2dbcUsersSubscriptionsService implements UsersSubscriptionsService
                         new EntityNotFoundException(USER_SUBSCRIPTION_NOT_FOUND_MSG.formatted(userId))
                     )
                 )
-                .doOnNext(dto -> LOGGER.debug("Found user subscription `{}`", dto));
+                .doOnNext(R2dbcUsersSubscriptionsService::logEntityRetrieving);
+    }
+
+    @Override
+    public Flux<UserSubscription> getByExpirationDate(LocalDate expirationDate) {
+        LOGGER.debug("Retrieving user subscriptions with expirationDate: `{}`", expirationDate);
+        return usersSubscriptionsDao.findByExpirationDate(expirationDate)
+                .flatMap(userSubscription ->
+                    Mono.zip(
+                        usersService.getById(userSubscription.getUserId()),
+                        subscriptionsService.getById(userSubscription.getSubscriptionId())
+                    )
+                    .map(tuple -> new UserSubscription(
+                        userSubscription.getId(),
+                        tuple.getT1(),
+                        tuple.getT2(),
+                        userSubscription.getExpirationDate()
+                    ))
+                )
+                .doOnNext(R2dbcUsersSubscriptionsService::logEntityRetrieving);
+    }
+
+    @Override
+    public Flux<UserSubscription> getExpired(LocalDate referenceDate) {
+        // dao can retrieve user subs with referenceDate only LESS than given arg
+        // but user sub is expired if referenceDate LESS OR EQUAL than given arg
+        // so we add 1 day due business logic purpose
+        var day = referenceDate.plusDays(1);
+        LOGGER.debug("Retrieving expired user subscriptions by date: `{}`", day);
+        return usersSubscriptionsDao.findByExpirationDateBefore(day)
+                .flatMap(userSubscription ->
+                    Mono.zip(
+                        usersService.getById(userSubscription.getUserId()),
+                        subscriptionsService.getById(userSubscription.getSubscriptionId())
+                    )
+                    .map(tuple -> new UserSubscription(
+                        userSubscription.getId(),
+                        tuple.getT1(),
+                        tuple.getT2(),
+                        userSubscription.getExpirationDate()
+                    ))
+                )
+                .doOnNext(R2dbcUsersSubscriptionsService::logEntityRetrieving);
     }
 
     private Mono<UserSubscription> renewSubscription(
