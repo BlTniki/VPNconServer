@@ -1,6 +1,9 @@
 app:
   kafka:
     topic: subscription_updates
+  expiration-checker:
+    enable: ${EXPIRATION_CHECKER_ENABLE}
+    cron: ${EXPIRATION_CHECKER_CRON}
 
 spring:
   profiles:

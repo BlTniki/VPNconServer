@@ -53,7 +53,9 @@ public class KafkaUserSubscriptionEventProducer implements UserSubscriptionEvent
     @Override
     public void createPaidEvent(UserSubscription userSubscription) {
         logInit(UserSubscriptionEvent.Type.PAID, userSubscription);
-        userSubscriptionEventKafkaTemplate.send(topic, createEvent(userSubscription, UserSubscriptionEvent.Type.PAID))
+        userSubscriptionEventKafkaTemplate.send(
+                topic, "key", createEvent(userSubscription, UserSubscriptionEvent.Type.PAID)
+                )
             .whenComplete((result, error) -> logResult(UserSubscriptionEvent.Type.PAID, userSubscription, error));
     }
 
@@ -61,7 +63,7 @@ public class KafkaUserSubscriptionEventProducer implements UserSubscriptionEvent
     public void createBurnSoonEvent(UserSubscription userSubscription) {
         logInit(UserSubscriptionEvent.Type.BURN_SOON, userSubscription);
         userSubscriptionEventKafkaTemplate.send(
-                topic,
+                topic, "key",
                 createEvent(userSubscription, UserSubscriptionEvent.Type.BURN_SOON)
             ).whenComplete((result, error) -> logResult(UserSubscriptionEvent.Type.BURN_SOON, userSubscription, error));
     }
@@ -69,7 +71,7 @@ public class KafkaUserSubscriptionEventProducer implements UserSubscriptionEvent
     @Override
     public void createBurnedEvent(UserSubscription userSubscription) {
         logInit(UserSubscriptionEvent.Type.BURNED, userSubscription);
-        userSubscriptionEventKafkaTemplate.send(topic, createEvent(userSubscription, UserSubscriptionEvent.Type.BURNED))
+        userSubscriptionEventKafkaTemplate.send(topic, "key", createEvent(userSubscription, UserSubscriptionEvent.Type.BURNED))
             .whenComplete((result, error) -> logResult(UserSubscriptionEvent.Type.BURNED, userSubscription, error));
     }
 }

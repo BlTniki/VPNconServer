@@ -102,7 +102,7 @@ public class R2dbcUsersSubscriptionsService implements UsersSubscriptionsService
         // but user sub is expired if referenceDate LESS OR EQUAL than given arg
         // so we add 1 day due business logic purpose
         var day = referenceDate.plusDays(1);
-        LOGGER.debug("Retrieving expired user subscriptions by date: `{}`", day);
+        LOGGER.debug("Retrieving expired user subscriptions by date: `{}`", referenceDate);
         return usersSubscriptionsDao.findByExpirationDateBefore(day)
                 .flatMap(userSubscription ->
                     Mono.zip(
@@ -116,7 +116,9 @@ public class R2dbcUsersSubscriptionsService implements UsersSubscriptionsService
                         userSubscription.getExpirationDate()
                     ))
                 )
-                .doOnNext(R2dbcUsersSubscriptionsService::logEntityRetrieving);
+                .doOnNext(dto -> LOGGER.debug(
+                        "Found expired user subscription `{}` for ref day `{}`", dto, referenceDate
+                ));
     }
 
     private Mono<UserSubscription> renewSubscription(

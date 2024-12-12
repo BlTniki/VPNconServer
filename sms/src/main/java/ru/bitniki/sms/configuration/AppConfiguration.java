@@ -7,17 +7,22 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.validation.annotation.Validated;
 import ru.bitniki.sms.domain.subscriptions.dto.UserSubscription;
 import ru.bitniki.sms.domain.subscriptions.dto.UserSubscriptionEvent;
+import ru.bitniki.sms.domain.subscriptions.service.UserSubscriptionExpirationChecker;
+import ru.bitniki.sms.domain.subscriptions.service.UsersSubscriptionsService;
 import ru.bitniki.sms.domain.subscriptions.service.event.KafkaUserSubscriptionEventProducer;
 import ru.bitniki.sms.domain.subscriptions.service.event.UserSubscriptionEventProducer;
 
 @Validated
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
+@EnableScheduling
 @Profile("prod")
 public record AppConfiguration(
-    Kafka kafka
+    Kafka kafka,
+    ExpirationChecker expirationChecker
 ) {
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -67,7 +72,22 @@ public record AppConfiguration(
         };
     }
 
+    @Bean
+    @ConditionalOnProperty(prefix = "app", name = "expiration-checker.enable", havingValue = "true")
+    public UserSubscriptionExpirationChecker userSubscriptionExpirationChecker(
+            UsersSubscriptionsService service,
+            UserSubscriptionEventProducer producer
+    ) {
+        LOGGER.info("Scheduled expiration checker at `{}`", expirationChecker.cron);
+        return new UserSubscriptionExpirationChecker(service, producer);
+    }
+
     record Kafka(
         String topic
+    ) {}
+
+    record ExpirationChecker(
+        String enable,
+        String cron
     ) {}
 }
