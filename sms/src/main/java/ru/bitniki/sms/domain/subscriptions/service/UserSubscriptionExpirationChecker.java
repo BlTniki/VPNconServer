@@ -44,6 +44,8 @@ public class UserSubscriptionExpirationChecker {
     @Scheduled(cron = "#{@'app-ru.bitniki.sms.configuration.AppConfiguration'.expirationChecker.cron}")
     public void checkExpiration() {
         final LocalDate today = LocalDate.now();
+        LOGGER.debug("Start expiration checking...");
         checkExpired(today).thenMany(checkExpireSoon(today)).subscribe();
+        LOGGER.debug("Expiration checking finished");
     }
 }
