@@ -47,7 +47,7 @@ class KafkaUserSubscriptionEventProducerTest {
         userSubscriptionEventProducer.createPaidEvent(result.userSubscription());
 
         // Verify interactions
-        verify(userSubscriptionEventKafkaTemplate).send("test_topic", result.event());
+        verify(userSubscriptionEventKafkaTemplate).send("test_topic", "key", result.event());
     }
 
 
@@ -60,7 +60,7 @@ class KafkaUserSubscriptionEventProducerTest {
         userSubscriptionEventProducer.createBurnSoonEvent(result.userSubscription());
 
         // Verify interactions
-        verify(userSubscriptionEventKafkaTemplate).send("test_topic", result.event());
+        verify(userSubscriptionEventKafkaTemplate).send("test_topic", "key", result.event());
     }
 
     @Test
@@ -71,7 +71,7 @@ class KafkaUserSubscriptionEventProducerTest {
         userSubscriptionEventProducer.createBurnedEvent(result.userSubscription());
 
         // Verify interactions
-        verify(userSubscriptionEventKafkaTemplate).send("test_topic", result.event());
+        verify(userSubscriptionEventKafkaTemplate).send("test_topic", "key", result.event());
     }
 
     private @NotNull Result getResult(UserSubscriptionEvent.Type type) {
@@ -88,7 +88,7 @@ class KafkaUserSubscriptionEventProducerTest {
         );
         // Simulate a successful send
         CompletableFuture<SendResult<String, UserSubscriptionEvent>> future = CompletableFuture.completedFuture(new SendResult<>(null, null));
-        when(userSubscriptionEventKafkaTemplate.send(any(), any())).thenReturn(future);
+        when(userSubscriptionEventKafkaTemplate.send(any(), any(), any())).thenReturn(future);
         return new Result(userSubscription, event);
     }
 
