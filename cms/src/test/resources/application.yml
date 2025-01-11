@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: cms
+  r2dbc:
+    url: r2dbc:tc:postgresql:///vpncontests
+
+
+logging:
+  config: classpath:log4j2-plain.xml
